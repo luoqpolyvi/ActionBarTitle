@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>注册</title>
+    <script>
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action == 'register'){
+                    xFace.app.close();
+                }else{xmesh.back();}
+            }else{xmesh.back();}
+        })
+        var page = this;
+        var form = xmesh.model['RegisterForm'];
+        function getValidCode(){
+            form.getValidCode(page.named('tel').value);
+        }
+
+        function register(){
+            if(form.validate(page.child('form')))
+                form.submit(handleOnRegisterSuccess, handleOnRegisterError);
+        }
+
+        function handleOnRegisterSuccess(data){
+            Dialog.alert("注册成功",function(){
+                if(System.data){
+                    if(System.data.action == 'register'){
+                        xFace.app.close();
+                    }else{xmesh.back();}
+                }else{xmesh.back();}
+            });
+        }
+
+        function handleOnRegisterError(msg){
+            page.named('validCode').value = '';
+            showErrorMessage(msg);
+        }
+    </script>
+</head>
+
+<body>
+   <div id="registerPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel">注册</span>
+        </header>
+       <form class="content" id="register" data-box="v" data-flex="1" action="javascript:void(0)">
+           <div data-box="v" id="registerForm">
+               <input name="tel" type="tel" x-field="RegisterForm.phone"  maxlength="11" placeholder="请输入手机号码" class="inputBox"/>
+               <input name="password" type="password" maxlength="16"  x-field="RegisterForm.password"  placeholder="请设置登录密码" class="inputBox"/>
+               <div class="tips">登录密码为6-16位任意数字、字母、字符组成</div>
+               <input name="password" type="password" maxlength="16"  x-field="RegisterForm.password_" placeholder="请再次输入密码" class="inputBox"/>
+               <div class="validCode" data-box="h">
+                   <input x-field="RegisterForm.validCode" name="validCode" type="tel" placeholder="请输入验证码"  maxlength="6" data-flex="1">
+                   <button x-field="RegisterForm.validButton" onClick="getValidCode()" class="getCode"/></button>
+               </div>
+               <button class="registerBtn" onclick="register()">注册</button>
+           </div>
+       </form>
+   </div>
+</body>
+</html>

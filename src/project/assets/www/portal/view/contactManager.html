@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>联系人管理</title>
+    <script>
+        var list = this.named('list');
+        var template = this.named('template');
+        var contactManager = this.child('#contactManager');
+        var noList = this.named("noList");
+//        var setUseTransform = (device.version == "2.3.6") ? false : true;
+        var contactScrollPane = this.named('contactScrollPane').as("ui.ScrollPane", {bounce:true, vScroll:true, useTransform:true});
+        var page = this.bind('pageReady', function () {
+            noList.hide();
+            if(!xmesh.model["ContactsManager"].contactList){createListItem(xmesh.model["ContactsManager"].contactList); }
+            else{
+                xmesh.model["ContactsManager"].getContactList(function(){
+                    createListItem(xmesh.model["ContactsManager"].contactList);
+                })
+            }
+        });
+        function createListItem(data) {
+            list.html("");
+            if (data.length == 0) {
+                noList.css('display','-webkit-box');
+                contactManager.hide();
+            } else {
+                noList.hide();
+                contactManager.show();
+            }
+            $.each(data, function (i, item) {
+                var tep = template.child(".contact").clone(true);
+                tep.child("[name=name]").html(item.name);
+                tep.child("[name=phone]").html(Validator.formatPhone(item.phone));
+                tep.child("[name=cardType]").html(item.formatCardType);
+                tep.child("[name=cardId]").html((item.formatCardType == "身份证") ? Validator.formatIdCard(item.cardId) : item.cardId);
+                tep.child("[name=delContact]").bind("click", function () {
+                    Dialog.confirm("您确定要删除此联系人吗？", null, function () {
+                        service.busynessMessage = "正在删除联系人...";
+                        xmesh.model["ContactsManager"].delContact(item, function () {
+                            createListItem(xmesh.model["ContactsManager"].contactList);
+                        }, showErrorMessage);
+                    }, "提醒", ["取消", "确定"]);
+                });
+                tep.child("[name=editContact]").bind("click", function () {
+                    xmesh.act("addContact", {contact:item, success:function () {
+                        createListItem(xmesh.model["ContactsManager"].contactList)
+                    }});
+                });
+                list.append(tep);
+            });
+            setTimeout(function () {
+                contactScrollPane.scrollTo(0, 0, 0);
+                contactScrollPane.refresh();
+            }, 100);
+        }
+
+        function addContact() {
+            if (xmesh.model["ContactsManager"].contactList.length >= 10) {
+                Dialog.toast("最多添加10个联系人");
+            } else {
+                xmesh.model['Contact'].reset();
+                xmesh.act("addContact", {contact:null, success:function () {
+                    createListItem(xmesh.model["ContactsManager"].contactList)
+                }})
+            }
+        }
+
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="contactManager") xFace.app.close();
+                else xmesh.back();
+            }else{xmesh.back();}
+        })
+    </script>
+</head>
+<body>
+<div id="contactManagerPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">联系人管理</span>
+    </header>
+    <div name="noList" class="noItem" data-box="v" data-flex="1"><div class="image"></div></div>
+    <div class="content" id="contactManager" data-box="v" data-flex="1" name="contactScrollPane">
+        <div class="contactList" data-flex="1" name="list">
+        </div>
+        <div style="height: 45px"></div>
+    </div>
+    <button class="bigBtn" onclick="addContact()">添加</button>
+</div>
+<xtag:Template name="template">
+    <div class="contact">
+        <div class="title" data-flex="h">
+            <div class="touxiang"></div>
+            <button class="delete" name="delContact"></button>
+            <button class="edit" name="editContact"></button>
+        </div>
+        <div class="contactname"><span name="name"></span><span name="phone"></span></div>
+        <div class="contactID"><span name="cardType"></span><span name="cardId"></span></div>
+    </div>
+</xtag:Template>
+</body>
+</html>

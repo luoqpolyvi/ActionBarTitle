@@ -1,0 +1,312 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>福彩3D</title>
+    <script>
+        var Lottery3D = xmesh.model["Lottery3D"];
+        var select_way = "1"; //1= 手选 | 2=机选
+        var cast_num = 0;
+        var cast_amount = 0;
+        Lottery3D.reset();
+        Lottery3D.cast_info.length = 0;
+        var watchID = null;
+        var page = this.bind("pageReady", function () {
+            var _this =this;
+            var type = "direct";
+            var scrollPane = _this.named("scrollPane");
+            var z3 = _this.named("z3");
+            var z6 = _this.named("z6");
+            var hundred = _this.named("hundred");
+            var decade = _this.named("decade");
+            var unit = _this.named("unit");
+            var point = {"tab_left":"direct", "tab_cener":"z3", "tab_right":"z6"};
+            z3.child(".selectNumbers").hide();
+            z6.child(".selectNumbers").hide();
+
+            xmesh.broadcast.listen("handleSelect",function(e){
+                if(e=="3D"){
+                    setTimeout(function(){
+                        _this.child(".redBalls > li").attribute("checked",null);
+                        setCastNum();
+                    },100)
+                }
+            })//再手选一注时清空选项
+
+            service.busynessMessage = "网络连接中，请稍候...";
+            Lottery3D.getLotteryInfo(function(data){
+                _this.named("termCode").html(this.termCode+"期");
+                _this.named("termEndTime").html(this.termEndTime);
+            },showErrorMessage);
+
+            _this.bind("SHAKED",function(){
+                select_way = "2";
+                var code = Lottery3D.randomSelect(type);
+                setAutoNum(code);
+            });
+            this.named("tabs_3d").child("li").bind("click", function () {
+                if(Lottery3D.cast_info.length>0) return;//3D目前只能选择一种状态
+                _this.named("tabs_3d").child("li").attribute("checked", null);
+                _this.child(".redBalls > li").attribute("checked",null);
+                this.attribute("checked", true);
+                _this.child(".selectNumbers").hide();
+                type = point[this.className];
+                _this.named(type).child(".selectNumbers").show();
+                setCastNum();
+                scrollPane.scrollTo(0,0,0);
+                scrollPane.refresh();
+            })
+            _this.child(".selectNumbers li").bind("click", function () {
+                select_way = "1";
+                if (this.attribute("checked")) this.attribute("checked", null);
+                else this.attribute("checked", true);
+                setCastNum();
+            });
+            this.named("clear").bind("click", function () {
+                _this.child(".selectNumbers li").attribute("checked", null);
+                setCastNum();
+            });
+            this.named("sure").bind("click", function () {
+                switch (type) {
+                    case "direct" :
+                        var codeList = [hundred.child("li[checked]"), decade.child("li[checked]"), unit.child("li[checked]")];
+                        break;
+                    case "z3" :
+                        var codeList = z3.child("li[checked]");
+                        break;
+                    case "z6" :
+                        var codeList = z6.child("li[checked]");
+                        break;
+                }
+                if( !_this.child(".redBalls > li[checked]") && Lottery3D.cast_info.length>0 ) xmesh.act("betsList", "3D");
+                else{
+                    var msg = Lottery3D.checkCodeLength(type, codeList);
+                    if (msg != true) return Dialog.toast(msg);
+                    switch (type) {
+                        case "direct" :
+                            var codeArray = [
+                                [],
+                                [],
+                                []
+                            ];
+                            getCode(hundred, codeArray[0]);
+                            getCode(decade, codeArray[1]);
+                            getCode(unit, codeArray[2]);
+                            codeArray[0] = codeArray[0].join(",");
+                            codeArray[1] = codeArray[1].join(",");
+                            codeArray[2] = codeArray[2].join(",");
+                            var bet_code = codeArray.join("|") + "$1";
+                            break;
+                        case "z3" :
+                            var codeArray = [];
+                            getCode(z3, codeArray);
+                            var bet_code = codeArray.join(",") + "$2";
+                            break;
+                        case "z6" :
+                            var codeArray = [];
+                            getCode(z6, codeArray);
+                            var bet_code = codeArray.join(",") + "$3";
+                            break;
+                    }
+                    Lottery3D.cast_info.push(Lottery3D.perCastInfo(type, select_way, bet_code, cast_num, cast_amount * 100));
+                    xmesh.act("betsList", "3D");
+                }
+
+            });
+            this.named("shakePause").bind("click",function(){
+                _this.trigger($.Event("SHAKED"));
+            });
+            function setAutoNum(code) {
+                switch (type) {
+                    case "direct":
+                        setCode(hundred.child("li"), code[0]);
+                        setCode(decade.child("li"), code[1]);
+                        setCode(unit.child("li"), code[2]);
+                        break;
+                    case "z3":
+                        setCode(z3.child("li"), code);
+                        break;
+                    case "z6":
+                        setCode(z6.child("li"), code);
+                        break;
+                }
+                setCastNum();
+            }
+
+            function setCode(list, code) {
+                list.attribute("checked", null);
+                $.each(list, function (property, item) {
+                    if (code instanceof  Array) {
+                        $.each(code, function (property, codeNum) {
+                            if (item.html() == codeNum) item.attribute("checked", true);
+                        })
+                    } else {
+                        if (item.html() == code) item.attribute("checked", true);
+                    }
+                })
+            }
+
+            function setCastNum() {
+                switch (type) {
+                    case "direct":
+                        var hundredLength = hundred.child("li[checked]") ? (hundred.child("li[checked]").length ? hundred.child("li[checked]").length : 1) : 0;
+                        var decadeLength = decade.child("li[checked]") ? (decade.child("li[checked]").length ? decade.child("li[checked]").length : 1) : 0;
+                        var unitLength = unit.child("li[checked]") ? (unit.child("li[checked]").length ? unit.child("li[checked]").length : 1) : 0;
+                        cast_num = Lottery3D.get_direct_zhu(hundredLength, decadeLength, unitLength);
+                        break;
+                    case "z3":
+                        var z3Num = (z3.child("li[checked]") && z3.child("li[checked]").length) ? z3.child("li[checked]").length : 0;
+                        cast_num = Lottery3D.get_z3_zhu(z3Num);
+                        break;
+                    case "z6":
+                        var z6Num = (z6.child("li[checked]") && z6.child("li[checked]").length) ? z6.child("li[checked]").length : 0;
+                        cast_num = Lottery3D.get_z6_zhu(z6Num);
+                        break;
+                }
+                cast_amount = cast_num * 2;
+                _this.named("total_zhu").html(cast_num);
+                _this.named("total_amount").html(cast_amount);
+            }
+
+            function getCode(obj, array) {
+                var checked = obj.child("li[checked]");
+                if (!checked.length) array.push(checked.html());
+                else {
+                    $.each(checked, function (property, item) {
+                        array.push(item.html());
+                    });
+                }
+            }
+        })
+
+        function play(){
+            Dialog.alert(Lottery3D.gameTips,null,"玩法");
+        }
+        page.bind("show",function(){
+            var options = {frequency :500};
+            //onWatchSuccess是获取加速信息成功的回调函数
+            watchID = navigator.accelerometer.watchAcceleration(onWatchSuccess,function(){Dialog.alert("handle error!")},options);
+            function onWatchSuccess(acceleration){
+                //判断x,y,z任意方向上的加速超过13即为摇动
+                if(Math.abs(acceleration.x)>13 || Math.abs(acceleration.y)>13  ||Math.abs(acceleration.z)>13){
+                    page.trigger($.Event("SHAKED"));
+                }
+            }
+        })
+
+        page.bind("hide",function(){
+            if (watchID) {
+                navigator.accelerometer.clearWatch(watchID);
+                watchID = null;
+            }
+        })
+
+    </script>
+</head>
+
+<body>
+   <div id="fucai3dPage" data-box="v" class="selectBallsPage secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel">福彩3D</span>
+            <button class="play" onclick="play()">玩法</button>
+        </header>
+       <xtag:ScrollPane data-flex="1" data-box="v" name="scrollPane" useTransform = false>
+        <div class="content selectBalls" id="fucai3d" data-flex="1">
+            <div class="tabs" data-box="h">
+                <ul name="tabs_3d" data-box="h">
+                    <li class="tab_left" checked>直选</li>
+                    <li class="tab_cener">组三</li>
+                    <li class="tab_right">组六</li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+            <div class="time"><span class="periods" name="termCode">20140211期</span>截止日期到<span class="deadline" name="termEndTime">2014-11-28 19:20</span></div>
+            <div name="direct">
+            <div class="selectNumbers">
+                <div class="tip">百位 至少选择1个号码</div>
+                <ul class="redBalls" name="hundred">
+                    <li>00</li>
+                    <li>01</li>
+                    <li>02</li>
+                    <li>03</li>
+                    <li>04</li>
+                    <li>05</li>
+                    <li>06</li>
+                    <li>07</li>
+                    <li>08</li>
+                    <li>09</li>
+                </ul>
+            </div>
+            <div class="selectNumbers">
+                <div class="tip">十位 至少选择1个号码</div>
+                <ul class="redBalls" name="decade">
+                    <li>00</li>
+                    <li>01</li>
+                    <li>02</li>
+                    <li>03</li>
+                    <li>04</li>
+                    <li>05</li>
+                    <li>06</li>
+                    <li>07</li>
+                    <li>08</li>
+                    <li>09</li>
+                </ul>
+            </div>
+            <div class="selectNumbers">
+                <div class="tip">个位 至少选择1个号码</div>
+                <ul class="redBalls" name="unit">
+                    <li>00</li>
+                    <li>01</li>
+                    <li>02</li>
+                    <li>03</li>
+                    <li>04</li>
+                    <li>05</li>
+                    <li>06</li>
+                    <li>07</li>
+                    <li>08</li>
+                    <li>09</li>
+                </ul>
+            </div>
+            </div>
+            <div name="z3">
+                <div class="selectNumbers">
+                    <div class="tip">至少选择2个号码</div>
+                    <ul class="redBalls">
+                        <li>00</li>
+                        <li>01</li>
+                        <li>02</li>
+                        <li>03</li>
+                        <li>04</li>
+                        <li>05</li>
+                        <li>06</li>
+                        <li>07</li>
+                        <li>08</li>
+                        <li>09</li>
+                    </ul>
+                </div>
+            </div>
+            <div name="z6">
+                <div class="selectNumbers">
+                    <div class="tip">至少选择3个号码</div>
+                    <ul class="redBalls">
+                        <li>00</li>
+                        <li>01</li>
+                        <li>02</li>
+                        <li>03</li>
+                        <li>04</li>
+                        <li>05</li>
+                        <li>06</li>
+                        <li>07</li>
+                        <li>08</li>
+                        <li>09</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bottomInfo"><span  name="shakePause" class="shake">摇一摇机选！</span><span class="total">共<span name="total_zhu">0</span>注<span name="total_amount">0</span>元</span></div>
+            <div class="clear"></div>
+            <div class="btns" data-box="h"><button class="blueBtn" name="clear" data-flex="1">清空</button><button class="redBtn" name="sure" data-flex="1">确认</button></div>
+        </div>
+           </xtag:ScrollPane>
+   </div>
+</body>
+</html>

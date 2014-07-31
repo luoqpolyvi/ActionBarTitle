@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>添加缴费账号</title>
+    <script>
+        var page = this;
+        var sure = page.named('sure');
+        var waterManager = xmesh.model["WaterManager"];
+        var accountType = page.named('accountType');
+        var identifyCode = page.named('identifyCode');
+        var remark = page.named('remark');
+        var nf = page.named('nf');
+        var nf1 = page.named('nf1');
+        var day = page.named('day');
+        var dayLi = page.named('dayLi');
+        var tingShui = page.named('tingShui');
+        var tingTV = page.named('tingTV');
+        var notice_date= "";
+        var repayment_notice = false;
+        var noticeDate = "";
+        var nfValue,nf1Value;
+
+        page.bind('pageReady',function(){
+            showNowDate();
+            nf1.addClass('off');
+            nf1Value = "0";
+            nf.addClass('off');
+            dayLi.hide();
+            nfValue = "0";
+            tingShui.css('display','block');
+            tingTV.css('display','none');
+            nf.bind('click',function(){
+                if(this.hasClass('off')){
+                    this.className ="on";
+                    dayLi.css("display","-webkit-box");
+                    nfValue = "1";
+                }else{
+                    this.className ="off";
+                    dayLi.hide();
+                    nfValue = "0";
+                }
+            });
+            nf1.bind('click',function(){
+                if(this.hasClass('off')){
+                    this.className ="on";
+                    nf1Value = "1";
+                }else{
+                    this.className ="off";
+                    nf1Value = "0";
+                }
+            });
+            sure.bind('click',addAccount);
+            day.bind('click',setNoticeDate);
+        });
+
+        function addAccount(){
+            service.busynessMessage = "正在添加账号...";
+            waterManager.addPaymentAccount({
+                type:accountType.value,
+                identifyCode:identifyCode.value,
+                day:notice_date,
+                nf:nfValue,
+                nf1:nf1Value,
+                remark:remark.value
+            },function(data){
+                Dialog.toast('添加成功');
+                waterManager.statuses = 1;
+                xmesh.back();
+            },showErrorMessage);
+        }
+
+        function showNowDate(){
+            var today = new Date();
+            notice_date = today.getDate();
+            day.html("每月"+notice_date+"日");
+        }
+        function setNoticeDate(){
+            var noticeDate = new Date();
+            noticeDate.setDate(notice_date);
+            xFace.ui.Calendar.getDate(function(d){
+                if(d.day>28){
+                    Dialog.toast("日期仅可以选择1到28日中的一天");
+                }
+                else{
+                    notice_date = d.day;
+                    day.html("每月"+notice_date+"日");
+                }
+            },function(){
+                Dialog.alert('Calendar error');
+            },noticeDate.getFullYear(),noticeDate.getMonth()+1,noticeDate.getDate());
+        }
+
+        function onchangeHanner(value){
+           switch(value){
+               case '1':  tingShui.css('display','block');tingTV.css('display','none');break;
+               case '2':break;
+               case '3':break;
+               case '4':  tingShui.css('display','none');tingTV.css('display','block');break;
+           }
+        }
+
+    </script>
+</head>
+<body>
+<div id="addAccountPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+        <button class="play" name="sure">确定</button>
+    </header>
+    <div class="content" id="addAccountCenter" data-box="v" data-flex="1">
+        <ul class="accountInfo">
+            <li data-box="h" class="arrowLabel"><label>选择缴费类型</label>
+                <select data-flex="1" name="accountType" onchange="onchangeHanner(this.value)">
+                    <option value="1">水费</option>
+                    <!--<option value="2">电费</option>-->
+                    <!--<option value="3">煤气费</option>-->
+                    <option value="4">电视费</option>
+                </select>
+                <span></span>
+            </li>
+            <li data-box="h"><label>缴费账号</label><input maxlength="12" placeholder="用于缴费的账号或户号" data-flex="1" name="identifyCode"/></li>
+            <li data-box="h"><label>账号描述</label><input maxlength="12" placeholder="描述此账号用途的文字信息" data-flex="1" name="remark"/></li>
+        </ul>
+        <ul class="accountInfo">
+            <li data-box="h" class="switch"><label>缴费提醒</label><div data-flex="1"></div><button name="nf"></button></li>
+            <li data-box="h" class="arrowLabel" name="dayLi"><label>提醒时间</label><div class="time" data-flex="1" name="day"></div><span></span></li>
+        </ul>
+        <ul class="accountInfo" name="tingShui">
+            <li data-box="h" class="switch"><label>停水通知</label><div data-flex="1"></div><button  name="nf1"></button></li>
+        </ul>
+        <ul class="accountInfo" name="tingTV">
+            <li data-box="h" class="switch"><label>停电视通知</label><div data-flex="1"></div><button  name="nf1"></button></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

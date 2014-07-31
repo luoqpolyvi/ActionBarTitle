@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>添加信用卡</title>
+    <script>
+       var page = this;
+       var notice_date= "";
+       var bank = this.param || "";
+       var CreditCardManager = xmesh.model["CreditCardManager"];
+       xmesh.model["BankList"].reset();
+       showNowDate();
+
+
+      function addCreditCard(){
+          var repayment_notice = page.named("repayment_notice").hasClass("on") ? "true" :"false";
+          var noticeDate = repayment_notice=="true" ? notice_date : "";
+          if(!xmesh.model["BankList"].bankId) return Dialog.toast("请选择信用卡发卡银行");
+          if(!page.named("card_number").value) return Dialog.toast("请输入信用卡卡号");
+          if(!Validator.number(page.named("card_number").value)) return Dialog.toast("信用卡卡号只能为20位数字");
+          xmesh.model["CreditCard"].isAdd = true;
+          service.busynessMessage = "正在添加...";
+          CreditCardManager.addCreditCard({
+                card_number : page.named("card_number").value,
+                bank_id : xmesh.model["BankList"].bankId,
+                user_id : xmesh.model["User"].id,
+                repayment_notice : false,
+                notice_date : null
+            },function(res){
+              $.copyObject(xmesh.model["CreditCard"],res.data);
+              xmesh.model["CreditCard"].isAdd = true;
+              xmesh.act("creditRepay");
+            },showErrorMessage);
+        }
+
+      function showNowDate(){
+         var today = new Date();
+         if(today.getDate() >=28){
+             notice_date = 28;
+             page.named("date").html("每月28日");
+         }
+         else{
+             notice_date = today.getDate();
+             page.named("date").html("每月"+notice_date+"日");
+         }
+      }
+
+      function setNoticeDate(){
+          var noticeDate = new Date();
+          noticeDate.setDate(notice_date);
+           xFace.ui.Calendar.getDate(function(d){
+               if(d.day>28){
+                   Dialog.toast("日期仅可以选择1到28日中的一天");
+               }
+               else{
+                   notice_date = d.day;
+                   page.named("date").html("每月"+notice_date+"日");
+               }
+           },function(){
+               Dialog.alert('Calendar error');
+           },noticeDate.getFullYear(),noticeDate.getMonth()+1,noticeDate.getDate());
+       }
+
+      page.named("repayment_notice").bind("click",function(){
+          if(this.hasClass("on")){
+              this.className ="off";
+              page.named("notice_date").hide();
+          } else {
+              this.className ="on";
+              page.named("notice_date").css("display","-webkit-box");
+          }
+      })
+    </script>
+</head>
+
+<body>
+<div id="addCreditCardPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">添加信用卡</span>
+    </header>
+    <div class="content" id="addCreditCard" data-flex="1">
+        <div data-box="h" class="inputBox" onclick="xmesh.act('bankList')"><input type="text"  readonly data-flex="1" placeholder="请选择信用卡发卡银行" x-field="BankList.bankName"/><div class="arrow" ></div></div>
+        <div data-box="h" class="inputBox"><input type="tel" data-flex="1" placeholder="请输入信用卡卡号" maxlength="20" name="card_number"/></div>
+        <div class="remind" style="display: none">
+           <div data-box="h" class="switch"><div data-flex="1">还款提醒</div><button class="on" name="repayment_notice"></button></div>
+           <div data-box="h" class="remindDate" name="notice_date"><div data-flex="1">提醒日期</div><div onclick="setNoticeDate()" name="date">2月17日</div></div>
+        </div>
+        <button class="bigBtn blueBtn" onclick="addCreditCard();">确认</button>
+    </div>
+</div>
+</body>
+</html>

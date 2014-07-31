@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html manifest="manifest/index.manifest">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1, minimum-scale=1,user-scalable=no">
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <script src="xdebug.js" host="192.168.2.130" debug="true"></script>
+    <script src="cordova.js"></script>
+    <link rel="stylesheet" href="component/dialog/dialog.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="component/cover.css">
+    <script src="libs/xcube/xcube.js" mark="$" xtag="true" xcube></script>
+    <script src="libs/zepto.js"></script>
+    <script src="component/keyboard/Keyboard.js"></script>
+    <script src="component/dialog/Dialog.js"></script>
+    <script src="component/GridView.js"></script>
+    <script src="component/qrcode.min.js"></script>
+    <script src="main.js"></script>
+    <script src="portal/model/System.js"></script>
+    <script src="lotteryTicket/model/City.js"></script>
+    <script src="portal/model/Page.js"></script>
+    <script src="portal/model/app.js"></script>
+    <script src="busTicket/model/listData.js"></script>
+    <script src="busTicket/model/myPinYin.js"></script>
+    <script src="util/Validator.js"></script>
+    <script src="util/Service.js"></script>
+    <script src="libs/xcube/xmesh.js"></script>
+    <script src="util/Extend.js"></script>
+    <script>
+        /********不需要缓存*******/
+        applicationCache.onnoupdate = function(){
+            System.isCache = true;
+            console.log("noupdate");
+            document.bind("deviceready",function(){
+                xmesh
+                        .loadMap(System.data ? ((System.data.action == "home") ? 'merchantPortal.xml' : "map.xml") :'merchantPortal.xml')
+                        .attachPageManger(PageManager,false)
+                        .bind('pathChange', _handleOnPathChange)
+                        .bind('pathError', _handleOnPathError)
+                        .bind('actionError', _handleOnActionError)
+                        .bind('validateModelProperty', _handleOnValidateModelProperty)
+                        .bind('exit', _handleOnRequireExit)
+                        .home(true);
+            });
+
+        }
+        /********缓存已经更新完成*******/
+        applicationCache.onupdateready =function(){
+            window.applicationCache.swapCache();
+            document.getElementById("detailCache").innerHTML =  "100%";
+            document.getElementById("underCache").innerHTML =  "加载完成";
+            setTimeout(function(){
+                document.getElementById("coverCache").style.display = "none";
+            },100);
+            xmesh
+                    .loadMap(System.data ? ((System.data.action == "home") ? 'merchantPortal.xml' : "map.xml") :'merchantPortal.xml')
+                    .attachPageManger(PageManager,false)
+                    .bind('pathChange', _handleOnPathChange)
+                    .bind('pathError', _handleOnPathError)
+                    .bind('actionError', _handleOnActionError)
+                    .bind('validateModelProperty', _handleOnValidateModelProperty)
+                    .bind('exit', _handleOnRequireExit)
+                    .home(true);
+        }
+        /********缓存下载的进度函数*******/
+        applicationCache.onprogress = function(e){
+            System.isCache = true;
+            document.getElementById("coverCache").style.display = "-webkit-box";
+            document.getElementById("detailCache").innerHTML =  (e.loaded !=null) ? (Math.round(e.loaded / e.total *100) + "%") : "";
+//            e::{"total":64,"loaded":23,"lengthComputable":true,"cancelBubble":false,"returnValue":true,"srcElement":{"status":3},"defaultPrevented":false,"timeStamp":1383273933566,"cancelable":true,
+//                    "bubbles":false,"eventPhase":2,"currentTarget":{"status":3},"target":{"status":3},"type":"progress"}
+        }
+        /********缓存完成*******/
+        applicationCache.oncached = function(){
+            document.getElementById("detailCache").innerHTML =  "100%";
+            document.getElementById("underCache").innerHTML =  "加载完成";
+            setTimeout(function(){
+                document.getElementById("coverCache").style.display = "none";
+            },100);
+            xmesh
+                    .loadMap(System.data ? ((System.data.action == "home") ? 'merchantPortal.xml' : "map.xml") :'merchantPortal.xml')
+                    .attachPageManger(PageManager,false)
+                    .bind('pathChange', _handleOnPathChange)
+                    .bind('pathError', _handleOnPathError)
+                    .bind('actionError', _handleOnActionError)
+                    .bind('validateModelProperty', _handleOnValidateModelProperty)
+                    .bind('exit', _handleOnRequireExit)
+                    .home(true);
+        }
+        /**online模式事件执行顺序
+         *1、更新事件执行：
+         Check-Download-Progress -UpdateReady
+         2、第一次缓存事件执行顺序：
+         Check-Download-Progress-Cached
+         3、不需要缓存的事件执行顺序：
+         Check - NoUpdate
+         */
+    </script>
+</head>
+<body>
+<xtag:PageManager
+        id="pageManager"
+        invokeScript="true"
+        overflow="hidden"
+        flipStyle = "2"
+        onloadPage="onLoadNewPage(event)"
+        onloadError="onLoadError(event)">
+</xtag:PageManager>
+<div class="cover" id="coverCache" style="display: none;" data-box="v">
+    <div class="detail" id="detailCache"></div>
+    <div class="under" id="underCache">加载中</div>
+</div>
+</body>
+</html>

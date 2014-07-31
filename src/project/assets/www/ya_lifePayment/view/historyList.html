@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>缴费历史</title>
+    <script>
+        var page = this;
+        var waterManager = xmesh.model['WaterManager'];
+        var TVManager = xmesh.model['TVManager'];
+        var LifePaymentAccount = xmesh.model['LifePaymentAccount'];
+        var waterTemplate = page.named('waterTemplate');
+        var waterHistoryList = page.named('waterHistoryList');
+        var TVHistoryList = page.named('TVHistoryList');
+        var TVTemplate = page.named('TVTemplate');
+        var userNum = page.named('userNum');
+        var userName = page.named('userName');
+        var iconStatus = page.named('iconStatus');
+
+        page.bind('pageReady',function(){
+            switch (LifePaymentAccount.accountType){
+                case "1": showWaterHistory();break;
+                case "2": iconStatus.attribute('status','1');break;
+                case "3": iconStatus.attribute('status','2');break;
+                case "4": showTVHistory();break;
+            }
+        });
+
+        function showWaterHistory(){
+            waterHistoryList.css("display","-webkit-box");
+            iconStatus.attribute('status','0');
+            userName.html(waterManager.historyList[0].userName);
+            userNum.html(waterManager.historyList[0].userNum);
+            $.each(waterManager.historyList,function(property,item){
+                if(item.resultCode=="00"){
+                    var li = waterTemplate.child('li').clone(true).appendTo(waterHistoryList);
+                    li.named('time').html(item.payMonth.substring(0,4)+'-'+item.payMonth.substring(4,6));
+                    li.named('money').html(item.payAmount+"元");
+                }
+            })
+        }
+        function showTVHistory(){
+            TVHistoryList.css("display","-webkit-box");
+            iconStatus.attribute('status','3');
+            userName.html(TVManager.historyList.userName);
+            userNum.html(TVManager.historyList.userNum);
+            $.each(TVManager.historyList.payRecords,function(property,item){
+                var li = TVTemplate.child('li').clone(true).appendTo(TVHistoryList);
+                var money =Number(item["payAmount"]).toFixed(2);
+                li.named('time').html(item.yearMonthDay.substring(0,4)+'-'+item.yearMonthDay.substring(4,6)+'-'+item.yearMonthDay.substring(6,8));
+                li.named('money').html(money+'元');
+            })
+        }
+    </script>
+</head>
+<body>
+<div id="historyListPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div class="content" id="historyListCenter" data-box="v" data-flex="1">
+        <div data-box="h" class="nameAccount" name="iconStatus">
+            <div class="status"></div>
+            <div data-box="h"><label>户号：</label><div class="detail" name="userNum"></div></div>
+            <div class="name" data-box="h"><label>姓名：</label><div class="detail" name="userName"></div></div>
+        </div>
+        <xtag:ScrollPane data-box="v" data-flex="1">
+            <ul name="waterHistoryList" data-box="v" data-flex="1"></ul>
+            <ul name="TVHistoryList" data-box="v" data-flex="1"></ul>
+        </xtag:ScrollPane>
+        <xtag:Template name="TVTemplate">
+            <li data-box="h">
+                <div class="time" name="time"></div>
+                <div class="money" data-flex="1" name="money"></div>
+            </li>
+        </xtag:Template>
+        <xtag:Template name="waterTemplate">
+            <li data-box="h">
+                <div class="time" name="time"></div>
+                <div class="money" data-flex="1" name="money"></div>
+            </li>
+        </xtag:Template>
+    </div>
+</div>
+</body>
+</html>

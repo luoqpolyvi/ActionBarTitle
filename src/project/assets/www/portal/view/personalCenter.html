@@ -1,0 +1,173 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>个人中心</title>
+    <script>var page = this;
+    this.bind("backbutton",function(event){
+        event.preventDefault();
+        if(page.child("#finish").style.display == "block"){
+            page.child("input").attribute("readonly",true);
+            page.child("#edit").show();
+            page.child("#finish").hide();
+            page.child("#line1").show();
+            page.child("#line2").show();
+            page.child("#user_name").value = xmesh.model["User"].user_name;
+            page.child("#name").value = xmesh.model["User"].name;
+            page.child("#email").value = xmesh.model["User"].email;
+            page.child("#phone_back").value = Validator.formatPhone(xmesh.model["User"].phone_back);
+            page.child("#id_number").html(Validator.formatIdCard(xmesh.model["User"].id_number));
+            Scrollpane.scrollTo(0,0,0);
+            Scrollpane.refresh();
+        }else{
+            if(System.data){
+                if(System.data.action=="personalCenter") xFace.app.close();
+                else xmesh.home();
+            }else{xmesh.home();}
+        }
+    });
+    var isUpdate = false;
+    var userData = {user_name:"",id_number:"",name:"",email:"",phone_back:""};
+//    var setUseTransform = (device.version=="2.3.6") ? false : true;
+    var Scrollpane = this.child("#personalCenter").as("ui.ScrollPane",{bounce:true,vScroll:true,useTransform:true});
+    with(userData){
+        user_name = xmesh.model["User"].user_name;
+        id_number = xmesh.model["User"].id_number;
+        name = xmesh.model["User"].name;
+        email = xmesh.model["User"].email;
+        phone_back = xmesh.model["User"].phone_back;
+    }
+
+    if(System.data){
+        if(System.data.action == "personalCenter"){
+            service.busynessMessage = "正在连接，请稍等...";
+            xmesh.model["User"].getUserInfo(function(data){
+            },showErrorMessage)
+        }
+    }
+    page.child("#phone_back").value = Validator.formatPhone(xmesh.model["User"].phone_back);
+    page.child("#id_number").html(Validator.formatIdCard(xmesh.model["User"].id_number));
+    //    page.child("#id_number").bind("click",function(){
+    //        if(page.child(".finish").style.display == "block"){
+    //            var option = {
+    //                type : "idcard",
+    //                name : "id_number",
+    //                id : "id_number",
+    //                label : "请输入身份证号码",
+    //                value :xmesh.model["User"].id_number,
+    //                onconfirm : submitFn
+    //            }
+    //            var keyPassword = $.Element("div").as("Input",option);
+    //            keyPassword.prompt();
+    //            keyPassword.show();
+    //            function submitFn(){
+    //                xmesh.model["User"].id_number = document.keyboard.value;
+    //                page.child("#id_number").html((xmesh.model["User"].id_number));
+    //            }
+    //        }
+    //    },false);
+
+    function resetData(){
+        if(!isUpdate){
+            with(xmesh.model["User"]){
+                user_name = userData.user_name;
+                id_number = userData.id_number;
+                name = userData.name;
+                email = userData.email;
+                phone_back = userData.phone_back;
+            }
+        }
+    }
+    function loginout(){
+        Dialog.confirm("您确定是否注销？",null,function(){xmesh.model["User"].isLogin = false;xmesh.home(); },"提醒",["取消","确定"]);
+    }
+
+    function getAddresss(){
+        service.busynessMessage = "正在获取收货地址...";
+        xmesh.model["AddressManager"].getAddressList(function(){
+            xmesh.act('addressManager');
+        },showErrorMessage);
+    }
+
+    function getContacts(){
+        service.busynessMessage = "正在获取联系人...";
+        xmesh.model["ContactsManager"].getContactList(function(){
+            xmesh.act('ContactManager');
+        },showErrorMessage);
+    }
+
+    function edit(){
+        page.child("input").attribute("readonly",null);
+        page.child("#phone_back").value = (xmesh.model["User"].phone_back);
+//        page.child("#id_number").html(xmesh.model["User"].id_number);
+        page.child("#id_number").attribute("readonly",null);
+        page.child("#edit").hide();
+        page.child("#finish").show();
+        page.child("#line1").hide();
+        page.child("#line2").hide();
+    }
+
+    function editUserInfo(){
+        page.child("input").attribute("readonly",true);
+        page.child("#edit").show();
+        page.child("#finish").hide();
+        page.child("#line1").show();
+        page.child("#line2").show();
+        var data = {user_name:"",id_number:"",name:"",email:"",phone_back:""};
+        with(data){
+            user_name = page.child("#user_name").value
+            id_number = xmesh.model["User"].id_number;
+            name = page.child("#name").value
+            email = page.child("#email").value
+            phone_back = page.child("#phone_back").value
+        }
+        service.busynessMessage = "正在修改用户信息...";
+        xmesh.model["User"].updateUserInfo(data,function(){
+            Dialog.alert("修改成功");
+            isUpdate = true;
+            page.child("#phone_back").value = Validator.formatPhone(xmesh.model["User"].phone_back);
+            Scrollpane.scrollTo(0,0,0);
+            Scrollpane.refresh();
+        },function(e){
+            showErrorMessage(e)
+            page.child("#user_name").value = xmesh.model["User"].user_name;
+            page.child("#name").value = xmesh.model["User"].name;
+            page.child("#email").value = xmesh.model["User"].email;
+            page.child("#phone_back").value = Validator.formatPhone(xmesh.model["User"].phone_back);
+            isUpdate = false;
+            Scrollpane.scrollTo(0,0,0);
+            Scrollpane.refresh();
+        })
+    }
+    </script>
+</head>
+
+<body>
+   <div id="personalCenterPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+            <button class="edit" onclick='edit();' id="edit"></button>
+           <button onclick="editUserInfo();" class="sure" id="finish" style="display: none;"></button>
+        </header>
+        <div class="content" id="personalCenter" data-box="v" data-flex="1">
+             <ul class="personalInfo">
+                 <li data-box="h"><label>手机号码</label><span class="noModify" x-field="User.phone_format"></span></li>
+                 <li data-box="h"><label>身份证号码</label><span class="noModify" id="id_number"></span></li>
+                 <li data-box="h"><label>姓名</label><input x-field="User.name" maxlength="20" readonly id="name" data-flex="1"/></li>
+                 <li data-box="h"><label>昵称</label><input x-field="User.user_name" maxlength="20" readonly id="user_name" data-flex="1"/></li>
+                 <li data-box="h"><label>邮箱</label><input x-field="User.email" maxlength="20" readonly id="email" data-flex="1"/></li>
+                 <li data-box="h"><label>备用手机号码</label><input maxlength="11" readonly id="phone_back" data-flex="1"/></li>
+             </ul>
+             <ul class="personalInfo" id="line1">
+                 <li class="item arrowLabel" onclick="getAddresss();" data-box="h"><div data-flex="1">收货地址管理</div><span></span></li>
+                 <li class="item arrowLabel" onclick="getContacts();" data-box="h"><div data-flex="1">联系人管理</div><span></span></li>
+             </ul>
+             <ul class="personalInfo" id="line2">
+                 <li class="item arrowLabel" onclick="xmesh.act('modifyPwd')" data-box="h"><div data-flex="1">修改登录密码</div><span></span></li>
+                 <li class="item" onclick="loginout();" data-box="h">注销登录</li>
+             </ul>
+            <div style="height:45px"></div>
+        </div>
+   </div>
+</body>
+</html>

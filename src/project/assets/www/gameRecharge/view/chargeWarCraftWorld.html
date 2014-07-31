@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>填写信息</title>
+    <script>
+        var page = this;
+        var nextBtn = page.named('next');
+        var BattleAccount = page.named("BattleAccount");
+        var GameAccount = page.named("GameAccount");
+        var productList = page.named("W");
+        var catogery="";
+
+        page.bind("pageReady",function(){
+            productList.bind("click",function(){
+                if(this.attribute("checked")) return;
+                removeAttribute(productList,"checked");
+                this.attribute("checked",true);
+                var value = this.attribute("value");
+                this.child('[name=check]').addClass('check');
+                this.child('[name=amount]').addClass('amount');
+                catogery = xmesh.model["GameManager"].setChargeCategory("WarCraftWorld",value);
+            });
+
+            nextBtn.bind("click",function(){
+                var mes = check();
+                if(mes!=true) return Dialog.toast(mes);
+                xmesh.model["GameManager"].setChargeOrder("WarCraftWorld",{catogery:catogery, BattleAccount:BattleAccount.value,GameAccount:GameAccount.value});
+                xmesh.model["OrderManager"].createOrder(xmesh.model["GameManager"].orderData,'gameRecharge',function(data){
+                    xmesh.model["GameManager"].payAmount = data.data.amount;
+                    xmesh.act("gameOrderConfirm");
+                },function(e){showErrorMessage(e);})
+            });
+        })
+
+        function removeAttribute(node,value){
+            $.each(node,function(property,item){
+                item.attribute("checked",null);
+                item.child('[name=check]').removeClass('check');
+                item.child('[name=amount]').removeClass('amount');
+            })
+        };
+
+        function check(){
+            if(!catogery) return "选择充值游戏类型";
+            if(!BattleAccount.value) return "请输入战网账号";
+            if(!Validator.email(BattleAccount.value)) return "战网账号格式不正确";
+            if(!GameAccount.value) return "请输入游戏账号";
+//            if(!Validator.number(GameAccount.value)) return "游戏账号格式不正确";
+            return true;
+        }
+    </script>
+</head>
+
+<body>
+   <div id="chargeWarCraftWorldPage" data-box="v" class="chargePage secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content charge" id="chargeWarCraftWorld" data-flex="1">
+            <ul class="rechargeType">
+                <li data-box="v" name="W" value="world15"><div name="amount"><span class="type">魔兽世界</span><span>15元</span></div><span name="check"></span></li>
+                <li data-box="v" name="W" value="world30"><div name="amount"><span class="type">魔兽世界</span><span>30元</span></div><span name="check"></span></li>
+            </ul>
+            <div class="operate">
+                <input type="email"  placeholder="请输入战网账号"  maxlength="20" name="BattleAccount" class="account"/>
+                <input type="tel"  placeholder="请输入游戏账号" maxlength="20" name="GameAccount" class="account"/>
+                <button class="bigBtn blueBtn" name="next">下一步</button>
+            </div>
+        </div>
+   </div>
+</body>
+</html>

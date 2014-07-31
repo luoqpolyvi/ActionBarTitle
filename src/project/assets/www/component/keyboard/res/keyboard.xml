@@ -1,0 +1,175 @@
+<keyboardLayout id="keyboardPage" data-box="h">
+    <div class="keyboard" data-box="v" type="idcard" style="display:none">
+        <div class="inputView" data-box="v">
+            <div id="tipMessage"></div>
+            <div class="inputBox"><div class="wordView"></div><span class="clearButton"></span></div>
+        </div>
+        <div class="keyboardBox" data-box="h" data-flex="1">
+            <div class="buttons" data-flex="3" data-box="v">
+                <div class="row" data-box="h">
+                    <button class="cell" value="7" data-flex="1">7</button>
+                    <button class="cell" value="8" data-flex="1">8</button>
+                    <button class="cell" value="9" data-flex="1">9</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell" value="4" data-flex="1">4</button>
+                    <button class="cell" value="5" data-flex="1">5</button>
+                    <button class="cell" value="6" data-flex="1">6</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell" value="1" data-flex="1">1</button>
+                    <button class="cell" value="2" data-flex="1">2</button>
+                    <button class="cell" value="3" data-flex="1">3</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell double" value="0" data-flex="2">0</button>
+                    <button class="cell" value="X" data-flex="1">X</button>
+                </div>
+            </div>
+            <div class="function" data-box="v">
+                <button class="cell cancel" value="cancel" data-flex="1">取消</button>
+                <button class="cell del" value="del" data-flex="1"></button>
+                <button class="cell ok" value="ok" data-flex="2">确定</button>
+            </div>
+        </div>
+    </div>
+    <div class="keyboard" data-box="v" type="amount" style="display:none">
+        <div class="inputView" data-box="v">
+            <div id="tipMessage"></div>
+            <div class="inputBox"><div class="wordView"></div><span class="clearButton"></span></div>
+        </div>
+        <div class="keyboardBox" data-box="h" data-flex="1">
+            <div class="buttons" data-flex="3" data-box="v">
+                <div class="row" data-box="h">
+                    <button class="cell" value="7" data-flex="1">7</button>
+                    <button class="cell" value="8" data-flex="1">8</button>
+                    <button class="cell" value="9" data-flex="1">9</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell" value="4" data-flex="1">4</button>
+                    <button class="cell" value="5" data-flex="1">5</button>
+                    <button class="cell" value="6" data-flex="1">6</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell" value="1" data-flex="1">1</button>
+                    <button class="cell" value="2" data-flex="1">2</button>
+                    <button class="cell" value="3" data-flex="1">3</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell double" value="0" data-flex="2">0</button>
+                    <button class="cell" value="." data-flex="1">.</button>
+                </div>
+            </div>
+            <div class="function" data-box="v">
+                <button class="cell cancel" value="cancel" data-flex="1">取消</button>
+                <button class="cell del" value="del" data-flex="1"></button>
+                <button class="cell ok" value="ok" data-flex="2">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="keyboard" data-box="v" type="mobile" style="display:none">
+        <div class="inputView" data-box="v">
+            <div id="tipMessage"></div>
+            <div class="inputBox"><div class="wordView"></div><span class="clearButton"></span></div>
+        </div>
+        <div class="keyboardBox" data-box="h" data-flex="1">
+            <div class="buttons" data-flex="3" data-box="v">
+                <div class="row" data-box="h">
+                    <button class="cell" value="7" data-flex="1">7</button>
+                    <button class="cell" value="8" data-flex="1">8</button>
+                    <button class="cell" value="9" data-flex="1">9</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell" value="4" data-flex="1">4</button>
+                    <button class="cell" value="5" data-flex="1">5</button>
+                    <button class="cell" value="6" data-flex="1">6</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell" value="1" data-flex="1">1</button>
+                    <button class="cell" value="2" data-flex="1">2</button>
+                    <button class="cell" value="3" data-flex="1">3</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell double" value="0" data-flex="2">0</button>
+                    <button class="cell" value="" data-flex="1">&nbsp;</button>
+                </div>
+            </div>
+            <div class="function" data-box="v">
+                <button class="cell cancel" value="cancel" data-flex="1">取消</button>
+                <button class="cell del" value="del" data-flex="1"></button>
+                <button class="cell ok" value="ok" data-flex="2">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="keyboard" data-box="v" type="password" style="display:none">
+        <div class="inputView" data-box="v">
+            <div id="tipMessage"></div>
+            <div class="inputBox"><div class="wordView"></div><span class="clearButton"></span></div>
+        </div>
+        <div class="keyboardBox" data-box="h" data-flex="1">
+            <div class="buttons" data-flex="3" data-box="v">
+                <div class="row" data-box="h">
+                    <button class="cell" value="7" data-flex="1">7</button>
+                    <button class="cell" value="8" data-flex="1">8</button>
+                    <button class="cell" value="9" data-flex="1">9</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell" value="4" data-flex="1">4</button>
+                    <button class="cell" value="5" data-flex="1">5</button>
+                    <button class="cell" value="6" data-flex="1">6</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell" value="1" data-flex="1">1</button>
+                    <button class="cell" value="2" data-flex="1">2</button>
+                    <button class="cell" value="3" data-flex="1">3</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell double" value="0" data-flex="2">0</button>
+                    <button class="cell" value="" data-flex="1">&nbsp;</button>
+                </div>
+            </div>
+            <div class="function" data-box="v">
+                <button class="cell cancel" value="cancel" data-flex="1">取消</button>
+                <button class="cell del" value="del" data-flex="1"></button>
+                <button class="cell ok" value="ok" data-flex="2">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="keyboard" data-box="v" type="account" style="display:none">
+        <div class="inputView" data-box="v">
+            <div id="tipMessage"></div>
+            <div class="inputBox"><div class="wordView"></div><span class="clearButton"></span></div>
+        </div>
+        <div class="keyboardBox" data-box="h" data-flex="1">
+            <div class="buttons" data-flex="3" data-box="v">
+                <div class="row" data-box="h">
+                    <button class="cell" value="7" data-flex="1">7</button>
+                    <button class="cell" value="8" data-flex="1">8</button>
+                    <button class="cell" value="9" data-flex="1">9</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell" value="4" data-flex="1">4</button>
+                    <button class="cell" value="5" data-flex="1">5</button>
+                    <button class="cell" value="6" data-flex="1">6</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell" value="1" data-flex="1">1</button>
+                    <button class="cell" value="2" data-flex="1">2</button>
+                    <button class="cell" value="3" data-flex="1">3</button>
+                </div>
+                <div class="row" data-box="h">
+                    <button class="cell double" value="0" data-flex="2">0</button>
+                    <button class="cell" value="" data-flex="1">&nbsp;</button>
+                </div>
+            </div>
+            <div class="function" data-box="v">
+                <button class="cell cancel" value="cancel" data-flex="1">取消</button>
+                <button class="cell del" value="del" data-flex="1"></button>
+                <button class="cell ok" value="ok" data-flex="2">确定</button>
+            </div>
+        </div>
+    </div>
+</keyboardLayout>

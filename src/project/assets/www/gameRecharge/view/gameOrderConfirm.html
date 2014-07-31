@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>确认订单</title>
+    <script>
+        var page = this;
+        var GameManager = xmesh.model["GameManager"];
+
+        if(GameManager.ext_para1){
+            page.named("GameAccount").css('display','-webkit-box');
+            page.named("BattleAccount").css('display','-webkit-box');
+            page.named("QQAccount").hide();
+        }else{
+            page.named("GameAccount").hide();
+            page.named("BattleAccount").hide();
+            page.named("QQAccount").css('display','-webkit-box');
+        }
+
+        function payOrder(){
+            service.busynessMessage = "网络连接中，请稍候...";
+            xmesh.model['Order'].pay(function(){xmesh.to("/gameCharge");window.getBill();},function(e){showErrorMessage(e); window.getBill();});
+        }
+    </script>
+</head>
+
+<body>
+   <div id="gameOrderConfirmPage" data-box="v" class="orderConfirmPage secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content orderConfirm" id="gameOrderConfirm" data-flex="1">
+            <ul class="order">
+               <li data-box="h"><div class="title">充值面额</div><div data-flex="1" x-field="GameManager.price"></div></li>
+               <li data-box="h"><div class="title">充值游戏</div><div data-flex="1" x-field="GameManager.product"></div></li>
+               <li data-box="h" name="QQAccount"><div class="title">充值账号</div><div data-flex="1" x-field="GameManager.charge_account"></div></li>
+               <li data-box="h" name="BattleAccount"><div class="title">战网账号</div><div data-flex="1" x-field="GameManager.charge_account"></div></li>
+               <li data-box="h" name="GameAccount"><div class="title">游戏账号</div><div data-flex="1" x-field="GameManager.ext_para1"></div></li>
+            </ul>
+        </div>
+        <footer data-box="h"><div data-flex="1">应付金额<span class="price" x-field="GameManager.payAmount"></span></div><button name="pay" onclick="payOrder();">支付</button></footer>
+   </div>
+</body>
+</html>

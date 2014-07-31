@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>添加银行卡</title>
+    <script>
+        var page = this;
+        var province = page.named('province');
+        var city = page.named('city');
+        var cityValue;
+        var value = {
+            page_size:"0",
+            page_index:"1",
+            u_id:xmesh.model["User"].id}
+
+        page.bind("pageReady",function(){
+            for (var i=0; i<City.length; i++){
+                province.options.add(new Option(City[i].text,City[i].id));
+            }
+        });
+
+        function cityName(n)
+        {
+            for (var i=city.options.length; i>0; i--) city.remove(i);
+            if (n == 0) return;
+            for(var j=0;j<City.length;j++){
+                if(City[j].id == n){
+                    for (var i=0; i<City[j].children.length; i++) {
+                        city.options.add(new Option(City[j].children[i].text, City[j].children[i].code));
+                    }
+                }
+            }
+        }
+
+        function selectCity(){
+            cityValue = city.options[city.selectedIndex].value.toString();
+        }
+
+        function register(){
+            service.busynessMessage = "正在提交银行卡信息...";
+            xmesh.model["Card"].registerCard({
+                u_id :xmesh.model["User"].id,
+                bank_card_id:"",
+                phone:xmesh.model["User"].phone,
+                bank_card_no:page.named('cardNum').value,
+                bank_card_name:page.named('bankCardName').value,
+                bank_name:page.named('bankName').value,
+                city_code:cityValue,
+                branch_bank:page.named('branchBank').value
+            },function(){
+                xmesh.model["Card"].search(value,function(data){
+                    var item = data.data.dataList[0];
+                    xmesh.model['User'].bankCardNo = Validator.formatBankCard(item.bankCardNo);
+                    xmesh.model['User'].bankCardImage = item.bankLogoUrl;
+                    xmesh.model['User'].bankCardId = item.bankCardNo;
+                    xmesh.model['User'].bankName = (item.bankName == null)?"银联卡":item.bankName;
+                    xmesh.model['User'].cardFlag = true;
+                    xmesh.to("/lotteryTicket/tixian");
+                },showErrorMessage);
+            },showErrorMessage)
+        }
+
+    </script>
+</head>
+
+<body>
+   <div id="addBankcardPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel">添加银行卡</span>
+        </header>
+        <div class="content" id="addBankcard" data-flex="1">
+            <form name="addBankcard">
+                <input name="cardNum" maxlength="20" type="tel" placeholder="请输入要添加的银行卡号" class="inputBox"/>
+                <input name="bankCardName" maxlength="20" type="text" placeholder="请设置银行卡个性标注" class="inputBox"/>
+                <input name="bankName" maxlength="20" type="text" placeholder="请输入银行名称" class="inputBox"/>
+                <div class="selectBox"><select class="inputBox" name="province" onchange="cityName(this.selectedIndex)"><option>请选择省份</option></select><div class="arrow"></div></div>
+                <div class="selectBox"><select class="inputBox" name=city onchange="selectCity()"><option>请选择城市</option></select><div class="arrow"></div></div>
+                <input name="branchBank" maxlength="15" type="text" placeholder="请输入开户支行" class="inputBox"/>
+                <button class="bigBtn blueBtn" type="button" onclick="register()">确认</button>
+            </form>
+        </div>
+   </div>
+</body>
+</html>

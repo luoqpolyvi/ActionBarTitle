@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>充值</title>
+    <script>
+        var page = this;
+        var pay = page.named('pay');
+        var money = page.named('money');
+        var value = "";
+
+        page.bind("pageReady",function(){
+            money.bind("click",function(){
+                money.removeClass('liFocus');
+                this.addClass('liFocus');
+                if(this.attribute("checked")) return;
+                removeAttribute(money,"checked");
+                value = this.attribute("value");
+                this.attribute("checked",true);
+                this.child('[name=check]').addClass('check');
+                this.child('[name=amount]').addClass('amount');
+            });
+
+            pay.bind("click",function(){
+                if(value==""){
+                    Dialog.alert("请选择充值金额");
+                }
+                else{
+                    xmesh.act("checkOrder",value);
+                }
+            });
+        });
+
+        function removeAttribute(node,value){
+            $.each(node,function(property,item){
+                item.attribute("checked",null);
+                item.child('[name=check]').removeClass('check');
+                item.child('[name=amount]').removeClass('amount');
+            })
+        }
+    </script>
+</head>
+
+<body>
+   <div id="rechargePage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content" id="recharge" data-flex="1">
+            <ul class="amount">
+               <li name="money" value="1000"><div data-flex="1" data-box="h" name="amount">10元</div><span name="check"></span></li>
+               <li name="money" value="2000"><div data-flex="1" data-box="h" name="amount">20元</div><span name="check"></span></li>
+               <li name="money" value="5000"><div data-flex="1" data-box="h" name="amount">50元</div><span name="check"></span></li>
+               <li name="money" value="10000"><div data-flex="1" data-box="h" name="amount">100元</div><span name="check"></span></li>
+            </ul>
+            <div class="clear"></div>
+            <div class="btn"><button class="bigBtn blueBtn"  name="pay">确认充值</button></div>
+        </div>
+   </div>
+</body>
+</html>

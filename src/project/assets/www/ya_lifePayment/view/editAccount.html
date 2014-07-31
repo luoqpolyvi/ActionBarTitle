@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>编辑缴费账号</title>
+    <script>
+        var page = this;
+        var sure = page.named('sure');
+        var waterManager = xmesh.model["WaterManager"];
+        var accountType = page.named('accountType');
+        var remark = page.named('remark');
+        var nf = page.named('nf');
+        var nf1 = page.named('nf1');
+        var day = page.named('day');
+        var dayLi = page.named('dayLi');
+        var deleteAccount = page.named('deleteAccount');
+        var tingShui = page.named('tingShui');
+        var tingTV = page.named('tingTV');
+        var notice_date= param.day;
+        var repayment_notice = false;
+        var noticeDate = "";
+        var nfValue,nf1Value;
+
+        page.bind('pageReady',function(){
+            showNowDate();
+            if(param.nf1 == 0){nf1.addClass('off');nf1Value = "0";}else{nf1.addClass('on');nf1Value = "1";}
+            if(param.nf == 0){nf.addClass('off');nfValue = "0";dayLi.hide();}else{nf.addClass('on');nfValue = "1";dayLi.css("display","-webkit-box");}
+            switch(param.type){
+                case "1": accountType.html('水费');tingShui.css('display','block');break;
+                case "2": accountType.html('电费');break;
+                case "3": accountType.html('煤气费');break;
+                case "4": accountType.html('电视费');tingTV.css('display','block');break;
+            }
+            nf.bind('click',function(){
+                if(this.hasClass('off')){
+                    this.className ="on";
+                    dayLi.css("display","-webkit-box");
+                    nfValue = "1";
+                }else{
+                    this.className ="off";
+                    dayLi.hide();
+                    nfValue = "0";
+                }
+            });
+            nf1.bind('click',function(){
+                if(this.hasClass('off')){
+                    this.className ="on";
+                    nf1Value = "1";
+                }else{
+                    this.className ="off";
+                    nf1Value = "0";
+                }
+            });
+            sure.bind('click',editAccount);
+            day.bind('click',setNoticeDate);
+            deleteAccount.bind('click',deleteAccountAlert);
+        });
+
+        function editAccount(){
+            service.busynessMessage = "正在修改账号...";
+            waterManager.addPaymentAccount({
+                type:param.type,
+                identifyCode:param.identifyCode,
+                day:notice_date,
+                nf:nfValue,
+                nf1:nf1Value,
+                remark:remark.value
+            },function(data){
+                Dialog.toast('修改成功');
+                waterManager.statuses = 1;
+                xmesh.back();
+            },showErrorMessage);
+        }
+
+        function deleteAccountAlert(){
+            Dialog.confirm("是否确认删除账号？",null,deleteAccountPayment,"提醒",["取消","确定"]);
+
+        }
+
+        function deleteAccountPayment(){
+            service.busynessMessage = "正在删除账号...";
+            waterManager.deletePaymentAccount({
+                type:param.type,
+                identifyCode:param.identifyCode
+            },function(data){
+                Dialog.toast('删除账号成功');
+                waterManager.statuses = 1;
+                xmesh.back();
+            },showErrorMessage);
+        }
+
+        function showNowDate(){
+            day.html("每月"+notice_date+"日");
+        }
+        function setNoticeDate(){
+            var noticeDate = new Date();
+            noticeDate.setDate(notice_date);
+            xFace.ui.Calendar.getDate(function(d){
+                if(d.day>28){
+                    Dialog.toast("日期仅可以选择1到28日中的一天");
+                }
+                else{
+                    notice_date = d.day;
+                    day.html("每月"+notice_date+"日");
+                }
+            },function(){
+                Dialog.alert('Calendar error');
+            },noticeDate.getFullYear(),noticeDate.getMonth()+1,noticeDate.getDate());
+        }
+
+    </script>
+</head>
+<body>
+<div id="editAccountPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+        <button class="play" name="sure">确定</button>
+    </header>
+    <div class="content" id="editAccountCenter" data-box="v" data-flex="1">
+        <ul class="accountInfo">
+            <li data-box="h"><label>选择缴费类型</label><div data-flex="1" class="read" name="accountType"></div></li>
+            <li data-box="h"><label>缴费账号</label><div data-flex="1" class="read" x-field="LifePaymentAccount.identifyCode"></div></li>
+            <li data-box="h"><label>账号描述</label><input maxlength="12" placeholder="描述此账号用途的文字信息" data-flex="1" name="remark" x-field="LifePaymentAccount.remark"/></li>
+        </ul>
+        <ul class="accountInfo">
+            <li data-box="h" class="switch"><label>缴费提醒</label><div data-flex="1"></div><button name="nf"></button></li>
+            <li data-box="h" class="arrowLabel" name="dayLi"><label>提醒时间</label><div class="time" data-flex="1" name="day"></div><span></span></li>
+        </ul>
+        <ul class="accountInfo" name="tingShui" style="display: none">
+            <li data-box="h" class="switch"><label>停水通知</label><div data-flex="1"></div><button name="nf1"></button></li>
+        </ul>
+        <ul class="accountInfo" name="tingTV" style="display: none">
+            <li data-box="h" class="switch"><label>停电视通知</label><div data-flex="1"></div><button name="nf1"></button></li>
+        </ul>
+    </div>
+    <div class="btn"><button class="bigBtn redBtn" name="deleteAccount">删除该账号</button></div>
+</div>
+</body>
+</html>

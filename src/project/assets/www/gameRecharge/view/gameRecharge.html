@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>网游直充</title>
+    <script>
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="gameCharge") xFace.app.close();
+                else xmesh.home();
+            }else{xmesh.home();}
+        })
+        this.named('chargeQCoin').bind("click",function(){xmesh.act('chargeQCoin')});
+        this.named('chargeWarCraftWorld').bind("click",function(){xmesh.act('chargeWarCraftWorld')});
+    </script>
+</head>
+
+<body>
+   <div id="gameRechargePage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content" id="gameRecharge" data-flex="1">
+            <div class="gameType" data-box="h" name="chargeQCoin">
+               <img src="gameRecharge/view/res/images/qb.png"/><div data-flex="1" class="gameTitle">Q币</div><div class="arrow"></div>
+            </div>
+            <div class="gameType" data-box="h" name="chargeWarCraftWorld">
+               <img src="gameRecharge/view/res/images/ms.png"/><div data-flex="1" class="gameTitle">魔兽世界</div><div class="arrow"></div>
+            </div>
+            <div class="warmTips">
+                <div class="title">温馨提示</div>
+                <div>1、游戏充值后，约10-15分钟到账，请耐心等候。</div>
+                <div>2、若长时间未到账或其他疑问，请联系客服。客服电话：4000-365-724。</div>
+            </div>  
+        </div>
+   </div>
+</body>
+</html>

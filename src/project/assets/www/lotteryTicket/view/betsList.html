@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>投注列表</title>
+    <script>
+        var param = this.param;
+        var User = xmesh.model["User"];
+        var select_way = "1"; //1= 手选 | 2=机选
+        var cast_num = 0;
+        var cast_amount = 0;
+        var cast_info = [];
+        var model;
+        this.named("container").css("height",window.innerHeight-$("header").offsetHeight-this.named("bets_list").offsetHeight-this.named("lotteryInfo").offsetHeight-100+"px");
+        var page = this.bind("pageReady", function () {
+            var _this = this;
+            var type_3D = "direct";
+            var total_zhu = 0;
+            var multiple =this.named("multiple");
+            var betsList = _this.named("betsList");
+            var betsScroller = this.named("betsScroller");
+
+            switch (param) {
+                case "QLC" : model = xmesh.model["LotteryQLC"];break;
+                case "3D" : model = xmesh.model["Lottery3D"];
+                    var lastCode = model.cast_info[model.cast_info.length - 1];
+                    type_3D = (lastCode.bet_code.indexOf("$1") > -1) ? "direct" : (lastCode.bet_code.indexOf("$2") > -1 ? "z3" : "z6");break;
+                case "SSQ" : model = xmesh.model["LotterySSQ"]; break;
+            }
+            multiple.value = model.multiple;
+            loadCodeArray();
+
+            this.named("termCode").html(model.termCode + "期");
+            this.named("termEndTime").html(model.termEndTime);
+            multiple.bind("keyup",function(){
+                if(!Validator.number(this.value)) this.value="1";
+                if(parseInt(this.value)<1)  this.value="1";
+                var multiple_zhu = total_zhu*parseInt(multiple.value);
+                _this.named("totalZhu").html(multiple_zhu);
+                _this.named("totalAmount").html(multiple_zhu*2);
+                model.multiple = this.value;
+            })
+            multiple.bind("blur",function(){
+                if(!this.value) this.value="1";
+                model.multiple = this.value;
+            })
+            this.named("bet_tab_right").bind("click", function () {
+                var randomCode = model.formatRandomSelect(type_3D);
+                _this.named("bets_list").child("li").attribute("checked", null);
+                this.attribute("checked", true);
+                setTimeout(function(){
+                    loadCodeArray();
+                    if (param == "3D") type_3D = (randomCode.bet_code.indexOf("$1") > 0) ? "direct" : (randomCode.bet_code.indexOf("$2") > 0 ? "z3" : "z6");
+                    betsScroller.refresh();
+                },0);
+            })
+            this.named("bet_tab_left").bind("click", function () {
+                _this.named("bets_list").child("li").attribute("checked", null);
+                this.attribute("checked", true);
+                xmesh.back();
+                xmesh.broadcast.emit("handleSelect",param)            })
+
+            this.named("clear").bind("click", function () {
+                if( model.cast_info.length == 0) return;
+                Dialog.confirm("确认清空 ?",null,function(){
+                    model.cast_info.length = 0;
+                    total_zhu = 0;
+                    betsList.html("");
+                    _this.named("totalZhu").html(total_zhu);
+                    _this.named("totalAmount").html(total_zhu*2);
+                    betsScroller.scrollTo(0,0,0);
+                    betsScroller.refresh();
+                },"系统提示",["取消","确定"])
+            })
+
+            this.named('sure').bind("click", function () {
+                setMultiple();
+                if(model.cast_info.length==0) return Dialog.toast("投注号码为空");
+                if(parseInt(multiple.value)*total_zhu*200>parseInt(User.extractiveBalance)) return Dialog.confirm("账户余额不足，是否进行充值？",null,function(){
+                    xmesh.act("recharge");
+                },"系统提示",["取消","充值"]);
+                service.busynessMessage = "网络连接中，请稍候...";
+                xmesh.model["LotteryInfoManager"].buyLottery({
+                    game:param,
+                    name:User.name,
+                    id_number:User.idNumber,
+                    phone:User.phone,
+                    term_code:model.termCode,
+                    cast_info:cast_info,
+                    action:model.action
+                }, function (rs) {
+                    Dialog.alert("代购成功!", function () {
+                        xmesh.to("/lotteryTicket");
+                        xmesh.model["LotteryInfoManager"].reset("multiple");
+                    });
+                }, showErrorMessage);
+            })
+            function setTemplate(template,item,property) {
+                switch (param){
+                    case "SSQ":
+                        var redCode = item.bet_code.substring(0,item.bet_code.indexOf("|"));
+                        var blueCode = item.bet_code.substring(item.bet_code.indexOf("|")+1,item.bet_code.length);
+                        template.named("redCode").html(redCode);
+                        template.named("blueCode").html(blueCode);
+                        template.named("select_way").html(item.select_way == "1" ? "手选" : "机选");break;
+                    case "QLC":
+                        var code = $.Element('span').addClass("redBall").html(item.bet_code);
+                        template.named("bet_code").html("").append(code);
+                        template.named("select_way").html(item.select_way == "1" ? "手选" : "机选");break;
+                    case "3D":
+                        var bet_code = item.bet_code.substring(0,item.bet_code.indexOf("$"));
+                        var code = $.Element('span').addClass("redBall").html(bet_code);
+                        template.named("bet_code").html("").append(code);
+                        var type  = item.bet_code.substring(item.bet_code.indexOf("$"),item.bet_code.length);
+                        switch (type){
+                            case "$1" :   template.named("select_way").html(item.select_way == "1" ? "手选（直选）" : "机选（直选）");break;
+                            case "$2" :   template.named("select_way").html(item.select_way == "1" ? "手选（组三）" : "机选（组三）");break;
+                            case "$3" :   template.named("select_way").html(item.select_way == "1" ? "手选（组六）" : "机选（组六）");break;
+                        }break;
+                }
+                template.named("sell_way").html(item.sell_way == "1" ? "单式投注" : "复式投注");
+                template.named("cast_zhu").html(item.cast_zhu + "注" + Validator.convertFenToYuan(item.cast_amount));
+                template.named("clearBtn").index = property;
+                template.named("clearBtn").bind("click",function(){
+                    var target= this;
+                    Dialog.confirm("确定删除 ?",null,function(){
+                        model.cast_info.splice(target.index,1);
+                        loadCodeArray();
+                        betsScroller.refresh();
+                    },"系统提示",["取消","确定"])
+                })
+                total_zhu +=item.cast_zhu;
+                betsList.append(template);
+            }
+
+            function loadCodeArray(){
+                betsList.html("");
+                total_zhu = 0;
+                $.each(model.cast_info, function (property, item) {
+                    var template = _this.named("template").child("ul").clone(true);
+                    setTemplate(template,item,property);
+                });
+                var multiple_zhu = total_zhu*parseInt(multiple.value);
+                _this.named("totalZhu").html(multiple_zhu);
+                _this.named("totalAmount").html(multiple_zhu*2);
+            }
+
+            function setMultiple(){
+                cast_info.length = 0;
+                $.each(model.cast_info,function(proeprty,item){
+                    var perCast ={
+                        select_way:"",//选择方式  1= 手选 | 2=机选
+                        sell_way:"",//投注方式 1=单式|2=复式//只有组三是全复式
+                        bet_code:"",//投注号码
+                        cast_num:"",//倍数
+                        cast_amount:""//投注金额 投注号码投注总金额，单位分
+                    }
+                    item.cast_num = parseInt(multiple.value);
+                    $.copyObject(perCast,item);
+                    if(param == "3D") perCast.bet_code = model.unitCode(item.bet_code);//3D单个数传递  不补0
+                    cast_info.push(perCast);
+                })
+            }
+        })
+
+
+    </script>
+</head>
+
+<body>
+<div id="betListPage" class="secondPage">
+    <header>
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">投注列表</span>
+    </header>
+    <div class="content" id="betList">
+        <div class="tabs" data-box="h">
+            <ul name="bets_list" data-box="h">
+                <li class="tab_left"  name="bet_tab_left">再手选一注</li>
+                <li class="tab_right" name="bet_tab_right">再机选一注</li>
+            </ul>
+        </div>
+        <div class="clear"></div>
+        <div class="time" name="lotteryInfo"><span class="periods" name="termCode"></span>截止日期到<span class="deadline" name="termEndTime"></span></div>
+        <div name="container">
+            <xtag:ScrollPane name="betsScroller" useTransform = false>
+                <div name="betsList">
+                </div>
+                <div class="bottomInfo">
+                    <div><span>倍数：<input maxlength="2" type="tel" class="inputBoxSmall" name="multiple" value="1"/>倍&nbsp;&nbsp;&nbsp;</span>
+                        <span class="total">共<span name="totalZhu">0</span>注<span name="totalAmount">0</span>元</span></div>
+                    <div class="clear"></div>
+                    <div class="balanceYuan">账户余额：<span x-field="User.extractiveBalanceYuan">4321413242</span></div>
+                </div>
+                <div class="clear"></div>
+                <div class="btns" data-box="h"><button class="blueBtn" name="clear" data-flex="1">清空</button><button class="redBtn" name="sure" data-flex="1">确认</button></div>
+            </xtag:ScrollPane>
+        </div>
+    </div>
+</div>
+<xtag:template name="template">
+    <ul class="betsList">
+        <li checked name="bet_code"><span class="redBall" name="redCode">01,07,13,15,20,33</span>|<span class="blueBall" name="blueCode">14</span></li>
+        <button class="clearButton" name="clearBtn"></button>
+        <li><span class="type" name="sell_way">单式投注</span><span name="select_way">手选</span><span class="total" name="cast_zhu">1注2元</span></li>
+    </ul>
+</xtag:template>
+</body>
+</html>

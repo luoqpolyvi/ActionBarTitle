@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>我的储蓄卡</title>
+    <script>
+
+        var cardList = this.named('cardList'),page = this;
+        var dataTotal;
+        var noList = this.named("noList"),bankManager = this.child('#mySavingCards'), template = this.named('template'),tryAgain = this.named('tryAgain'),tryAgainBtn = this.named('tryAgainBtn');
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="balanceInquiry"){
+                    if(page.child("#rightBtn").attribute("class") != "delete"){
+                        page.child("#rightBtn").setAttribute("class","delete");
+                        page.named("deleteCard").hide();
+                    }else{xFace.app.close();}
+                }
+                else {
+                    if(page.child("#rightBtn").attribute("class") != "delete"){
+                        page.child("#rightBtn").setAttribute("class","delete");
+                        page.named("deleteCard").hide();
+                    }else{xmesh.home();}
+                }
+            }else{xmesh.home();}
+        })
+
+        tryAgainBtn.bind('click',tryAgainFunction);
+        function tryAgainFunction(){
+            service.busynessMessage = "正在获取我的储蓄卡...";
+            getBanks();
+        }
+
+        var secondLevelScrollPane = this.named('secondLevelScrollPane').as("ui.ScrollPane", {bounce:true, vScroll:true, useTransform:true});
+        noList.hide();secondLevelScrollPane.hide();tryAgain.css('display','none');
+        function getBanks(){
+            service.busynessMessage = "正在获取我的储蓄卡...";
+            xmesh.model["BankManager"].getBanks(100,1,function(res){
+                dataTotal = res.data.dataTotal;
+                tryAgain.css('display','none');
+                createBankList(xmesh.model["BankManager"].banks);
+            },function(e){
+                noList.hide();
+                bankManager.hide();
+                tryAgain.css('display','-webkit-box');
+                showErrorMessage(e);
+            });
+        }
+        setTimeout(getBanks,500);
+
+        xmesh.broadcast.listen("addBankCard",function(){
+            noList.hide();
+            cardList.html('');
+            bankManager.css('display','block');
+            getBanks();
+        });
+        function addCard(event){
+            page.child("#rightBtn").setAttribute("class","delete");
+            page.named("deleteCard").hide();
+            xmesh.act("addCard");
+        }
+
+        function creatListItem(rs){
+            var tep = template.child(".bankTemplate").clone(true);
+            tep.child("[name=banksrc]").setAttribute("src",rs.bankLogoUrl);
+            tep.child("[name=cardType]").html(rs.cardType);
+            tep.child("[name=bankName]").html(rs.bankName);
+            tep.child("[name=cardNum]").html(Validator.formatBankCard(rs.bankCardNo));
+            tep.child("[name=deleteCard]").bind("click",function(event){
+                event.preventDefault(); event.stopPropagation();
+                Dialog.confirm("确认要删除吗？",null,function(){
+                    service.busynessMessage = "正在删除我的储蓄卡...";
+                    xmesh.model["BankManager"].delBank({bankCardid:rs.bankCardid},function(){
+                        tep.hide();
+                        dataTotal = dataTotal-1;
+                        if(dataTotal == 0){
+                            noList.css('display','-webkit-box');
+                            noList.html('<div class="image"></div>');
+                            bankManager.hide();
+                        }
+                    },function(e){
+                        showErrorMessage(e);
+                    });
+                },"提醒",["取消","确定"]);
+            });
+            tep.bind("click",function(event){
+                event.preventDefault();event.stopPropagation();
+                xmesh.model['Bank'].bankCardNo = rs.bankCardNo;
+                /************余额查询************/
+                xmesh.model['Bank'].balanceEnquire(function(){},function(){});
+            });
+            cardList.insertBefore(tep,cardList.firstChild);
+        }
+
+        function createBankList(data) {
+            cardList.html("");
+            if (data.length == 0) {
+                noList.css('display','-webkit-box');
+                noList.html('<div class="image"></div>');
+                bankManager.hide();
+            } else {
+                noList.hide();
+                bankManager.css('display','block');
+            }
+            $.each(data, function (i, item) {
+                creatListItem(item);
+            })
+            setTimeout(function () {
+                secondLevelScrollPane.scrollTo(0, 0, 0);
+                secondLevelScrollPane.refresh();
+            }, 100);
+        }
+
+        function editBanks(){
+            if(page.child("#rightBtn").attribute("class") == "delete"){
+                if(dataTotal == 0){
+                    Dialog.toast("暂无可删除的银行卡");
+                }else {
+                    page.child("#rightBtn").setAttribute("class", "sure");
+                    page.named("deleteCard").show();
+                }
+            }else{
+                page.child("#rightBtn").setAttribute("class","delete");
+                page.named("deleteCard").hide();
+            }
+            secondLevelScrollPane.scrollTo(0, 0, 0);
+            secondLevelScrollPane.refresh();
+
+        }
+    </script>
+</head>
+
+<body>
+<div id="mySavingCardsPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">我的储蓄卡</span>
+        <button class="delete" id="rightBtn" onclick="editBanks();"></button>
+        <!--<button class="sure"></button>-->
+    </header>
+    <div name="noList" class="noItem" data-box="v" data-flex="1"></div>
+    <div name="tryAgain" class="noItem" data-box="v" data-flex="1" style="display: none">
+        <div>获取数据失败</div>
+        <button class="reload" name="tryAgainBtn">点击重新加载</button>
+    </div>
+    <div class="content" id="mySavingCards" data-flex="1" name="secondLevelScrollPane" style="display: none">
+        <ul class="cardList" name="cardList">
+        </ul>
+        <div style="height:94px"></div>
+    </div>
+    <div class="btn" onclick="addCard()"><button class="bigBtn blueBtn">添加储蓄卡</button></div>
+</div>
+<xtag:Template name="template">
+    <li  class="bankTemplate">
+        <div class="bank" data-box="h"><img src="" name="banksrc"/><div data-flex="1" class="bankName" name="bankName">建设银行</div><div class="deleteCard" name="deleteCard" style="display: none"></div></div>
+        <div class="cardNum" name="cardNum">6227 **** **** 075</div>
+        <div class="cardType"><span class="cardIcon"></span><span name="cardType">储蓄卡</span></div>
+    </li>
+</xtag:Template>
+</body>
+</html>

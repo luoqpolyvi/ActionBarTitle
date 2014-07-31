@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Default style -->
+    <style name="SC.Theme.AppCompat.Light"
+           parent="@style/Theme.AppCompat.Light">
+        <item name="android:actionBarStyle">@style/SC.ActionBar.Blue</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
+        <item name="android:homeAsUpIndicator">@drawable/action_bar_back</item>
+
+        <!-- Support library compatibility-->
+        <item name="actionBarStyle">@style/SC.ActionBar.Blue</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="homeAsUpIndicator">@drawable/action_bar_back</item>
+    </style>
+
+</resources>

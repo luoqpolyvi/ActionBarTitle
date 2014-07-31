@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>确认订单</title>
+    <script>
+        var page = this;
+        var BusTicketManager = xmesh.model["BusTicketManager"];
+        var BusPassengers = xmesh.model["BusPassengers"];
+        var BusTicket = xmesh.model["BusTicket"];
+        var passengerListDetail = page.named("passengerListDetail");
+        var orderDetailScroller = page.named("orderDetailScroller");
+        var ticketType = {"0":"全票", "1":"半票"};
+        var credentialType = {"0":"身份证", "1":"护照", "2":"军官证", "3":"儿童"};
+        var passengersInfo = "";
+        this.child('#busOrderConfirm').css("height",window.innerHeight- $("header").offsetHeight-65+"px");
+        var folder = page.named("folder").bind("click", function () {
+            var childNodes = passengerListDetail.child(".person");
+            if (this.attribute("fold")) {
+                this.attribute("fold", null);
+                page.named("contact").css("display", "-webkit-box");
+                $.each(childNodes, function (property, item) {item.css("display", "block");})
+                orderDetailScroller.refresh();
+            } else {
+                this.attribute("fold", "fold");
+                page.named("contact").hide();
+                $.each(childNodes, function (property, item) {
+                    if (property < 2)item.css("display", "block");
+                    else item.hide();
+                })
+            }
+            setTimeout(function () {
+                orderDetailScroller.refresh();
+            }, 0);
+        })
+
+        page.bind("show", function () {
+            passengerListDetail.html("");
+            var totalAmount = 0;
+            var passengers = BusPassengers.BusPassengerChoose;
+            $.each(passengers, function (property, item) {
+                var temp = page.named("template").child(".person").clone(true);
+                if (property > 1) temp.hide();
+                temp.named("name").html(item.name);
+                temp.named("ticketType").html(ticketType[item.type]);
+                temp.named("credentialType").html(credentialType[item.credentialType]);
+                var credentialNum = item.credentialNum ? item.credentialNum : "";
+                temp.named("credentialNum").html(credentialNum);
+                temp.appendTo(passengerListDetail);
+                var perInfo = credentialNum + "|" + item.name + "|" + "|" + item.type + "|" + item.credentialType;
+                if (property == 0) {
+                    passengersInfo = perInfo;
+                } else {
+                    passengersInfo = passengersInfo + "$" + perInfo;
+                }
+                totalAmount = (item.type == "0") ? (parseInt(BusTicket.fullPrice) + totalAmount) : (parseInt(BusTicket.halfPrice) + totalAmount);
+            })
+            if (passengers.length <= 2) {
+                page.named('contact').css("display", "-webkit-box");
+                folder.hide();
+            } else {
+                page.named('contact').hide();
+                folder.css("display", "-webkit-box");
+            }
+            totalAmount += parseInt(BusTicket.servicePrice) * passengers.length;
+            page.named("orderAmount").html(Validator.convertFenToYuan(totalAmount));
+            page.named("payAmount").html(Validator.convertFenToYuan(totalAmount));
+            setTimeout(function () {
+                orderDetailScroller.refresh();
+            }, 0);
+        })
+
+
+        function payOrder() {
+            var order = {
+                userId:xmesh.model["User"].id, //"eaa2a86f-3e06-4614-a2a1-2b946934d502",//xmesh.model["User"].id,//"05b656c8-b157-462b-96ea-9aa98ebf6b21",//暂时写死  todo
+                signId:BusTicket.signId,
+                originStationId:BusTicket.originStationId,
+                driveTime:BusTicket.driveTime,
+                targetStation:BusTicket.targetStation,
+                passengerInfo:passengersInfo,
+                contactInfo:BusTicketManager.contactName + "|" + BusTicketManager.contactPhone,
+                insuranceId:"",
+                originCity:xmesh.model['BusCityManager'].originCity,
+                area:"0"
+            }
+            service.busynessMessage = "网络连接中，请稍候...";
+            xmesh.model["OrderManager"].createBusTicketOrder(order, function (data) {
+                this.pay(function () {
+                    BusPassengers.BusPassengerChoose.length=0;
+                    BusPassengers.chooseFlag.length = 0;
+                    BusTicketManager.reset();
+                    BusTicket.reset();
+                    xmesh.to("/busTicket");
+                    window.getBill();
+                }, function (e) {
+                    showErrorMessage(e);
+                    window.getBill();
+                });
+            }, function (e) {showErrorMessage(e);})
+        }
+
+    </script>
+</head>
+
+<body>
+<div id="busOrderConfirmPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">确认订单</span>
+    </header>
+    <div class="content" id="busOrderConfirm" data-flex="1">
+        <xtag:ScrollPane name="orderDetailScroller">
+            <ul class="order">
+                <li data-box="h">
+                    <div class="title">订单总额</div>
+                    <div name="orderAmount">123:00元</div>
+                 </li>
+                <li data-box="h">
+                    <div class="title">起止站点</div>
+                    <div>
+                       <span x-field="BusTicket.originStation">成都市城东客运站</span>－<span x-field="BusTicket.targetStation">眉山</span>
+                    </div>
+                </li>
+                <li data-box="h">
+                    <div class="title">出发时间</div>
+                    <div>
+                       <span x-field="BusTicket.date">2014-01-02</span><span class="hour" x-field="BusTicket.time">08:00</span>
+                    </div>
+                </li>
+                <li data-box="h" name="passengerContainer">
+                    <div class="title">乘车人</div>
+                    <div class="detail" name="passengerListDetail" data-flex="1">
+                    </div>
+                </li>
+                <li data-box="h" name="contact">
+                    <div class="title">联系人</div>
+                    <div><span class="contactName" x-field="BusTicketManager.contactName">王麻子</span><span x-field="BusTicketManager.contactPhone">18563298652</span></div>
+                </li>
+            </ul>
+            <div class="clear"></div>
+            <div class="folder" name="folder" fold="fold" data-box="h"><div class="image"></div></div>
+        </xtag:ScrollPane>
+    </div>
+    <footer data-box="h"><div data-flex="1">应付金额<span class="price" name="payAmount">200.00元</span></div><button onclick="payOrder()">支付</button></footer>
+</div>
+<xtag:template name="template">
+    <div class="person">
+        <div><span name="name">王麻子</span><span name="ticketType">全票</span></div>
+        <div><span name="credentialType">身份证</span><span name="credentialNum">3412354352435243</span></div>
+    </div>
+</xtag:template>
+</body>
+</html>

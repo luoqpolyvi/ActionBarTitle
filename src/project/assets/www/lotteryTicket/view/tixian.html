@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>提现</title>
+    <script>
+        var page = this;
+        var balance = page.named('balance');
+        var bankCard = page.named('bankCard');
+        var chooseCard = page.named('chooseCard');
+        var tixianContent = page.named('tixianContent');
+        var apply = page.named('apply');
+        var bankCardImage = page.named('bankCardImage');
+        var bankCardNumber = page.named('bankCardNumber');
+        var bankCardName = page.named('bankCardName');
+        var extractiveBalance = xmesh.model["User"].extractiveBalance;
+
+        page.bind('pageReady',function(){
+            apply.bind("click",function(){
+                var mes = check();
+                if(mes!=true) return Dialog.toast(mes);
+                service.busynessMessage = "正在提交申请...";
+                xmesh.model["Card"].withdrawCash({
+                    phone:xmesh.model["User"].phone,
+                    bank_card_id:xmesh.model['User'].bankCardId,
+                    id_number:xmesh.model["User"].idNumber,
+                    money:(balance.value*100).toString()
+                },function(data){
+                    Dialog.alert("提交申请成功",function(){
+                        xmesh.model["User"].search({phone:xmesh.model["User"].phone},null,null);
+                        xmesh.model['User'].cardFlag = false;
+                        xmesh.to("/lotteryTicket");});
+                },showErrorMessage);
+            });
+        })
+
+        page.bind("show",function(){
+            if(xmesh.model['User'].cardFlag == false){
+                bankCard.hide();
+                chooseCard.css("display","block");
+            }
+            else {
+                chooseCard.hide();
+                bankCardName.html(xmesh.model["User"].bankName);
+                bankCardNumber.html(xmesh.model["User"].bankCardNo);
+                bankCardImage.src=xmesh.model["User"].bankCardImage;
+                bankCard.css("display","-webkit-box");
+            }
+            xmesh.model["Card"].withdrawCashList({
+                phone:xmesh.model["User"].phone,
+                state:"0",
+                page_size:"50",
+                page_index:"0"
+            },function(data){
+                var length = data.data.length;
+                for(i=0;i<length;i++){
+                    if(data.data[i].state == 0){
+                        i= length;
+                        tixianContent.hide();
+                        Dialog.alert("你还有正在处理的提款申请，请在上次申请处理结束后再进行提款。",function(){
+                            xmesh.model['User'].cardFlag = false;
+                            xmesh.to("/lotteryTicket");});
+                    }
+                }
+
+            },showErrorMessage);
+
+            bankCard.bind("click",function(){
+                xmesh.act('myCard');
+            });
+
+        });
+
+        function check(){
+            if(!balance.value) return "请输入提现金额";
+            if(xmesh.model['User'].bankCardId == "") return"请选择银行卡";
+            if(parseInt(balance.value*100) > parseInt(extractiveBalance) ) return "您填写的金额已超出可提现金额，请重新填写！";
+            if(parseInt(balance.value*100) < 1000 ) return "请填写大于10的金额";
+            return true;
+        }
+
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            xmesh.model['User'].cardFlag = false;
+            xmesh.to("/lotteryTicket");
+        })
+
+    </script>
+</head>
+
+<body>
+   <div id="tixianPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content" id="tixian" data-flex="1" name="tixianContent">
+            <xtag:ScrollPane>
+            <ul class="detail">
+               <li data-box="h"><div class="title">真实姓名</div><div data-flex="1" x-field="User.nameFormat"></div></li>
+               <li data-box="h"><div class="title">身份证号</div><div data-flex="1" x-field="User.idNumberFormat"></div></li>
+               <li data-box="h"><div class="title">账户余额</div><div data-flex="1" x-field="User.balanceYuan"></div></li>
+               <li data-box="h"><div class="title">可提现金额</div><div data-flex="1" x-field="User.extractiveBalanceYuan"></div></li>
+            </ul>
+            <input name="balance" type="tel" class="inputBox" placeholder="请输入提现金额"/>
+            <div class="tip">金额需大于10元</div>
+            <button name="chooseCard" class="bigBtn blueBtn" onclick="xmesh.act('myCard')" >选择银行卡</button>
+            <div class="selectedBank" data-box="h"  name="bankCard" style="display: none">
+                <img name="bankCardImage"/>
+                <div data-box="v">
+                   <div name="bankCardName"></div>
+                   <div name="bankCardNumber"></div>
+                </div>
+            </div>
+            <button  name="apply" class="bigBtn blueBtn">提交申请</button>
+            </xtag:ScrollPane>
+        </div>
+   </div>
+</body>
+</html>

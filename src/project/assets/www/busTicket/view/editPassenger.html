@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>乘车人信息</title>
+    <script>
+        var editBtn = this.child("#checkButton");
+        var passengerName = this.child("#passengerNameForEdit");
+        var credentialType = this.child("#credentialTypeForEdit");
+        var credentialNum = this.child("#credentialNumForEdit");
+        var ticketType = this.child("#ticketTypeForEdit");
+        var passengerPhoneForEdit = this.child("#passengerPhoneForEdit");
+        var BusPassengersManager = xmesh.model["BusPassengersManager"];
+        var BusPassengers = xmesh.model["BusPassengers"];
+
+        var oldName = BusPassengersManager.passengerList[param].name;
+        var oldCredentialType = BusPassengersManager.passengerList[param].credentialType;
+        var oldCredentialNum =(BusPassengersManager.passengerList[param].credentialNum == undefined)?"":BusPassengersManager.passengerList[param].credentialNum;
+        var oldType = BusPassengersManager.passengerList[param].type;
+
+        this.child("#credentialNumForEditDiv").bind((device.version=="2.3.6")?"touchstart":"click",showCardComponent,false);
+
+        var page = this.bind("pageReady",function(){
+            BusPassengersManager.isFirst = false;
+            BusPassengersManager.addFlag = false;
+            BusPassengers.name = BusPassengersManager.passengerList[param].name;
+            BusPassengers.credentialType = BusPassengersManager.passengerList[param].credentialType;
+            if(BusPassengersManager.passengerList[param].credentialNum == undefined) BusPassengers.credentialNum="";
+            else BusPassengers.credentialNum = BusPassengersManager.passengerList[param].credentialNum;
+            BusPassengers.type = BusPassengersManager.passengerList[param].type;
+
+            if(BusPassengers.credentialType){
+                credentialNum.attribute("disabled",(BusPassengers.credentialType == 0 ? true : null));
+            }else{credentialNum.attribute("disabled",true);}
+        });
+
+        editBtn.bind("click",function(){
+            if(passengerName.value !=oldName ||credentialType.value !=oldCredentialType ||credentialNum.value !=oldCredentialNum ||ticketType.value !=oldType){
+                service.busynessMessage = "正在更新乘车人信息...";
+                xmesh.model["BusPassengersManager"].updatePassenger({
+                    name:passengerName.value,
+                    credentialType:credentialType.value,
+                    credentialNum:credentialNum.value,
+                    type:ticketType.value,
+                    mobile:passengerPhoneForEdit.value
+                },function(){
+                    BusPassengersManager.editFlag = true;
+                    xmesh.back();
+                },showErrorMessage);
+            }
+            else{
+                xmesh.back();
+            }
+
+        })
+
+        function showCardComponent(){
+            var cardType = credentialType.value;
+            if(cardType == 0){
+                var option = {
+                    type : "idcard",
+                    name : "id_number",
+                    id : "id_number",
+                    label : "请输入身份证号码",
+                    value :credentialNum.value,
+                    onconfirm : submitFn
+                }
+                var keyPassword = $.Element("div").as("Input",option);
+                keyPassword.prompt();
+                keyPassword.show();
+                function submitFn(){
+                    credentialNum.value = document.keyboard.value;
+                    credentialNum.attribute("disabled",true);
+                }
+            }else{
+                credentialNum.attribute("disabled",null);
+            }
+        }
+
+        function onchangeHanner(evt){
+            if (evt == 3){
+                ticketType.value = 1;
+                BusPassengers.type = 1;
+            }
+            else{
+                ticketType.value = 0;
+                BusPassengers.type = 0;
+            }
+            credentialNum.attribute("disabled",(evt == 0 ? true : null));
+        }
+        this.bind("backbutton",function(event){
+            if(document.keyboard.visible) {
+                event.preventDefault();
+                document.keyboard.hide();
+            }
+        })
+    </script>
+</head>
+
+<body>
+   <div id="editPassengerPage" data-box="v" class="passengerPage secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+       <xtag:ScrollPane>
+           <div class="content passenger" id="editPassenger" data-flex="1">
+               <form name="addPassenger">
+                   <div data-box="h" class="textBox"><div class="title">姓名</div><input type="text" id="passengerNameForEdit" x-field="BusPassengers.name" maxlength="20" data-flex="1"/></div>
+                   <div data-box="h" class="textBox"><div class="title">证件类型</div>
+                       <select id="credentialTypeForEdit" x-field="BusPassengers.credentialType" data-flex="1" onchange="onchangeHanner(this.value)">
+                           <option value="0">身份证</option>
+                           <option value="1">护照</option>
+                           <option value="2">军官证</option>
+                           <option value="3">儿童</option>
+                       </select>
+                       <div class="arrow"></div>
+                   </div>
+                   <div data-box="h" class="textBox" id="credentialNumForEditDiv"><div class="title">证件号码</div><input id="credentialNumForEdit" type="text" x-field="BusPassengers.credentialNum" maxlength="20" data-flex="1"/></div>
+                   <div data-box="h" class="textBox"><div class="title">购票类型</div>
+                       <select id="ticketTypeForEdit" x-field="BusPassengers.type" data-flex="1">
+                           <option value="0">全票</option>
+                           <option value="1">半票</option>
+                       </select>
+                       <div class="arrow"></div>
+                   </div>
+                   <div data-box="h" class="textBox"><div class="title">手机</div><input type="tel" id="passengerPhoneForEdit" placeholder="请输入手机号码" maxlength="11" data-flex="1"/></div>
+               </form>
+               <div class="warmTips">
+                   <div class="title">温馨提示</div>
+                   <div>1、成人及身高超过1.5米的儿童需购买全价票，共给座位。</div>
+                   <div>2、身高1.2米至1.5米的儿童购买半价儿童票，供给座位。</div>
+                   <div>3、请仔细核对姓名、证件类型以及证件号码，以免给您取票或乘车带来影响。</div>
+               </div>
+               <button class="bigBtn blueBtn" id="checkButton">确定</button>
+           </div>
+       </xtag:ScrollPane>
+
+   </div>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>订单详情</title>
+    <script>
+        var payTime = this.named('payTime');
+        var payType = this.named('payType');
+        var scrollPane = this.named('scrollPane');
+        var page = this;
+        var pay = this.child('#pay');
+        var page = this.bind('pageReady', function(){
+            xmesh.model['Bill'].billId = (this.param.billId == "" ? "--" : this.param.billId);
+            xmesh.model['Bill'].transName = (this.param.transName == "" ? "--" : this.param.transName);
+            xmesh.model['Bill'].createTime = (this.param.createTime == "" ? "--" : this.param.createTime);
+            xmesh.model['Bill'].payTime = (this.param.payTime == "" ? "--" : this.param.payTime);
+            xmesh.model['Bill'].amount = (this.param.amount == "" ? "--" : Validator.convertFenToYuan(this.param.amount));
+            xmesh.model['Bill'].payType = (this.param.payType == "" ? "--" : this.param.payType);
+            xmesh.model['Bill'].description = (this.param.description == "" ? "--" : this.param.description);
+
+            if(this.param.status =="paid") {
+                page.named('status').attribute('status','1');
+                pay.hide();
+            }
+            if(this.param.status =="generated") {
+                payTime.hide();
+                payType.hide();
+                page.named('status').attribute('status','0');
+            }
+        });
+
+        function payOrder(){
+            xmesh.model["Order"].orderID = xmesh.model["Bill"].transId;
+            xmesh.model["Order"].billPay(page.param.billId,function(){
+                window.getBill();
+                setTimeout(xmesh.home(),1500);
+            },function(e){showErrorMessage(e);});
+        }
+
+        page.bind("show",function(){
+            setTimeout(function(){
+                scrollPane.scrollTo(0,0,0);
+                scrollPane.refresh();},100);
+        })
+    </script>
+</head>
+
+<body>
+<div id="orderDetailPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <xtag:ScrollPane
+            name="scrollPane">
+        <div class="content" id="orderDetail" data-box="v" data-flex="1">
+        <ul name="status" data-flex="1">
+            <li data-box="h"><div class="title">交易编号</div><div x-field="Bill.billId" data-flex="1" class="detail"></div></li>
+            <li data-box="h"><div class="title">业务名称</div><div x-field="Bill.transName" data-flex="1" class="detail"></div></li>
+            <li data-box="h"><div class="title">下单时间</div><div x-field="Bill.createTime" data-flex="1" class="detail"></div></li>
+            <li data-box="h" name="payTime"><div class="title">支付时间</div><div x-field="Bill.payTime" data-flex="1" class="detail"></div></li>
+            <li data-box="h"><div class="title">交易金额</div><div x-field="Bill.amount" data-flex="1" class="detail amount"></div></li>
+            <li data-box="h" name="payType"><div class="title">支付银行卡</div><div x-field="Bill.payType" data-flex="1" class="detail"></div></li>
+            <li data-box="h"><div class="title">交易状态</div><div data-flex="1"  class="detail"><span class="status"></span></div></li>
+            <li data-box="h"><div class="title">备注</div><div x-field="Bill.description" data-flex="1" data-box="v" class="detail"></div></li>
+        </ul>
+            <div style="height:45px"></div>
+        </div>
+    </xtag:ScrollPane>
+    <button id="pay" class="bigBtn" onclick="payOrder();" style="position: absolute;bottom: 0;">立即支付</button>
+</div>
+</body>
+</html>

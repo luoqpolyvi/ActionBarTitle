@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>个人资料</title>
+    <script>
+        var page = this;
+        var frozenBalance = page.named('frozenBalance');
+
+        page.bind("pageReady",function(){
+            xmesh.model["User"].search({phone:xmesh.model["User"].phone},function(data){},showErrorMessage);
+            frozenBalance.bind("click",function(){
+                Dialog.alert("当您进行购彩或提现后，我们不会直接从您账户扣除此部分的金额，而是先冻结，直到成功打印彩票或成功提现后才扣除。如果出票失败或提现失败，冻结的资金将返还到您账户上。");
+            })
+        });
+
+        function makePhoneCallTips(){
+            Dialog.confirm("是否拨打客服电话：0755-86293556？",null,makePhoneCall,"提醒","取消,确定");
+        }
+
+        function makePhoneCall() {
+            xFace.Telephony.initiateVoiceCall("075586293556",null,function(){
+                Dialog.alert("拨打电话失败")
+            });
+        }
+
+
+    </script>
+</head>
+
+<body>
+   <div id="userInfoPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content" id="userInfo" data-flex="1">
+            <ul class="detail">
+               <li data-box="h"><div class="title">真实姓名</div><div data-flex="1" x-field="User.nameFormat"></div></li>
+               <li data-box="h"><div class="title">身份证号</div><div data-flex="1" x-field="User.idNumberFormat"></div></li>
+               <li data-box="h"><div class="title">联系电话</div><div data-flex="1" x-field="User.phoneFormat"></div></li>
+            </ul>
+            <ul class="detail">
+               <li data-box="h"><div class="title">账户余额</div><div data-flex="1" x-field="User.balanceYuan"></div></li>
+               <li data-box="h" name="frozenBalance"><div class="title">冻结金额</div><div data-flex="1" x-field="User.frozenBalanceYuan"></div><div class="quesiton">?</div></li>
+            </ul>
+            <div class="customerService" data-box="v">
+                <img src="lotteryTicket/view/res/images/chat.png"/>
+                <div class="tipText">如有问题，请联系客服。</div>
+                <div class="hotLine" onclick="makePhoneCallTips()">0755-86293556</div>
+            </div>
+        </div>
+   </div>
+</body>
+</html>

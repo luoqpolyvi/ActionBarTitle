@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title></title>
+    <script>
+        var param = this.param;var page = this;
+        var clickType = 1;
+        if(param.contact){
+            with(xmesh.model['Contact']){
+                contactId	= param.contact.contactId
+                name	= param.contact.name
+                phone	 = param.contact.phone
+                phoneR	= param.contact.phoneR
+                cardType	= param.contact.cardType
+                cardId	= param.contact.cardId
+            }
+            page.child("#cardId").css("display",(param.contact.cardType == 1 ? 'none' : 'block'));
+            page.child("#idCardNum").css("display",(param.contact.cardType == 1 ?  'block' :'none'));
+            this.named("title").html("编辑联系人");
+        }else{ page.child("#cardId").css("display","none");page.child("#idCardNum").css("display","block");page.child("#tips").css("display","block");page.child("#tips").bind((device.version=="2.3.6")?"touchstart":"click",showCardComponent,false);this.named("title").html("添加联系人");}
+//        var setUseTransform = (device.version=="2.3.6") ? false : true;
+        var secondLevelScrollPane = this.named('addContactScrollPane').as("ui.ScrollPane",{bounce:true,vScroll:true,useTransform:true});
+        this.child("#idCardNum").bind((device.version=="2.3.6")?"touchstart":"click",showCardComponent,false);
+        var success = param.success;
+        var submit = this.named("submit").bind("click",function(){
+            if(clickType==1){
+                clickType=0;
+                setTimeout(function(){clickType=1},2000);
+                service.busynessMessage = (param.contact) ? "正在编辑联系人..." :  "正在添加联系人...";
+                xmesh.model["ContactsManager"].addContact(xmesh.model['Contact'],function(){
+                    Dialog.alert(((param.contact)? "编辑成功" : "添加成功"),function(){
+                        xmesh.model['Contact'].reset();
+                        if(success) success();
+                        xmesh.back();
+                    });
+                },showErrorMessage);
+            }
+
+        },false);
+
+        function showCardComponent(){
+            var cardType = xmesh.model['Contact'].cardType;
+            if(cardType == 1){
+                var option = {
+                    type : "idcard",
+                    name : "id_number",
+                    id : "id_number",
+                    label : "请输入身份证号码",
+                    value :xmesh.model['Contact'].cardId,
+                    onconfirm : submitFn
+                }
+                var keyPassword = $.Element("div").as("Input",option);
+                keyPassword.prompt();
+                keyPassword.show();
+                function submitFn(){
+                    xmesh.model['Contact'].cardId = document.keyboard.value;
+                    page.child("#cardId").css("display",'none');
+                    page.child("#idCardNum").css('display','block');
+                    page.child("#tips").css("display","none");
+                }
+            }else{
+                page.child("#idCardNum").css('display','block');
+                page.child("#cardId").css("display",'none');
+                page.child("#tips").css("display","none");
+            }
+        }
+
+        function onchangeHanner(evt){
+            page.child("#idCardNum").css("display",(evt == 1 ? 'block' : 'none'));
+            page.child("#cardId").css("display",(evt == 1 ? 'none' : 'block'));
+            if( xmesh.model['Contact'].cardId == ""){
+                page.child("#tips").css("display",(evt == 1 ? 'block' : 'none'));
+            }
+            else{
+                page.child("#tips").css("display",(evt == 1 ? 'none' : 'none'));
+            }
+        }
+        this.bind("backbutton",function(event){
+            if(document.keyboard.visible) {
+                event.preventDefault();
+                document.keyboard.hide();
+            }
+        })
+    </script>
+</head>
+
+<body>
+<div id="addContactPage" data-box="v" class="secondPage">
+   <header data-box="h">
+        <button class="returnLabel"></button>
+        <span  name="title" class="returnLabel"></span>
+    </header>
+    <div class="content" id="addContact" data-box="v" data-flex="1">
+        <div name="addContactScrollPane">
+            <form action="javascript:void(0)" id="addContactForm">
+                <div class="item" data-box="h"><label>姓名</label><input type="text" data-flex="1"  x-field="Contact.name" maxlength="10" placeholder="请输入姓名"/></div>
+                <div class="item" data-box="h"><label>手机号码</label><input type="tel" data-flex="1" x-field="Contact.phone" maxlength="11" placeholder="请输入手机号"/></div>
+                <div class="item" data-box="h"><label>备用电话</label><input type="tel" data-flex="1"  x-field="Contact.phoneR" maxlength="12"  placeholder="请输入备用电话"/></div>
+                <div class="item" data-box="h"><label>证件类型</label>
+                    <select data-flex="1" x-field="Contact.cardType" onchange="onchangeHanner(this.value)">
+                        <option value="1">身份证</option>
+                        <option value="2">护照</option>
+                        <option value="3">回乡证</option>
+                        <option value="4">台胞证</option>
+                        <option value="5">军人证</option>
+                        <option value="6">港澳通行证</option>
+                        <option value="7">国际海员证</option>
+                        <option value="8">旅行证</option>
+                        <option value="9">其它</option>
+                    </select>
+                    <div class="arrow"></div>
+                </div>
+                <div class="item" data-box="h" id="cardIdDiv"><label>证件号码</label>
+                    <span id="tips" data-flex="1" style="display: none">请输入证件号码</span>
+                    <span id="idCardNum" data-flex="1" x-field="Contact.cardId" style="display:none"></span>
+                    <input type="text" data-flex="1" x-field="Contact.cardId" id="cardId"  placeholder="请输入证件号码" maxlength="20"/>
+                </div>
+                <button class="bigBtn" name="submit">确定</button>
+            </form>
+        </div>
+        <div style="height: 45px"></div>
+    </div>
+</div>
+</body>
+</html>

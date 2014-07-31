@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>确认订单</title>
+    <script>
+        var page = this;
+        var RechargeManager = xmesh.model["RechargeManager"];
+        var parValue = page.named("parValue");
+        var actureValue = page.named("actureValue");
+        parValue.html(RechargeManager.parValue+"元");
+        actureValue.html(RechargeManager.actureValue+"元");
+
+        function payOrder(){
+            service.busynessMessage = "网络连接中，请稍候...";
+            var oderData = {
+                phone_number:RechargeManager.phoneNumber,
+                par_value:RechargeManager.parValue,
+                u_id:xmesh.model["User"].id
+            };
+            xmesh.model["OrderManager"].createOrder(oderData,'phoneRecharge',function(data){
+                this.pay(function(){
+                    RechargeManager.reset();
+                    xmesh.back();
+                    window.getBill();
+                },function(e){showErrorMessage(e); window.getBill();});
+            },function(e){showErrorMessage(e);})
+        }
+    </script>
+</head>
+
+<body>
+   <div id="telOrderConfirmPage" data-box="v" class="orderConfirmPage secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content orderConfirm" id="telOrderConfirm" data-flex="1">
+            <ul class="order">
+               <li data-box="h"><div class="title">充值面额</div><div data-flex="1" name="parValue"></div></li>
+               <li data-box="h"><div class="title">充值号码</div><div data-flex="1" x-field="RechargeManager.phoneNumber"></div></li>
+               <li data-box="h"><div class="title">归属地</div><div data-flex="1" x-field="RechargeManager.position"></div></li>
+               <li>话费将于支付成功后10分钟后到账</li>
+            </ul>
+        </div>
+        <footer data-box="h"><div data-flex="1">应付金额<span class="price" name="actureValue"></span></div><button value="支付" name="pay" onclick="payOrder()">支付</button></footer>
+   </div>
+</body>
+</html>

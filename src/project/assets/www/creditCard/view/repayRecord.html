@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>还款记录</title>
+    <script>
+        var CreditCard = xmesh.model["CreditCard"];
+        var CreditCardManager = xmesh.model["CreditCardManager"];
+        var scrollPane = this.named('scrollPane');
+        var historyList = this.named('historyList');
+        var record = this.named('record');
+        var template = this.named('template');
+        var cardNumber = this.named('cardNumber');
+        var noList = this.named('noList');
+        var repay = this.named('repay');
+
+        var page = this.bind("pageReady",function(){
+            if(device.version=="2.3.6") scrollPane.attribute('useTransform','false');
+            $.copyObject(xmesh.model["CreditCard"],param);
+            scrollPane.css('height',window.innerHeight-190+'px');
+            cardNumber.html(CreditCard.cardNumber.substring(CreditCard.cardNumber.length-4,CreditCard.cardNumber.length));
+            getRecordList();
+        })
+
+        repay.bind('click',goToRepayment);
+
+        function getRecordList(){
+            service.busynessMessage = "正在查询...";
+            CreditCardManager.getRecords({
+                cardNumber : CreditCard.cardNumber,
+                pageIndex : "1"
+            },function(data){
+                if(data.data.repaymentRecords.length == 0){
+                    noList.css('display','-webkit-box');
+                    scrollPane.hide();
+                }
+                else{
+                    $.each(data.data.repaymentRecords,function(property,item){
+                        var record = template.child("[name=record]").clone(true).appendTo(historyList);
+                        record.child("[name=appName]").html(item.appName);
+                        record.child("[name=repaymentTime]").html(item.repaymentTime.substring(0,10));
+                        record.child("[name=amount]").html(Validator.convertFenToYuan(item.amount));
+                        switch(item.state){
+                            case "success" : record.attribute("status","0");break;
+                            case "failure" : record.attribute("status","1");break;
+                        }
+                        record.bind("click",function(){
+                            $.copyObject(xmesh.model["Records"],item);
+                            xmesh.act('historyDetail');
+                        })
+                    });
+                }
+                scrollPane.refresh();
+                scrollPane.scrollTo(0,0,0);
+            },showErrorMessage);
+        }
+
+        function goToRepayment(){
+            xmesh.act('creditRepay');
+        }
+
+    </script>
+</head>
+
+<body>
+<div id="repayRecordPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div class="content" id="repayRecord" data-flex="1" data-box="v">
+        <div class="card" data-box="h">
+            <img name="logoUrl" x-field="CreditCard.logoUrl"/>
+            <div data-box="v">
+               <div class="name" name="bankName" x-field="CreditCard.bankName"></div>
+               <div>尾号 <span name="cardNumber"></span></div>
+            </div>
+        </div>
+        <div name="noList" class="noItem" data-box="v" data-flex="1" style="display: none"><div class="image"></div><div style="height: 73px;"></div></div>
+        <xtag:ScrollPane name="scrollPane">
+            <div name="historyList"></div>
+            <div style="height: 45px"></div>
+        </xtag:ScrollPane>
+        <xtag:Template name="template">
+            <div class="record" name="record">
+                <div data-box="h"><div data-flex="1" name="appName"></div><div class="amount" data-flex="1" name="amount"></div></div>
+                <div data-box="h"><div data-flex="1" name="repaymentTime"></div><div class="status" data-flex="1"></div></div>
+            </div>
+        </xtag:Template>
+    </div>
+    <footer><button class="bigBtn blueBtn" name="repay">立即还款</button></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>开奖记录</title>
+    <script>
+        var LotteryInfoManager = xmesh.model["LotteryInfoManager"];
+        this.named("container").css("height", window.innerHeight - $("header").offsetHeight - this.named("recordTabs").offsetHeight - 70 + "px");
+        var page = this.bind("pageReady", function () {
+            var _this = this;
+            var game = "SSQ";
+            var record = "";
+            var lotteryScroller = _this.named("lotteryScroller");
+            var dgList = _this.named("dgList");
+            var point = {"tab_left":{ game:"SSQ", record:"lotterySSQWinRecord"}, "tab_cener":{game:"3D", record:"lottery3DWinRecord" }, "tab_right":{game:"QLC", record:"lotteryQLCWinRecord"}};
+
+            LotteryInfoManager.clearLotteryRecord();
+            getLotteryRecord();
+
+            _this.named("recordTabs").child("li").bind("click", function () {
+                if (this.attribute("checked")) return;
+                _this.named("recordTabs").child("li").attribute("checked", null);
+                this.attribute("checked", true);
+                dgList.html("");
+                game = point[this.className].game;
+                record = point[this.className].record;
+                var list = LotteryInfoManager[record].list();
+                lotteryScroller.refresh();
+                lotteryScroller.scrollTo(0, 0, 0);
+                if (list.length > 0)  setTimeout(function () {
+                    setLotteryList(list);
+                }, 100);
+                else getLotteryRecord();
+            })
+
+            _this.named("clickMore").bind("click", getLotteryRecord);
+
+            function getLotteryRecord() {
+                _this.named("clickMore").hide();
+                service.busynessMessage = "网络连接中，请稍候...";
+                LotteryInfoManager.getDrawInfo(game, function (data) {
+                    setLotteryList(data);
+                }, showErrorMessage);
+            }
+
+            function setLotteryList(data) {
+                $.each(data, function (property, item) {
+                    var template = _this.named("template").child("li").clone(true);
+                    switch (item.game) {
+                        case "QLC" :
+                            template.named("logo").attribute("src", "lotteryTicket/view/res/images/qilecai.png");
+                            template.named("game").html("七乐彩");
+                            var redCode = item.codes.substring(0,item.codes.indexOf("|"));
+                            var blueCode = item.codes.substring(item.codes.indexOf("|")+1,item.codes.length);
+                            template.named("redCode").html(redCode);
+                            template.named("blueCode").html(blueCode);
+                            break;
+                        case "SSQ" :
+                            template.named("logo").attribute("src", "lotteryTicket/view/res/images/shuangseqiu.png");
+                            template.named("game").html("双色球");
+                            var redCode = item.codes.substring(0,item.codes.indexOf("|"));
+                            var blueCode = item.codes.substring(item.codes.indexOf("|")+1,item.codes.length);
+                            template.named("redCode").html(redCode);
+                            template.named("blueCode").html(blueCode);
+                            break;
+                        case "3D" :
+                            template.named("logo").attribute("src", "lotteryTicket/view/res/images/fucai3d.png");
+                            template.named("game").html("福彩3D");
+                            var code = $.Element('span').addClass("redBall").html(item.codes);
+                            template.named("codes").html("").append(code);
+                            break;
+                    }
+                    template.named("termCode").html(item.termCode);
+                    template.bind("click", function () {
+                        xmesh.act("ticketDetail", item);
+                    })
+                    dgList.append(template);
+                    _this.named("clickMore").css("display","block");
+                    lotteryScroller.refresh();
+                })
+            }
+        })
+    </script>
+</head>
+
+<body>
+<div id="lotteryRecordPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">开奖记录</span>
+    </header>
+    <div class="content" id="lotteryRecord" data-flex="1">
+        <div class="tabs" data-box="h">
+            <ul data-box="h" name="recordTabs">
+                <li class="tab_left" checked>双色球</li>
+                <li class="tab_cener">福彩3D</li>
+                <li class="tab_right">七乐彩</li>
+            </ul>
+        </div>
+        <div name="container">
+            <xtag:ScrollPane name="lotteryScroller">
+                <ul class="lotteryList" name="dgList" data-box="v">
+                </ul>
+                <div name="clickMore" class="clickMore">点击加载更多</div>
+            </xtag:ScrollPane>
+        </div>
+    </div>
+</div>
+<xtag:template name="template">
+    <li data-box="h">
+        <img src="res/images/shuangseqiu.png" name="logo"/>
+        <div class="game"  name="game">双色球</div>
+        <div data-flex="1" data-box="v" class="detail">
+            <div class="time">第<span name="termCode">2013042</span>期</div>
+            <div class="more" name="codes"><span class="redBall" name="redCode">01 43 01 01 43 41</span>|<span class="blueBall" name="blueCode">32</span></div>
+        </div>
+        <div class="arrow"></div>
+    </li>
+</xtag:template>
+</body>
+</html>

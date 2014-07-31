@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>代购详情</title>
+    <script>
+        var winMoneyState = {"0":"已派奖","1":"待派奖"};
+        var sellWay ={"1":"单式","2":"复式"};
+        var param = this.param;
+        this.named("ticketCode").html(param.termCode);
+        this.named("sellTime").html(param.sellTime);
+        this.named("sellMoney").html(Validator.convertFenToYuan(param.sellMoney));
+        this.named("castNum").html(param.castNum+"倍");
+        this.named("backDesc").html(param.backDesc);
+        this.named("betCode").html(param.betCode);
+        this.named("sellWay").html(sellWay[param.sellWay]);
+        this.named("cast_zhu").html(set_Zhu()+"注");
+        if(!param.dreamNo){
+            this.named("dreamNo").html("未开奖");
+            this.named("winState").hide();
+        }else{
+            this.named("dreamNo").html(param.dreamNo);
+            if(param.state=="4" || param.state=="5"){
+                this.named("winState").show();
+                this.named("winMoneyState").html(winMoneyState[param.winMoneyState]);
+                this.named("winMoney").html("税后："+Validator.convertFenToYuan(param.winMoney));
+            }else{
+                this.named("winState").hide();
+            }
+        }
+
+        function set_Zhu(){
+            return parseInt(param.sellMoney)/parseInt(param.castNum)/200
+        }
+
+    </script>
+</head>
+
+<body>
+<div id="dgDetailPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">代购详情</span>
+    </header>
+    <div class="content" id="dgDetail" data-flex="1">
+        <xtag:ScrollPane>
+        <ul class="detail">
+            <li data-box="h"><label>订单号：</label><div name="ticketCode" data-flex="1"></div></li>
+            <li data-box="h"><label>购买时间：</label><div data-flex="1" name="sellTime"></div></li>
+            <li data-box="h"><label>金额：</label><div data-flex="1" name="sellMoney"></div></li>
+            <li data-box="h"><label>倍数：</label><div data-flex="1" name="castNum"></div></li>
+            <li data-box="h"><label>购买状态：</label><div data-flex="1" name="backDesc"></div></li>
+        </ul>
+        <ul class="more">
+            <li class="title">方案内容</li>
+            <li>[<span name="sellWay">标准复式</span>] [<span name="cast_zhu">7注</span>] <span name="betCode">03 04 01 08 03 33</span></li>
+        </ul>
+        <ul class="more">
+            <li class="title">开奖号码</li>
+            <li name="dreamNo">03 04 01 08 03 33</li>
+        </ul>
+        <ul class="more" name="winState">
+            <li class="title">中奖情况</li>
+            <li><span name="winMoneyState">已派奖</span><span class="award" name="winMoney">税后：350.00元</span></li>
+        </ul>
+        </xtag:ScrollPane>
+    </div>
+</div>
+</body>
+</html>

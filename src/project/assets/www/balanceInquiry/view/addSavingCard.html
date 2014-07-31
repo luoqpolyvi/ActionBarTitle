@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>添加储蓄卡</title>
+    <script>
+        var page = this,cardNo = this.child('#cardNo');
+        var supportList = this.named('supportList').bind("click",function(){
+            xmesh.act("supportList");
+        });
+        var sure = this.named('sure').bind("click",function(){
+//            setTimeout(function(){xmesh.broadcast.emit("addBankCard");},100);
+            service.busynessMessage = "正在添加储蓄卡...";
+            xmesh.model["BankManager"].addBankCard(cardNo.value,function(rs){
+                xmesh.model['Bank'].bankCardNo = cardNo.value;
+                /************余额查询************/
+                setTimeout(function(){xmesh.broadcast.emit("addBankCard");},100);
+                xmesh.model['Bank'].balanceEnquire(function(){},function(){});
+                xmesh.back();
+            },function(e){
+                setTimeout(function(){xmesh.broadcast.emit("addBankCard");},100);
+                showErrorMessage(e);cardNo.value = "";
+            });
+        });
+    </script>
+</head>
+
+<body>
+<div id="addSavingCardPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">添加储蓄卡</span>
+    </header>
+    <div class="content" id="addSavingCard" data-flex="1">
+        <input type="tel" id="cardNo" class="inputBox" placeholder="请输入银行卡卡号" maxlength="20"/>
+        <div class="supportList" name="supportList">银行卡支持列表</div>
+        <button class="bigBtn blueBtn" name="sure">确认</button>
+        <div class="warmTips">
+            <div class="title">温馨提示</div>
+            <div>余额查询暂仅支持对储蓄卡进行查询。</div>
+        </div> 
+    </div>
+</div>
+</body>
+</html>

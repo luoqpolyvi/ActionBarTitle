@@ -1,0 +1,295 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title></title>
+<script>
+    var noList = this.named("noList");
+    var orderScrollPane = this.named("orderScrollPane");
+    var orderListScroll = this.child("#orderListScroll");
+    var BillManager = xmesh.model["BillManager"];
+    var template = this.named("template");
+    var title = this.named('title');
+    var lastUL,total;
+    var index = 1,size = 50;
+    var setData ={page_index:index,page_size:size};
+
+    var page = this.bind("pageReady",function(){
+        title.html(page.param.title);
+        var year,total;
+        var clickMore = page.named("clickMore");
+        orderListScroll.as('ui.List',{'echoSelection':'true'});
+        if(page.param.type == "toBePaid") getToBePaidList();
+        if(page.param.type == "successPaid") getSuccessPaidList();
+        if(page.param.type == "all") getAllList();
+        function getSuccessPaidList(){
+            service.busynessMessage = "正在查询...";
+            BillManager.getMyBillsPaid(setData,function(data){
+                BillManager.paidBillTotal = data.data.billTotal;
+                total = data.data.billTotal;
+                BillManager.paidBillTotalRs = data.data.bills;
+                xmesh.broadcast.emit("getPaidBill");
+                if(data.data.billTotal==0){
+                    noList.css('display','-webkit-box');
+                    orderScrollPane.hide();
+                }
+                else{
+    //                    orderScrollPane.css("height",window.innerHeight-$("header").offsetHeight+"px");
+                    setTimeout(function(){
+    //                        orderScrollPane.scrollTo(0,0,0);
+                        orderScrollPane.refresh();},100);
+                    $.each(data.data.bills,function(property,item){
+                        var date = formatDate(item.createTime);
+                        if(!year || year!=date.year) {
+                            year = date.year;
+                            template.named('getYear').html(date.year).appendTo(orderListScroll);
+                            var  ul =  lastUL = template.child("ul").clone(true).appendTo(orderListScroll);
+                            var li = template.child("li").clone(true).appendTo(ul);
+                            switch(item.status){
+                                case "paid" : li.attribute("status","1");break;
+                                case "generated" : li.attribute("status","0");break;
+                            }
+                            li.named('transName').html(item.transName);
+                            li.named('description').html(item.description);
+                            li.named('createTime').html(item.createTime);
+                            li.named('amount').html(Validator.convertFenToYuan(item.amount));
+                            li.bind("click",function(){
+                                xmesh.act("orderDetail",item);
+                            })
+                        }else{
+                            var li = template.child("li").clone(true).appendTo(lastUL);
+                            switch(item.status){
+                                case "paid" : li.attribute("status","1");break;
+                                case "generated" : li.attribute("status","0");break;
+                            }
+                            li.named('transName').html(item.transName);
+                            li.named('description').html(item.description);
+                            li.named('createTime').html(item.createTime);
+                            li.named('amount').html(Validator.convertFenToYuan(item.amount));
+                            li.bind("click",function(){
+                                xmesh.act("orderDetail",item);
+                            })
+                        }
+                    })
+                    xmesh.broadcast.emit("showEnd");
+                }
+                if(BillManager.BillTotal == 0){
+                    BillManager.getMyBillsAll(setData,function(data){
+                        BillManager.BillTotal = data.data.billTotal;
+                        BillManager.BillTotalRs = data.data.bills;
+                        BillManager.getMyBillsGenerated(setData,function(data){
+                            BillManager.generatedBillTotal = data.data.billTotal;
+                            BillManager.generatedBillTotalRs = data.data.bills;
+                            xmesh.broadcast.emit("getGeneratedBill");},null);
+                        xmesh.broadcast.emit("getTotalBill");},null);
+                }
+            },showErrorMessage);
+        }
+        function getToBePaidList(){
+            service.busynessMessage = "正在查询...";
+            BillManager.getMyBillsGenerated(setData,function(data){
+                BillManager.generatedBillTotal = data.data.billTotal;
+                total = data.data.billTotal;
+                BillManager.generatedBillTotalRs = data.data.bills;
+                xmesh.broadcast.emit("getGeneratedBill");
+                if(data.data.billTotal==0){
+                    noList.css('display','-webkit-box');
+                    orderScrollPane.hide();
+                }
+                else{
+    //                    orderScrollPane.css("height",window.innerHeight-$("header").offsetHeight+"px");
+                    setTimeout(function(){
+    //                        orderScrollPane.scrollTo(0,0,0);
+                        orderScrollPane.refresh();},100);
+                    $.each(data.data.bills,function(property,item){
+                        var date = formatDate(item.createTime);
+                        if(!year || year!=date.year) {
+                            year = date.year;
+                            template.named('getYear').html(date.year).appendTo(orderListScroll);
+                            var  ul =  lastUL = template.child("ul").clone(true).appendTo(orderListScroll);
+                            var li = template.child("li").clone(true).appendTo(ul);
+                            switch(item.status){
+                                case "paid" : li.attribute("status","1");break;
+                                case "generated" : li.attribute("status","0");break;
+                            }
+                            li.named('transName').html(item.transName);
+                            li.named('description').html(item.description);
+                            li.named('createTime').html(item.createTime);
+                            li.named('amount').html(Validator.convertFenToYuan(item.amount));
+                            li.bind("click",function(){
+                                xmesh.act("orderDetail",item);
+                            })
+                        }else{
+                            var li = template.child("li").clone(true).appendTo(lastUL);
+                            switch(item.status){
+                                case "paid" : li.attribute("status","1");break;
+                                case "generated" : li.attribute("status","0");break;
+                            }
+                            li.named('transName').html(item.transName);
+                            li.named('description').html(item.description);
+                            li.named('createTime').html(item.createTime);
+                            li.named('amount').html(Validator.convertFenToYuan(item.amount));
+                            li.bind("click",function(){
+                                xmesh.act("orderDetail",item);
+                            })
+                        }
+                    })
+                    xmesh.broadcast.emit("showEnd");
+                }
+                if(BillManager.BillTotal == 0){
+                    BillManager.getMyBillsAll(setData,function(data){
+                        BillManager.BillTotal = data.data.billTotal;
+                        BillManager.BillTotalRs = data.data.bills;
+                        BillManager.getMyBillsPaid(setData,function(data){
+                            BillManager.paidBillTotal = data.data.billTotal;
+                            BillManager.paidBillTotalRs = data.data.bills;
+                            xmesh.broadcast.emit("getPaidBill");},null);
+                        xmesh.broadcast.emit("getTotalBill");},null);
+                }
+            },showErrorMessage);
+
+        }
+        function getAllList(){
+            service.busynessMessage = "正在查询...";
+            BillManager.getMyBillsAll(setData,function(data){
+                BillManager.BillTotal = data.data.billTotal;
+                total = data.data.billTotal;
+                BillManager.BillTotalRs = data.data.bills;
+                xmesh.broadcast.emit("getTotalBill");
+                if(data.data.billTotal==0){
+                    noList.css('display','-webkit-box');
+                    orderScrollPane.hide();
+                }
+                else{
+    //                    orderScrollPane.css("height",window.innerHeight-$("header").offsetHeight+"px");
+                    setTimeout(function(){
+    //                        orderScrollPane.scrollTo(0,0,0);
+                        orderScrollPane.refresh();},100);
+                    $.each(data.data.bills,function(property,item){
+                        var date = formatDate(item.createTime);
+                        if(!year || year!=date.year) {
+                            year = date.year;
+                            template.named('getYear').html(date.year).appendTo(orderListScroll);
+                            var  ul =  lastUL = template.child("ul").clone(true).appendTo(orderListScroll);
+                            var li = template.child("li").clone(true).appendTo(ul);
+                            switch(item.status){
+                                case "paid" : li.attribute("status","1");break;
+                                case "generated" : li.attribute("status","0");break;
+                            }
+                            li.named('transName').html(item.transName);
+                            li.named('description').html(item.description);
+                            li.named('createTime').html(item.createTime);
+                            li.named('amount').html(Validator.convertFenToYuan(item.amount));
+                            li.bind("click",function(){
+                                xmesh.act("orderDetail",item);
+                            })
+                        }else{
+                            var li = template.child("li").clone(true).appendTo(lastUL);
+                            switch(item.status){
+                                case "paid" : li.attribute("status","1");break;
+                                case "generated" : li.attribute("status","0");break;
+                            }
+                            li.named('transName').html(item.transName)
+                            li.named('description').html(item.description);
+                            li.named('createTime').html(item.createTime);
+                            li.named('amount').html(Validator.convertFenToYuan(item.amount));
+                            li.bind("click",function(){
+                                xmesh.act("orderDetail",item);
+                            })
+                        }
+                    })
+                    xmesh.broadcast.emit("showEnd");
+                }
+                if(BillManager.BillTotal == 0){
+                    BillManager.getMyBillsPaid(setData,function(data){
+                        BillManager.BillTotal = data.data.billTotal;
+                        BillManager.BillTotalRs = data.data.bills;
+                        BillManager.getMyBillsGenerated(setData,function(data){
+                            BillManager.generatedBillTotal = data.data.billTotal;
+                            BillManager.generatedBillTotalRs = data.data.bills;
+                            xmesh.broadcast.emit("getGeneratedBill");},null);
+                        xmesh.broadcast.emit("getPaidBill");},null);
+                }
+            },showErrorMessage);
+
+        }
+        xmesh.broadcast.listen("showEnd",function(){
+            var liList = document.getElementsByTagName("li");
+
+            if(liList.length - 1 <total){
+                clickMore.css("display","block").bind("click",scrollPaneBottom);
+            }
+            else{
+                clickMore.css("display","none");
+            } });
+        function scrollPaneBottom(){
+            index++;
+            setData ={page_index:index,page_size:size};
+            if(page.param.type == "toBePaid") getToBePaidList();
+            if(page.param.type == "successPaid") getSuccessPaidList();
+            if(page.param.type == "all") getAllList();
+        }
+    })
+
+    function  formatDate(date){
+        var year =  date.substring(0,4);
+        var yearMonth = date.substring(0,7);
+        return{
+            year : year,
+            yearMonth : yearMonth
+        }
+    }
+
+    //    page.bind("show",function(){
+    //        index = 1;
+    //        setTimeout(function(){
+    //            scrollPane.scrollTo(0,0,0);
+    //            scrollPane.refresh();},100);
+    //
+    //    })
+
+    this.bind("backbutton",function(event){
+        event.preventDefault();
+        if(System.data){
+            if(System.data.action=="successPaid" || System.data.action=="toBePaid" || System.data.action=="allBill")xFace.app.close();
+            else xmesh.home();
+        }else{xmesh.home();}
+    })
+</script>
+</head>
+
+<body>
+<div id="orderListPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span name="title" class="returnLabel"></span>
+    </header>
+    <div name="noList" class="noItem" data-box="v" data-flex="1" style="display: none"><div class="image"></div></div>
+
+    <xtag:ScrollPane
+            name="orderScrollPane">
+        <div class="content" id="orderList" data-box="v" data-flex="1">
+            <div class="yearOrders" id="orderListScroll"></div>
+        </div>
+        <div name="clickMore" class="clickMore">点击加载更多</div>
+    </xtag:ScrollPane>
+
+    <xtag:Template name="template">
+        <div data-box="h" class="yearTotal" name="getYear">
+            <div class="year"></div>
+        </div>
+        <ul></ul>
+        <li data-box="h" status="0">
+            <div class="status"></div>
+            <div data-box="v" data-flex="2" class="detail">
+                <div class="orderName" name="transName"></div>
+                <div class="telphone" name="description" data-box="v"></div>
+                <div class="time" name="createTime"></div>
+            </div>
+            <div class="amount" data-flex="1" name="amount"></div>
+            <div class="arrow"></div>
+        </li>
+    </xtag:Template>
+
+</div>
+</body>
+</html>

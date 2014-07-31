@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>账单查询</title>
+    <script>
+        var CreditCard = xmesh.model["CreditCard"];
+
+        var phone = this.named('phone');
+        phone.bind('click',function(){
+            Dialog.confirm("是否拨打"+CreditCard.callPhone+"？",null,makePhoneCall,"提醒","取消,确定");
+        });
+
+        var cardNumber = this.named('cardNumber');
+        cardNumber.html(CreditCard.cardNumber.substring(CreditCard.cardNumber.length-4,CreditCard.cardNumber.length));
+
+        var message = this.named('message');
+        message.bind('click',function(){
+            Dialog.confirm("是否确定发送短信？\n"+"发送给："+CreditCard.smsPhone+"\n发送内容："+CreditCard.smsText,null,setMessage,"提醒","取消,确定");
+        });
+
+        function setMessage(){
+            xFace.Messaging.sendMessage ({
+                messageType:xFace.MessageTypes.SMSMessage,
+                destinationAddresses:CreditCard.smsPhone,
+                body:CreditCard.smsText
+            },function(){
+                Dialog.alert("发送成功");
+            }, function(){Dialog.alert("发送信息失败")});
+        }
+
+        function makePhoneCall() {
+            xFace.Telephony.initiateVoiceCall(CreditCard.callPhone,null,function(){
+                Dialog.alert("拨打电话失败");
+            });
+        }
+
+    </script>
+</head>
+
+<body>
+<div id="billInquiryPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div class="content" id="billInquiry" data-flex="1">
+        <div class="card" data-box="h">
+            <img name="logoUrl" x-field="CreditCard.logoUrl"/>
+            <div data-box="v">
+               <div class="name" name="bankName" x-field="CreditCard.bankName"></div>
+               <div>尾号 <span name="cardNumber"></span></div>
+            </div>
+        </div>
+        <div class="item" name="message">
+          <div>短信查询</div>
+          <div>发送短信("<span name="smsText" x-field="CreditCard.smsText"></span>")，短信费用与普通短信一致</div>
+        </div>
+        <div class="item" name="phone">
+          <div>电话查询</div>
+          <div>拨打银行电话<span x-field="CreditCard.callPhone"></span></div>
+        </div>
+        <div class="item">
+          <div>温馨提示</div>
+          <div>请使用此卡在银行预留的手机号进行查询。</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

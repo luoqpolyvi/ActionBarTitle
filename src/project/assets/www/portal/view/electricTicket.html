@@ -1,0 +1,208 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>我的电子券</title>
+    <script>
+        var scrollPan,list,deleteBt,clickClock = false,
+                title,underBtn,scrollWrap,noList;
+        var ElectricTickets = xmesh.model['ElectricTickets'];
+        var electricTicket = this.child("#electricTicket");
+        var fromFlag = 1;//1首页 2其它（详情或商城）
+        var editModel =  ElectricTickets.deleteState;
+        var page = this
+                .bind("pageReady",function(){
+                    noList = page.named('noList');
+                    scrollPan = page.named('electricScrollPane');
+                    list = page.named('List').as('ui.List',{'echoSelection':'true','onCreateItem':onCreateItem});
+                    deleteBt = page.named('clearMes');
+                    title = page.child('[x-page="title"]');
+                    underBtn = page.named('underBtn')
+                            .bind('click',function(){
+                                xmesh.act('eTicketMall');
+                                fromFlag=2;
+                            });
+//                    scrollWrap = page.named('scrollWrap');
+                })
+                .bind('show',function(){
+                    noList.hide();
+                    getCouponsList();
+                    editModel = true;
+                    toggleModel();
+                })
+                .bind('hide',function(){
+                    //xmesh.model['ElectricTickets'].reset('volumeList');
+                    ElectricTickets.volumeRequest=false;
+                });
+        function getCouponsList(){
+            if((fromFlag==1)||(fromFlag==2&&ElectricTickets.volumeRequest)){
+                service.busynessMessage = "网络连接中，请稍候...";
+                xmesh.model['ElectricTickets'].getTicketAndVolumeList(function(rs){
+                    loadData();
+                    fromFlag=1;
+                },function(e){
+                    showErrorMessage(e);
+                    fromFlag=1;
+                    noList.css('display','-webkit-box');
+                    scrollPan.hide();
+                })
+            }else{
+                setTimeout(function(){
+//                    loadData();
+                    fromFlag=1;
+                },200);
+            }
+
+            function loadData(){
+                var data = xmesh.model['ElectricTickets'].volumeList;
+                if(data.length==0){
+                    noList.css('display','-webkit-box');
+                    scrollPan.hide();
+                    return;
+                }
+                list.load(data);
+                scrollPan.refresh();
+            }
+
+        }
+
+        function toggleModel(){
+            var len = list.childNodes.length;
+            var elements = list.childNodes;
+            var i;
+            if(!editModel){
+                deleteBt.removeClass('delete').addClass('sure');
+                for(i= 0;i<len;i++){
+                    var delbtn = elements[i].named('delete');
+                    if(delbtn) delbtn.show();
+                }
+                editModel = true;
+                clickClock = true;
+//                scrollWrap.css({'bottom':0});
+                scrollPan.refresh();
+            }else{
+                deleteBt.removeClass('sure').addClass('delete');
+                for(i= 0;i<len;i++){
+                    var delbtn = elements[i].named('delete');
+                    if(delbtn) delbtn.hide();
+                }
+                editModel = false;
+                clickClock = false;
+//                scrollWrap.css({'bottom':'80px'});
+                scrollPan.refresh();
+            }
+        }
+
+        function onCreateItem(event){
+            scrollPan.hide();
+            event.preventDefault();
+            var element = event.targetElement;
+            var data = event.data;
+            element.bind('click',function(){
+                if(clickClock) return;
+                xmesh.act('eTicketDetail',data) ;
+                fromFlag=2;
+            });
+//            if(data.state=="expire") return;
+//            element.css({'width':'50%','display':'inline-block','boxSizing':'border-box'});
+            var test = $.Element('li').appendTo(element);
+            test.attribute('data-box','v');
+            var contentDiv = $.Element('div')
+                    .appendTo(test)
+                    .addClass('ticket');
+            $.Image(data.icon.normal)
+                    .appendTo(contentDiv);
+            if(data.state=="presenting"){
+                $.Element('span').addClass('status').attribute('status','1')
+                        .appendTo(contentDiv);
+            }else if(data.state=="expire"){
+                $.Element('span').addClass('status').attribute('status','2')
+                        .appendTo(contentDiv);
+                $.Element('div').appendTo(contentDiv).attribute('name','delete')
+                        .addClass('deleteTicket')
+                        .bind('click',function(evt){
+                            var couponsDeleteEvent = $.Event('couponsDelete',false,true);
+                            couponsDeleteEvent.parentElement = element;
+                            couponsDeleteEvent.data = data;
+                            element.trigger(couponsDeleteEvent)
+                        }).hide();
+                element.bind('couponsDelete',onCouponsDelete);}
+            else{
+                $.Element('div').appendTo(contentDiv).attribute('name','delete')
+                        .addClass('deleteTicket')
+                        .bind('click',function(evt){
+                            var couponsDeleteEvent = $.Event('couponsDelete',false,true);
+                            couponsDeleteEvent.parentElement = element;
+                            couponsDeleteEvent.data = data;
+                            element.trigger(couponsDeleteEvent)
+                        }).hide();
+                element.bind('couponsDelete',onCouponsDelete);
+            }
+            setTimeout(function(){
+                scrollPan.show();
+                scrollPan.refresh();
+                scrollPan.scrollTo(0,0,0);
+            },30);
+            //解决ios7再次进入页面看不见列表的问题   .
+//            scrollPan.refresh();
+        }
+
+        function onCouponsDelete(e){
+            var _this = this;
+            Dialog.confirm('确认要删除吗？',function(){},function(){
+                if(_this == e.parentElement){
+                    service.busynessMessage = "网络连接中，请稍候...";
+                    var _data = {
+                        volume_detail_id: e.data.volumeDetailId,
+                        type:'volume'
+                    };
+                    xmesh.model['ElectricTickets'].deleteMyVolume(_data,function(){
+                        _this.remove();
+                        var index = list.data.indexOf(e.data);
+                        ElectricTickets.volumeList.splice(index,1);
+                        ElectricTickets.volumeListNumber = ElectricTickets.volumeList.length;
+                        scrollPan.refresh();
+                        if(ElectricTickets.volumeList.length==0) {noList.css('display','-webkit-box');scrollPan.hide();}
+                    },showErrorMessage);
+                }
+            },"提示",["取消","确定"]);
+
+        }
+
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="coupons"){
+                    if(!editModel){
+                        xFace.app.close();
+                    }else{toggleModel();}
+                }
+                else {
+                    if(!editModel){
+                        xmesh.home();
+                    }else{toggleModel();}
+                }
+            }else{xmesh.home();}
+        })
+    </script>
+</head>
+
+<body>
+<div id="electricTicketPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+        <button class="delete" name="clearMes" onclick="toggleModel()"></button>
+    </header>
+    <div name="noList" class="noItem" data-box="v" data-flex="1"><div class="image"></div></div>
+    <xtag:ScrollPane
+            name="electricScrollPane">
+        <div class="content" id="electricTicket" data-box="v" data-flex="1" name="couponsList">
+            <ul data-flex="1" class="ticketList" name="List">
+            </ul>
+            <div style="height: 56px"></div>
+        </div>
+    </xtag:ScrollPane>
+    <button class="bigBtn" name="underBtn" style="position: absolute;bottom: 0">电子券商城</button>
+</div>
+</body>
+</html>

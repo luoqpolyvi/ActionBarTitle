@@ -1,0 +1,4324 @@
+[data-box] {
+  display: box;
+  display: -moz-box;
+  display: -webkit-box;
+}
+[data-box] > [data-flex='1'] {
+  box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-box-flex: 1;
+}
+[data-box] > [data-flex='2'] {
+  box-flex: 2;
+  -moz-box-flex: 2;
+  -webkit-box-flex: 2;
+}
+[data-box] > [data-flex='3'] {
+  box-flex: 3;
+  -moz-box-flex: 3;
+  -webkit-box-flex: 3;
+}
+[data-box] > [data-flex='4'] {
+  box-flex: 4;
+  -moz-box-flex: 4;
+  -webkit-box-flex: 4;
+}
+[data-box] > [data-flex='5'] {
+  box-flex: 5;
+  -moz-box-flex: 5;
+  -webkit-box-flex: 5;
+}
+[data-box] > [data-flex='6'] {
+  box-flex: 6;
+  -moz-box-flex: 6;
+  -webkit-box-flex: 6;
+}
+[data-box='v'] {
+  box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-box-orient: vertical;
+}
+[data-box='h'] {
+  box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-box-orient: horizontal;
+}
+.borderBox {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+* {
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-user-select: none;
+}
+input,
+select,
+textarea {
+  -webkit-user-select: auto;
+}
+html,
+body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: "微软雅黑";
+  font-size: 14px;
+  background: #efefef;
+  overflow: hidden;
+}
+input[type="button"],
+button {
+  vertical-align: top;
+  cursor: pointer;
+  font-size: 18px;
+}
+img,
+select,
+input,
+textarea,
+button {
+  outline: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+select,
+input,
+textarea {
+  color: #2bb4ee;
+  font-size: 15px;
+}
+xtag\:input {
+  line-height: 44px;
+  background: #ffffff;
+  color: #2bb4ee;
+}
+xtag\:input.placeholder {
+  color: #9d9d9d;
+}
+select,
+input[type="date"] {
+  -webkit-appearance: none;
+}
+a {
+  text-decoration: none;
+}
+ul,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.clear {
+  clear: both;
+}
+button {
+  font-size: 18px;
+}
+.bigBtn {
+  width: 100%;
+  height: 49px;
+  background: #72bc52;
+  color: #ffffff;
+}
+.bigBtn:active {
+  background: #59a737;
+}
+.blueBtn {
+  background: #2bb4ee;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+.blueBtn:active {
+  background: #19a5e1;
+}
+.redBtn {
+  background: #f93737;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+.redBtn:active {
+  background: #d4402a;
+}
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 45px;
+  line-height: 45px;
+  background: #2bb4ee;
+  text-align: center;
+  z-index: 99;
+}
+header span {
+  position: absolute;
+  left: 30px;
+  right: 45px;
+  font-size: 18px;
+  color: #ffffff;
+  text-align: left;
+}
+header span.returnLabel:active {
+  color: #1e7ea6;
+}
+header button {
+  position: absolute;
+  top: 0;
+  width: 45px;
+  height: 45px;
+}
+header button.returnLabel,
+header button.backButton {
+  width: 28px;
+  left: 0;
+}
+header button.message,
+header button.edit,
+header button.delete,
+header button.sure,
+header button.play,
+header button.account,
+header button.ticketRecord,
+header button.callService {
+  right: 0;
+}
+header button.returnLabel,
+header button.backButton {
+  background: url(portal/view/res/images/title_back.png) 0 0 no-repeat;
+  background-size: cover;
+}
+header button.returnLabel:active,
+header button.backButton:active {
+  background-position: 0 -45px;
+}
+header button.message {
+  background: url(portal/view/res/images/title_message.png) 0 0 no-repeat;
+  background-size: cover;
+}
+header button.message:active {
+  background-position: 0 -45px;
+}
+header button.edit {
+  background: url(portal/view/res/images/title_edit.png) 0 0 no-repeat;
+  background-size: cover;
+}
+header button.edit:active {
+  background-position: 0 -45px;
+}
+header button.delete {
+  background: url(portal/view/res/images/title_delete.png) 0 0 no-repeat;
+  background-size: cover;
+}
+header button.delete:active {
+  background-position: 0 -45px;
+}
+header button.sure {
+  background: url(portal/view/res/images/title_sure.png) 0 0 no-repeat;
+  background-size: cover;
+}
+header button.sure:active {
+  background-position: 0 -45px;
+}
+header button.callService {
+  background: url(portal/view/res/images/title_phone.png) 0 0 no-repeat;
+  background-size: cover;
+}
+header button.callService:active {
+  background-position: 0 -45px;
+}
+header button.play,
+header button.account,
+header button.ticketRecord {
+  background: #2bb4ee;
+  color: #ffffff;
+  font-size: 16px;
+}
+header button.play:active,
+header button.account:active,
+header button.ticketRecord:active {
+  color: #ade6fe;
+}
+header button.ticketRecord {
+  width: 90px;
+}
+.secondPage {
+  background: #efefef;
+}
+.content {
+  padding-top: 45px;
+}
+.noItem {
+  display: none;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+.noItem .image {
+  width: 75px;
+  height: 100px;
+  background: url(portal/view/res/images/noItem.png) no-repeat;
+  background-size: cover;
+}
+.noItem .reload {
+  width: 140px;
+  height: 45px;
+  margin: 4px 8px;
+  color: #000000;
+  background: url(portal/view/res/images/btn2.png) 0 0 no-repeat;
+  background-size: cover;
+}
+.noItem .reload:disabled {
+  background-position: 0 0;
+}
+.noItem .reload:active {
+  color: #ffffff;
+  background: url(portal/view/res/images/btn2_.png) 0 0 no-repeat;
+  background-size: cover;
+}
+.warmTips {
+  padding: 10px 8px;
+  line-height: 160%;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  color: #666666;
+}
+.warmTips div {
+  background: #ffffff;
+}
+.warmTips .title {
+  font-size: 16px;
+}
+.clickMore {
+  display: none;
+  padding: 10px;
+  text-align: center;
+}
+.arrow {
+  width: 15px;
+  height: 15px;
+  background: url(portal/view/res/images/arrow.png) no-repeat;
+  background-size: cover;
+}
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 65px;
+  padding: 0 10px;
+  -webkit-box-sizing: border-box;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-shadow: 0 -3px 5px #cfcfcf;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f0f0f0));
+  border-top: 1px solid #e3e3e3;
+}
+footer button {
+  width: 70px;
+  height: 35px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #fe5727;
+  color: #ffffff;
+}
+footer button:active {
+  background: #e84415;
+}
+footer button[disabled] {
+  background: #999999;
+}
+footer .price {
+  margin-left: 10px;
+  color: #fe5727;
+}
+.mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+}
+.mask .alertBox {
+  width: 100%;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+}
+.mask .alertBox .alertCont,
+.mask .alertBox .alertCont1 {
+  width: 280px;
+  background: #222;
+  border-width: 3px;
+  border-color: rgba(255, 255, 255, 0.5);
+  border-style: solid;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  padding: 5px;
+  text-align: center;
+  line-height: 160%;
+}
+.mask .alertBox .alertCont .ewm,
+.mask .alertBox .alertCont1 .ewm {
+  width: 280px;
+  height: 280px;
+}
+.mask .alertBox .alertCont .bigBtn,
+.mask .alertBox .alertCont1 .bigBtn {
+  margin-top: 5px;
+}
+.mask .alertBox .alertCont1 {
+  background: #f4f4f4;
+}
+.mask .alertBox .alertCont1 .telphone {
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  display: block;
+  height: 46px;
+  padding: 5px;
+  border: 1px solid #c8c7cc;
+}
+.mask .alertBox .alertCont1 .cancel,
+.mask .alertBox .alertCont1 .sure {
+  width: 135px;
+  height: 45px;
+  margin-top: 20px;
+  background: #9c9c9c;
+  color: #ffffff;
+}
+.mask .alertBox .alertCont1 .sure {
+  margin-left: 10px;
+  background: #77c16b;
+}
+/*portal less文件导入*/
+#homePage {
+  width: 100%;
+  height: 100%;
+}
+#homePage header .menu {
+  background: url(portal/view/res/images/rightlogo.png) no-repeat;
+  background-size: cover;
+  width: 90px;
+  height: 100%;
+}
+#homePage header span {
+  text-align: center;
+}
+#homePage header .num {
+  position: absolute;
+  top: 8px;
+  right: 7px;
+  width: 13px;
+  height: 13px;
+  line-height: 13px;
+  text-align: center;
+  background: url(portal/view/res/images/num.png) no-repeat;
+  background-size: cover;
+  font-size: 10px;
+  color: #fe5727;
+}
+#homePage .content .personCenter {
+  width: 100%;
+  height: 145px;
+  background: url(portal/view/res/images/bg2.png) no-repeat;
+  background-size: 100% 100%;
+}
+#homePage .content .personCenter .person {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  height: 80px;
+  color: #ffffff;
+}
+#homePage .content .personCenter .person .touxiang {
+  width: 52px;
+  height: 52px;
+  margin: 0 10px;
+  background: url(portal/view/res/images/tx.png) no-repeat;
+  background-size: cover;
+}
+#homePage .content .personCenter .person .detail .userName {
+  margin-bottom: 5px;
+  font-size: 18px;
+  color: #ffffff;
+}
+#homePage .content .personCenter .person .detail .phone {
+  color: #a0a0a0;
+}
+#homePage .content .personCenter .person .gerenBtn {
+  width: 64px;
+  height: 25px;
+  margin-right: 10px;
+  background: url(portal/view/res/images/gerenzhongxin.png) 0 0 no-repeat;
+  background-size: cover;
+}
+#homePage .content .personCenter .person .gerenBtn:disabled {
+  background-position: 0 0;
+}
+#homePage .content .personCenter .person .gerenBtn:active {
+  background-position: 0 -25px;
+}
+#homePage .content .personCenter .countNum li {
+  width: 25%;
+  max-width: 25%;
+  min-width: 25%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  color: #a1a0a0;
+}
+#homePage .content .personCenter .countNum li .num {
+  box-pack: end;
+  -moz-box-pack: end;
+  -webkit-box-pack: end;
+  font-size: 20px;
+  margin-bottom: 3px;
+}
+#homePage .content .personCenter .countNum li .toBePaid {
+  color: #ff4707;
+}
+#homePage .content .personCenter .countNum li .successPaid {
+  color: #7fff21;
+}
+#homePage .content .personCenter .countNum li .all {
+  color: #ffffff;
+}
+#homePage .content .personCenter .countNum li .couponsList {
+  color: #30d6ff;
+}
+#homePage .content .app {
+  padding: 0 8px;
+}
+#homePage .content .app li {
+  float: left;
+  margin-top: 15px;
+  width: 25%;
+  max-width: 25%;
+  min-width: 25%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  text-align: center;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#homePage .content .app li .icon img {
+  width: 75px;
+  height: 75px;
+}
+#homePage .content .app li span {
+  display: block;
+  width: 100%;
+}
+#homePage .content .scroller {
+  text-align: center;
+}
+#homePage .content .scroller span {
+  display: inline-block;
+  width: 20px;
+  height: 3px;
+  margin: 0 5px 10px 0;
+  background: #d4d4d4;
+}
+#homePage .content .scroller span[checked] {
+  background: #2bb4ee;
+}
+#loginPage {
+  width: 100%;
+  height: 100%;
+}
+#loginPage #login #loginForm {
+  padding: 15px 10px;
+}
+#loginPage #login #loginForm .inputBox {
+  width: 100%;
+  height: 44px;
+  padding: 0 5px;
+  -webkit-box-sizing: border-box;
+}
+#loginPage #login #loginForm .telphone {
+  border: 1px solid #c8c7cc;
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
+#loginPage #login #loginForm .password {
+  border-left: 1px solid #c8c7cc;
+  border-right: 1px solid #c8c7cc;
+  border-bottom: 1px solid #c8c7cc;
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+#loginPage #login #loginForm .loginBtn {
+  width: 100%;
+  height: 44px;
+  margin: 15px 0 0;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#87d366), to(#72bc52));
+  border: 1px solid #66ac48;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  color: #ffffff;
+}
+#loginPage #login #loginForm .loginBtn:active {
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#539337), to(#508339));
+  border: 1px solid #447c2b;
+}
+#loginPage #login .tips {
+  display: block;
+  margin: 20px 10px 0;
+  padding-bottom: 8px;
+  background: #efefef;
+  color: #9f9f9f;
+  border-bottom: 1px #c3c3c3 solid;
+}
+#loginPage #login .middleBtn {
+  display: block;
+  width: 180px;
+  height: 45px;
+  margin: 10px;
+  font-size: 16px;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#ededed));
+  border: 1px solid #b7b7b7;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#loginPage #login .middleBtn:active {
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#b2b2b2), to(#a6a6a6));
+  border: 1px solid #8a8a8a;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#registerPage {
+  width: 100%;
+  height: 100%;
+}
+#registerPage #register #registerForm {
+  padding: 5px 10px 0 10px;
+}
+#registerPage #register #registerForm .inputBox {
+  width: 100%;
+  height: 44px;
+  margin-top: 10px;
+  padding: 0 5px;
+  -webkit-box-sizing: border-box;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#registerPage #register #registerForm .registerBtn {
+  width: 100%;
+  height: 44px;
+  margin: 20px 0;
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#87d366), to(#72bc52));
+  border: 1px solid #66ac48;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  color: #ffffff;
+}
+#registerPage #register #registerForm .registerBtn:active {
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#539337), to(#508339));
+  border: 1px solid #447c2b;
+}
+#registerPage #register .tips {
+  display: block;
+  width: 100%;
+  margin: 15px 0 0;
+  background: #efefef;
+  color: #9f9f9f;
+}
+#registerPage #register .validCode {
+  position: relative;
+  width: 100%;
+  height: 44px;
+  margin-top: 10px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#registerPage #register .validCode input {
+  display: block;
+  height: 100%;
+  padding: 0 5px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#registerPage #register .validCode .getCode {
+  width: 86px;
+  height: 36px;
+  margin: 4px 8px;
+  color: #000000;
+  background: url(portal/view/res/images/btn3.png) 0 0 no-repeat;
+  background-size: cover;
+}
+#registerPage #register .validCode .getCode:disabled {
+  background-position: 0 0;
+}
+#registerPage #register .validCode .getCode:active {
+  color: #ffffff;
+  background-position: 0 -36px;
+}
+#personalCenterPage {
+  width: 100%;
+  height: 100%;
+}
+#personalCenterPage #personalCenter .personalInfo {
+  padding-top: 15px;
+}
+#personalCenterPage #personalCenter .personalInfo li {
+  padding: 0 10px;
+  height: 50px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#personalCenterPage #personalCenter .personalInfo li:first-child {
+  border-top: 1px solid #e3e3e3;
+}
+#personalCenterPage #personalCenter .personalInfo li.item:active {
+  background: #b9e6f9;
+}
+#personalCenterPage #personalCenter .personalInfo li.arrowLabel span {
+  display: block;
+  width: 15px;
+  height: 15px;
+  background: url(portal/view/res/images/arrow.png) no-repeat;
+  background-size: cover;
+}
+#personalCenterPage #personalCenter .personalInfo li label,
+#personalCenterPage #personalCenter .personalInfo li span {
+  display: inline-block;
+}
+#personalCenterPage #personalCenter .personalInfo li label {
+  width: 110px;
+}
+#personalCenterPage #personalCenter .personalInfo li span {
+  color: #2bb4ee;
+}
+#personalCenterPage #personalCenter .personalInfo li span.noModify {
+  color: #aaa;
+}
+#personalCenterPage #personalCenter .personalInfo li input {
+  display: block;
+  height: 46px;
+  margin: 2px 0;
+}
+#messageCenterPage {
+  width: 100%;
+  height: 100%;
+}
+#messageCenterPage #messageCenter .yearMessages .yearTotal {
+  padding: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#messageCenterPage #messageCenter .yearMessages .yearTotal .year {
+  width: 45px;
+  font-size: 17px;
+}
+#messageCenterPage #messageCenter .yearMessages ul {
+  border-top: 1px solid #e3e3e3;
+}
+#messageCenterPage #messageCenter .yearMessages ul li {
+  padding: 10px 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#messageCenterPage #messageCenter .yearMessages ul li:active {
+  background: #e8f3f8;
+}
+#messageCenterPage #messageCenter .yearMessages ul li.readed .status {
+  width: 20px;
+  height: 20px;
+  background: url(portal/view/res/images/message.png) no-repeat;
+  background-size: cover;
+}
+#messageCenterPage #messageCenter .yearMessages ul li.unread .status {
+  width: 20px;
+  height: 20px;
+  background: url(portal/view/res/images/message.png) 0 -20px no-repeat;
+  background-size: cover;
+}
+#messageCenterPage #messageCenter .yearMessages ul li .time {
+  padding: 0 8px;
+  color: #c23630;
+}
+#messageCenterPage #messageCenter .yearMessages ul li .detail {
+  padding-left: 8px;
+}
+#messageCenterPage #messageCenter .yearMessages ul li .detail .messageTitle {
+  margin-bottom: 5px;
+  font-size: 17px;
+}
+#messageCenterPage #messageCenter .yearMessages ul li .detail .messageDetail {
+  color: #999999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#messageDetailPage {
+  width: 100%;
+  height: 100%;
+}
+#messageDetailPage #messageDetail {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#messageDetailPage #messageDetail .title {
+  margin-top: 10px;
+  font-size: 20px;
+}
+#messageDetailPage #messageDetail .time {
+  margin: 5px 0 10px;
+  color: #999999;
+}
+#messageDetailPage #messageDetail .time .timeIcon {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  background: url(portal/view/res/images/time.png) no-repeat;
+  background-size: cover;
+}
+#messageDetailPage #messageDetail .detail {
+  line-height: 150%;
+  font-size: 16px;
+}
+#modifyPwdPage {
+  width: 100%;
+  height: 100%;
+}
+#modifyPwdPage #modifyPwd #modifyPwdForm {
+  padding: 15px 10px;
+}
+#modifyPwdPage #modifyPwd #modifyPwdForm .inputBox {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 15px;
+  padding: 0 5px;
+  -webkit-box-sizing: border-box;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#modifyPwdPage #modifyPwd #modifyPwdForm .bigBtn {
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#orderListPage {
+  width: 100%;
+  height: 100%;
+}
+#orderListPage #orderList .yearOrders .yearTotal {
+  padding: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#orderListPage #orderList .yearOrders .yearTotal .year {
+  width: 45px;
+  border-right: 1px solid #e3e3e3;
+  font-size: 17px;
+}
+#orderListPage #orderList .yearOrders .yearTotal .total {
+  text-align: right;
+}
+#orderListPage #orderList .yearOrders .yearTotal .total span {
+  color: #2bb4ee;
+}
+#orderListPage #orderList .yearOrders ul {
+  border-top: 1px solid #e3e3e3;
+}
+#orderListPage #orderList .yearOrders ul li {
+  padding: 10px 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#orderListPage #orderList .yearOrders ul li:active {
+  background: #e8f3f8;
+}
+#orderListPage #orderList .yearOrders ul li[status='0'] .status {
+  background: url(portal/view/res/images/generated.png) no-repeat;
+  background-size: cover;
+}
+#orderListPage #orderList .yearOrders ul li[status='1'] .status {
+  background: url(portal/view/res/images/paid.png) no-repeat;
+  background-size: cover;
+}
+#orderListPage #orderList .yearOrders ul li .status {
+  width: 40px;
+  height: 40px;
+  margin: 0 5px;
+}
+#orderListPage #orderList .yearOrders ul li .detail {
+  width: 160px;
+  padding-left: 8px;
+  border-left: 1px solid #ededed;
+}
+#orderListPage #orderList .yearOrders ul li .amount {
+  width: 90px;
+  text-align: right;
+  color: #2bb4ee;
+  font-size: 17px;
+}
+#orderListPage #orderList .yearOrders ul li .orderName {
+  margin-bottom: 4px;
+}
+#orderListPage #orderList .yearOrders ul li .orderName {
+  font-size: 18px;
+}
+#orderListPage #orderList .yearOrders ul li .telphone,
+#orderListPage #orderList .yearOrders ul li .time {
+  color: #999999;
+}
+#orderListPage #orderList .yearOrders ul li .telphone {
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#orderDetailPage {
+  width: 100%;
+  height: 100%;
+}
+#orderDetailPage #orderDetail ul {
+  padding: 15px 0;
+}
+#orderDetailPage #orderDetail ul[status='0'] .status {
+  background: url(portal/view/res/images/generated1.png) no-repeat;
+  background-size: cover;
+}
+#orderDetailPage #orderDetail ul[status='1'] .status {
+  background: url(portal/view/res/images/paid1.png) no-repeat;
+  background-size: cover;
+}
+#orderDetailPage #orderDetail ul .status {
+  display: inline-block;
+  width: 86px;
+  height: 20px;
+  margin: 0 5px;
+}
+#orderDetailPage #orderDetail ul li {
+  padding: 15px 10px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+}
+#orderDetailPage #orderDetail ul li:first-child {
+  border-top: 1px solid #e3e3e3;
+}
+#orderDetailPage #orderDetail ul li .title {
+  width: 90px;
+}
+#orderDetailPage #orderDetail ul li .detail {
+  text-align: right;
+  color: #999999;
+}
+#orderDetailPage #orderDetail ul li .amount {
+  color: #2bb4ee;
+}
+#electricTicketPage {
+  width: 100%;
+  height: 100%;
+}
+#electricTicketPage #electricTicket .ticketList li {
+  float: left;
+  width: 50%;
+  max-width: 50%;
+  min-width: 50%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#electricTicketPage #electricTicket .ticketList li .ticket {
+  position: relative;
+  width: 125px;
+  height: 85px;
+  background: #ffffff;
+  margin-top: 15px;
+  padding: 5px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-shadow: 0 0 5px #999;
+  -webkit-box-shadow: 0 0 5px #999;
+  -moz-box-shadow: 0 0 5px #999;
+}
+#electricTicketPage #electricTicket .ticketList li .ticket:active {
+  box-shadow: 0 0 5px #eec22b;
+  -webkit-box-shadow: 0 0 5px #eec22b;
+  -moz-box-shadow: 0 0 5px #eec22b;
+}
+#electricTicketPage #electricTicket .ticketList li .ticket img {
+  width: 100%;
+  height: 100%;
+}
+#electricTicketPage #electricTicket .ticketList li .ticket .status {
+  display: block;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 34px;
+  height: 30px;
+}
+#electricTicketPage #electricTicket .ticketList li .ticket .status[status='1'] {
+  background: url(portal/view/res/images/presenting.png) no-repeat;
+  background-size: cover;
+}
+#electricTicketPage #electricTicket .ticketList li .ticket .status[status='2'] {
+  background: url(portal/view/res/images/expired.png) no-repeat;
+  background-size: cover;
+}
+#electricTicketPage #electricTicket .ticketList li .ticket .deleteTicket {
+  position: absolute;
+  top: -10px;
+  right: -12px;
+  width: 30px;
+  height: 30px;
+  background: url(portal/view/res/images/del.png) no-repeat;
+  background-size: cover;
+}
+#electricTicketPage #electricTicket .ticketList li .ticket .deleteTicket:active {
+  background-position: 0 -30px;
+}
+.eTicketDetailPage {
+  width: 100%;
+  height: 100%;
+}
+.eTicketDetailPage .eTicketDetail .detail {
+  padding: 10px;
+}
+.eTicketDetailPage .eTicketDetail .detail .more {
+  margin-top: 5px;
+  line-height: 150%;
+  color: #666666;
+}
+.eTicketDetailPage .eTicketDetail .eTicket {
+  padding: 10px 0 8px 8px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+}
+.eTicketDetailPage .eTicketDetail .eTicket img {
+  width: 75px;
+  height: 75px;
+  padding: 5px;
+  background: #ffffff;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-shadow: 0 0 5px #999;
+  -webkit-box-shadow: 0 0 5px #999;
+  -moz-box-shadow: 0 0 5px #999;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .info {
+  margin: 0 8px;
+  color: #666666;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .info .eTicketName {
+  margin-bottom: 5px;
+  font-size: 18px;
+  color: #000000;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .info .item {
+  margin-bottom: 4px;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .btns {
+  margin-top: 8px;
+  height: 45px;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .btns button {
+  display: block;
+  margin-right: 8px;
+  height: 100%;
+  color: #ffffff;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .btns button.get {
+  background: #f17c42;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .btns button.get:active {
+  background: #e3692d;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .btns button.give {
+  background: #2bb4ee;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .btns button.give:active {
+  background: #169ed8;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .btns button.use {
+  background: #72bc52;
+}
+.eTicketDetailPage .eTicketDetail .eTicket .btns button.use:active {
+  background: #59ac35;
+}
+#contactManagerPage {
+  width: 100%;
+  height: 100%;
+}
+#contactManagerPage #contactManager .contactList {
+  padding-top: 15px;
+}
+#contactManagerPage #contactManager .contactList .contact {
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+}
+#contactManagerPage #contactManager .contactList .contact .title {
+  padding: 5px 10px;
+  background: #f7f7f7;
+  border-top: 1px solid #e3e3e3;
+  border-bottom: 1px solid #e3e3e3;
+}
+#contactManagerPage #contactManager .contactList .contact .title .touxiang {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: url(portal/view/res/images/contact.png) no-repeat;
+  background-size: cover;
+}
+#contactManagerPage #contactManager .contactList .contact .title .edit,
+#contactManagerPage #contactManager .contactList .contact .title .delete {
+  width: 50px;
+  height: 23px;
+  float: right;
+}
+#contactManagerPage #contactManager .contactList .contact .title .edit {
+  background: url(portal/view/res/images/edit.png) 0 -23px no-repeat;
+  background-size: cover;
+}
+#contactManagerPage #contactManager .contactList .contact .title .edit:active {
+  background-position: 0 0;
+}
+#contactManagerPage #contactManager .contactList .contact .title .delete {
+  background: url(portal/view/res/images/delete.png) 0 -23px no-repeat;
+  background-size: cover;
+}
+#contactManagerPage #contactManager .contactList .contact .title .delete:active {
+  background-position: 0 0;
+}
+#contactManagerPage #contactManager .contactList .contact .contactname,
+#contactManagerPage #contactManager .contactList .contact .contactID {
+  padding: 0 10px;
+  margin-top: 6px;
+  font-size: 17px;
+}
+#contactManagerPage #contactManager .contactList .contact .contactname span,
+#contactManagerPage #contactManager .contactList .contact .contactID span {
+  margin-right: 10px;
+}
+#addressManagerPage {
+  width: 100%;
+  height: 100%;
+}
+#addressManagerPage #addressManager .addressList {
+  padding-top: 15px;
+}
+#addressManagerPage #addressManager .addressList .address {
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+}
+#addressManagerPage #addressManager .addressList .address .title {
+  height: 23px;
+  padding: 5px 10px;
+  background: #f7f7f7;
+  border-top: 1px solid #e3e3e3;
+  border-bottom: 1px solid #e3e3e3;
+}
+#addressManagerPage #addressManager .addressList .address .title .setDefault {
+  display: none;
+  width: 69px;
+  height: 20px;
+  background: url(portal/view/res/images/select.png) 0 -20px no-repeat;
+  background-size: cover;
+}
+#addressManagerPage #addressManager .addressList .address .title .setDefault[checked] {
+  background-position: 0 0;
+}
+#addressManagerPage #addressManager .addressList .address .title .edit,
+#addressManagerPage #addressManager .addressList .address .title .delete {
+  width: 50px;
+  height: 23px;
+  float: right;
+}
+#addressManagerPage #addressManager .addressList .address .title .edit {
+  background: url(portal/view/res/images/edit.png) 0 -23px no-repeat;
+  background-size: cover;
+}
+#addressManagerPage #addressManager .addressList .address .title .edit:active {
+  background-position: 0 0;
+}
+#addressManagerPage #addressManager .addressList .address .title .delete {
+  background: url(portal/view/res/images/delete.png) 0 -23px no-repeat;
+  background-size: cover;
+}
+#addressManagerPage #addressManager .addressList .address .title .delete:active {
+  background-position: 0 0;
+}
+#addressManagerPage #addressManager .addressList .address .addressName,
+#addressManagerPage #addressManager .addressList .address .contactInfo {
+  padding: 0 10px;
+  margin-top: 6px;
+  font-size: 17px;
+}
+#addressManagerPage #addressManager .addressList .address .addressName span,
+#addressManagerPage #addressManager .addressList .address .contactInfo span {
+  margin-right: 10px;
+}
+#addressManagerPage #addressManager .addressList .address .addressName {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#addContactPage {
+  width: 100%;
+  height: 100%;
+}
+#addContactPage #addContact #addContactForm {
+  padding: 15px 10px;
+}
+#addContactPage #addContact #addContactForm .item {
+  margin-bottom: 15px;
+  padding: 0 5px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#addContactPage #addContact #addContactForm .item label {
+  display: inline-block;
+  width: 80px;
+}
+#addContactPage #addContact #addContactForm .item input,
+#addContactPage #addContact #addContactForm .item select,
+#addContactPage #addContact #addContactForm .item #idCardNum {
+  display: block;
+  height: 40px;
+  margin: 2px 0;
+}
+#addContactPage #addContact #addContactForm .item #idCardNum {
+  line-height: 40px;
+  color: #2bb4ee;
+}
+#addContactPage #addContact #addContactForm .item #tips {
+  color: #9d9d9d;
+}
+#addContactPage #addContact #addContactForm .bigBtn {
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#addAddressPage {
+  width: 100%;
+  height: 100%;
+}
+#addAddressPage #addAddress #addAddressForm {
+  padding: 15px 10px;
+}
+#addAddressPage #addAddress #addAddressForm .item {
+  margin-bottom: 15px;
+  padding: 0 5px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#addAddressPage #addAddress #addAddressForm .item label {
+  display: inline-block;
+  width: 80px;
+}
+#addAddressPage #addAddress #addAddressForm .item input,
+#addAddressPage #addAddress #addAddressForm .item textarea {
+  display: block;
+  height: 40px;
+  margin: 2px 0;
+}
+#addAddressPage #addAddress #addAddressForm .item textarea {
+  resize: none;
+  height: 80px;
+  padding: 10px 0;
+}
+#addAddressPage #addAddress #addAddressForm .bigBtn {
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+/*话费充值 less文件导入*/
+#telRechargePage {
+  width: 100%;
+  height: 100%;
+}
+#telRechargePage #telRecharge {
+  padding-right: 10px;
+  -webkit-box-sizing: border-box;
+}
+#telRechargePage #telRecharge .telBox {
+  margin: 15px 0 0 10px;
+  padding: 0 5px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#telRechargePage #telRecharge .telBox input {
+  display: block;
+  height: 40px;
+  margin: 2px 10px 2px 0;
+}
+#telRechargePage #telRecharge .telBox .contacts {
+  width: 25px;
+  height: 25px;
+  background: url(telRecharge/view/res/images/contacts.png) no-repeat;
+  background-size: cover;
+}
+#telRechargePage #telRecharge .guishu {
+  margin: 10px 0 15px 10px;
+  color: #666666;
+}
+#telRechargePage #telRecharge .rechargeType li {
+  position: relative;
+  float: left;
+  width: 33.333333%;
+  max-width: 33.333333%;
+  min-width: 33.333333%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  margin: 0 0 10px 0;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  padding-left: 10px;
+}
+#telRechargePage #telRecharge .rechargeType li span {
+  display: block;
+}
+#telRechargePage #telRecharge .rechargeType li div {
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-size: 17px;
+  padding: 10px 0;
+}
+#telRechargePage #telRecharge .rechargeType li div .type {
+  color: #666666;
+}
+#telRechargePage #telRecharge .rechargeType li[checked] .check {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 19px;
+  height: 19px;
+  text-align: center;
+  background: url(telRecharge/view/res/images/select.png) no-repeat;
+  background-size: cover;
+}
+#telRechargePage #telRecharge .rechargeType li[checked] .amount {
+  border: 1px solid #fe5727;
+}
+#telRechargePage #telRecharge .price {
+  color: #d9432e;
+  margin: 0 10px;
+}
+#telRechargePage #telRecharge .warmTips {
+  margin: 15px 0 10px 10px;
+}
+#telRechargePage #telRecharge .button {
+  padding-left: 10px;
+}
+#telRechargePage #telRecharge .button .bigBtn {
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+.orderConfirmPage {
+  width: 100%;
+  height: 100%;
+}
+.orderConfirmPage .orderConfirm {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.orderConfirmPage .orderConfirm .order {
+  margin-top: 15px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+.orderConfirmPage .orderConfirm .order li {
+  padding: 12px 8px;
+  border-top: 1px solid #e3e3e3;
+}
+.orderConfirmPage .orderConfirm .order li .title {
+  width: 90px;
+  color: #666666;
+}
+.orderConfirmPage .orderConfirm .order li:first-child {
+  border: none;
+}
+/*游戏充值 less文件导入*/
+#gameRechargePage {
+  width: 100%;
+  height: 100%;
+}
+#gameRechargePage #gameRecharge {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#gameRechargePage #gameRecharge .gameType {
+  margin-top: 15px;
+  padding: 10px;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #ffffff;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#gameRechargePage #gameRecharge .gameType:active {
+  background: #e8f3f8;
+}
+#gameRechargePage #gameRecharge .gameType img {
+  display: block;
+  width: 90px;
+  height: 38px;
+  margin-right: 20px;
+}
+#gameRechargePage #gameRecharge .gameType .gameTitle {
+  font-size: 18px;
+}
+#gameRechargePage .warmTips {
+  margin: 15px 0 10px;
+}
+.chargePage {
+  width: 100%;
+  height: 100%;
+}
+.chargePage .charge {
+  padding-right: 10px;
+}
+.chargePage .charge .rechargeType {
+  padding: 15px 0 10px;
+}
+.chargePage .charge .rechargeType li {
+  position: relative;
+  float: left;
+  width: 33.333333%;
+  max-width: 33.333333%;
+  min-width: 33.333333%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  margin: 0 0 10px 0;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  padding-left: 10px;
+}
+.chargePage .charge .rechargeType li span {
+  display: block;
+}
+.chargePage .charge .rechargeType li div {
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-size: 17px;
+  padding: 5px 0;
+}
+.chargePage .charge .rechargeType li div .type {
+  color: #666666;
+}
+.chargePage .charge .rechargeType li[checked] .check {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 19px;
+  height: 19px;
+  text-align: center;
+  background: url(gameRecharge/view/res/images/select.png) no-repeat;
+  background-size: cover;
+}
+.chargePage .charge .rechargeType li[checked] .amount {
+  border: 1px solid #fe5727;
+}
+.chargePage .charge .operate {
+  padding-left: 10px;
+}
+.chargePage .charge .operate button {
+  margin-top: 5px;
+}
+.chargePage .charge .operate .account {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 10px;
+  padding: 0 5px;
+  -webkit-box-sizing: border-box;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+/*彩票 less文件导入*/
+#lotteryTicketPage {
+  width: 100%;
+  height: 100%;
+}
+#lotteryTicketPage #lotteryTicket {
+  padding-right: 10px;
+}
+#lotteryTicketPage #lotteryTicket .ticketType {
+  margin: 15px 0 0 10px;
+  padding: 10px;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #ffffff;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#lotteryTicketPage #lotteryTicket .ticketType:active {
+  background: #e8f3f8;
+}
+#lotteryTicketPage #lotteryTicket .ticketType img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin-right: 20px;
+}
+#lotteryTicketPage #lotteryTicket .ticketType .ticketTitle {
+  font-size: 17px;
+}
+#lotteryTicketPage #lotteryTicket .btn {
+  margin-top: 15px;
+  padding-left: 10px;
+}
+#lotteryTicketPage #lotteryTicket .btn button {
+  width: 100%;
+  height: 49px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  color: #ffffff;
+}
+#lotteryTicketPage #lotteryTicket .balance {
+  margin: 15px 0 0 10px;
+  padding: 16px 10px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-size: 17px;
+}
+#lotteryTicketPage #lotteryTicket .balance .account {
+  float: right;
+  color: #666666;
+}
+#lottryRegisterPage #lottryRegister {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#lottryRegisterPage #lottryRegister .inputBox {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin-top: 10px;
+  padding: 0 5px;
+  -webkit-box-sizing: border-box;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#lottryRegisterPage #lottryRegister .warmTips {
+  margin: 15px 0 20px;
+}
+#rechargePage #recharge {
+  padding-right: 10px;
+}
+#rechargePage #recharge .amount li {
+  position: relative;
+  float: left;
+  width: 50%;
+  max-width: 50%;
+  min-width: 50%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  margin-top: 10px;
+  padding-left: 10px;
+  -webkit-box-sizing: border-box;
+}
+#rechargePage #recharge .amount li div {
+  width: 100%;
+  height: 145px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-size: 20px;
+}
+#rechargePage #recharge .amount li[checked] .check {
+  position: absolute;
+  top: 1px;
+  right: -1px;
+  width: 19px;
+  height: 19px;
+  text-align: center;
+  background: url(gameRecharge/view/res/images/select.png) no-repeat;
+  background-size: cover;
+}
+#rechargePage #recharge .amount li[checked] .amount {
+  border: 1px solid #fe5727;
+}
+#rechargePage #recharge .btn {
+  margin-top: 15px;
+  padding-left: 10px;
+}
+.selectBallsPage {
+  width: 100%;
+  height: 100%;
+}
+.selectBallsPage .selectBalls {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.selectBallsPage .selectBalls .tabs {
+  width: 100%;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+}
+.selectBallsPage .selectBalls .tabs ul {
+  margin: 15px auto;
+}
+.selectBallsPage .selectBalls .tabs ul li {
+  width: 99px;
+  height: 29px;
+  line-height: 29px;
+  text-align: center;
+  background: url(lotteryTicket/view/res/images/tab_bg.png) no-repeat;
+  background-size: cover;
+}
+.selectBallsPage .selectBalls .tabs ul li[checked] {
+  color: #797979;
+}
+.selectBallsPage .selectBalls .tabs ul li.tab_left {
+  background-position: 0 0;
+}
+.selectBallsPage .selectBalls .tabs ul li.tab_left[checked] {
+  background-position: 0 -29px;
+}
+.selectBallsPage .selectBalls .tabs ul li.tab_cener {
+  background-position: 0 -58px;
+}
+.selectBallsPage .selectBalls .tabs ul li.tab_cener[checked] {
+  background-position: 0 -87px;
+}
+.selectBallsPage .selectBalls .tabs ul li.tab_right {
+  background-position: 0 -116px;
+}
+.selectBallsPage .selectBalls .tabs ul li.tab_right[checked] {
+  background-position: 0 -145px;
+}
+.selectBallsPage .selectBalls .time {
+  color: #666666;
+  margin: 10px 15px 10px 0;
+}
+.selectBallsPage .selectBalls .time span {
+  margin-right: 10px;
+}
+.selectBallsPage .selectBalls .selectNumbers {
+  float: left;
+  width: 100%;
+  margin: 0 0 10px 0;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #ffffff;
+}
+.selectBallsPage .selectBalls .selectNumbers .tip {
+  margin: 10px;
+  color: #666666;
+}
+.selectBallsPage .selectBalls .selectNumbers .tip .redBall {
+  color: #f93737;
+}
+.selectBallsPage .selectBalls .selectNumbers .tip .blueBall {
+  color: #1688c0;
+}
+.selectBallsPage .selectBalls .selectNumbers ul li {
+  float: left;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  text-align: center;
+  margin: 0 0 9px 9px;
+  background: url(lotteryTicket/view/res/images/circle.png) no-repeat;
+  background-size: cover;
+}
+.selectBallsPage .selectBalls .selectNumbers ul.redBalls {
+  color: #f93737;
+}
+.selectBallsPage .selectBalls .selectNumbers ul.redBalls li[checked] {
+  background-position: -25px 0;
+  color: #ffffff;
+}
+.selectBallsPage .selectBalls .selectNumbers ul.blueBalls {
+  color: #1688c0;
+}
+.selectBallsPage .selectBalls .selectNumbers ul.blueBalls li[checked] {
+  background-position: -50px 0;
+  color: #ffffff;
+}
+.selectBallsPage .selectBalls .bottomInfo {
+  margin: 0 15px;
+}
+.selectBallsPage .selectBalls .bottomInfo .shake {
+  float: left;
+  margin: 0 5px;
+  padding: 5px 0;
+}
+.selectBallsPage .selectBalls .bottomInfo .total {
+  float: right;
+  padding: 5px 0;
+}
+.selectBallsPage .selectBalls .bottomInfo .total span {
+  margin: 0 5px;
+}
+.selectBallsPage .selectBalls .btns button {
+  display: block;
+  height: 49px;
+  margin-top: 10px;
+  color: #ffffff;
+}
+.selectBallsPage .selectBalls .btns button.redBtn {
+  margin-left: 10px;
+}
+#betListPage {
+  width: 100%;
+  height: 100%;
+}
+#betListPage #betList {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#betListPage #betList .tabs {
+  width: 100%;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+}
+#betListPage #betList .tabs ul {
+  margin: 15px auto;
+}
+#betListPage #betList .tabs ul li {
+  width: 99px;
+  height: 29px;
+  line-height: 29px;
+  text-align: center;
+  background: url(lotteryTicket/view/res/images/tab_bg.png) no-repeat;
+  background-size: cover;
+}
+#betListPage #betList .tabs ul li[checked] {
+  color: #797979;
+}
+#betListPage #betList .tabs ul li.tab_left {
+  background-position: 0 0;
+}
+#betListPage #betList .tabs ul li.tab_left[checked] {
+  background-position: 0 -29px;
+}
+#betListPage #betList .tabs ul li.tab_right {
+  background-position: 0 -116px;
+}
+#betListPage #betList .tabs ul li.tab_right[checked] {
+  background-position: 0 -145px;
+}
+#betListPage #betList .time {
+  color: #666666;
+  margin: 0 15px 10px 0;
+}
+#betListPage #betList .time span {
+  margin-right: 10px;
+}
+#betListPage #betList .betsList {
+  position: relative;
+  margin: 0 0 15px;
+  padding-bottom: 10px;
+  padding-right: 30px;
+  border: 1px solid #c8c7cc;
+  background: #ffffff;
+}
+#betListPage #betList .betsList li[name="bet_code"] {
+  word-wrap: break-word;
+}
+#betListPage #betList .betsList li {
+  padding: 10px 10px 0;
+}
+#betListPage #betList .betsList li .type {
+  margin-right: 10px;
+}
+#betListPage #betList .betsList li .total {
+  float: right;
+  color: #666666;
+}
+#betListPage #betList .betsList li .redBall {
+  margin-right: 5px;
+  color: #f93737;
+}
+#betListPage #betList .betsList li .blueBall {
+  margin-left: 5px;
+  color: #1688c0;
+}
+#betListPage #betList .betsList .clearButton {
+  position: absolute;
+  top: 20px;
+  right: 10px;
+  width: 25px;
+  height: 25px;
+  background: url(lotteryTicket/view/res/images/delete.png) no-repeat;
+  background-size: cover;
+}
+#betListPage #betList .bottomInfo {
+  margin: 0 10px 5px;
+}
+#betListPage #betList .bottomInfo .total {
+  float: right;
+  line-height: 30px;
+}
+#betListPage #betList .bottomInfo .total span {
+  margin: 0 5px;
+}
+#betListPage #betList .bottomInfo .balanceYuan {
+  text-align: right;
+}
+#betListPage #betList .bottomInfo .inputBoxSmall {
+  width: 45px;
+  height: 30px;
+  margin-right: 5px;
+  border: 1px solid #c8c7cc;
+  text-align: center;
+}
+#betListPage #betList .btns button {
+  display: block;
+  height: 49px;
+  margin-top: 10px;
+  color: #ffffff;
+}
+#betListPage #betList .btns button.redBtn {
+  margin-left: 10px;
+}
+#dgRecordPage {
+  width: 100%;
+  height: 100%;
+}
+#dgRecordPage #dgRecord {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#dgRecordPage #dgRecord .tabs {
+  width: 100%;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+}
+#dgRecordPage #dgRecord .tabs ul {
+  margin: 15px auto;
+}
+#dgRecordPage #dgRecord .tabs ul li {
+  width: 99px;
+  height: 29px;
+  line-height: 29px;
+  text-align: center;
+  background: url(lotteryTicket/view/res/images/tab_bg.png) no-repeat;
+  background-size: cover;
+}
+#dgRecordPage #dgRecord .tabs ul li[checked] {
+  color: #797979;
+}
+#dgRecordPage #dgRecord .tabs ul li.tab_left {
+  background-position: 0 0;
+}
+#dgRecordPage #dgRecord .tabs ul li.tab_left[checked] {
+  background-position: 0 -29px;
+}
+#dgRecordPage #dgRecord .tabs ul li.tab_right {
+  background-position: 0 -116px;
+}
+#dgRecordPage #dgRecord .tabs ul li.tab_right[checked] {
+  background-position: 0 -145px;
+}
+#dgRecordPage #dgRecord .dgList {
+  width: 100%;
+}
+#dgRecordPage #dgRecord .dgList li {
+  margin: 0 0 15px;
+  padding: 10px 5px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#dgRecordPage #dgRecord .dgList li:active {
+  background: #e8f3f8;
+}
+#dgRecordPage #dgRecord .dgList li img {
+  width: 40px;
+  height: 40px;
+}
+#dgRecordPage #dgRecord .dgList li .detail {
+  padding: 0 5px;
+}
+#dgRecordPage #dgRecord .dgList li .detail .time {
+  color: #666666;
+}
+#dgRecordPage #dgRecord .dgList li .detail .time .date {
+  float: right;
+  margin-left: 5px;
+}
+#dgRecordPage #dgRecord .dgList li .detail .more {
+  margin-top: 5px;
+}
+#dgRecordPage #dgRecord .dgList li .detail .more .status {
+  float: right;
+}
+#dgDetailPage {
+  width: 100%;
+  height: 100%;
+}
+#dgDetailPage #dgDetail .detail {
+  margin: 0 15px 10px;
+  padding-top: 10px;
+  border-bottom: 1px solid #e3e3e3;
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+#dgDetailPage #dgDetail .detail li {
+  height: 45px;
+  line-height: 45px;
+  padding: 0 10px;
+  color: #999999;
+  border: 1px solid #c8c7cc;
+  border-bottom: none;
+  background: #ffffff;
+}
+#dgDetailPage #dgDetail .detail li label {
+  width: 80px;
+  display: inline-block;
+}
+#dgDetailPage #dgDetail .detail li span {
+  color: #000000;
+}
+#dgDetailPage #dgDetail .detail li:first-child {
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
+#dgDetailPage #dgDetail .detail li:last-child {
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+#dgDetailPage #dgDetail .more {
+  margin: 0 15px 10px;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #ffffff;
+}
+#dgDetailPage #dgDetail .more li {
+  padding: 8px 10px;
+}
+#dgDetailPage #dgDetail .more li:last-child {
+  color: #666666;
+}
+#dgDetailPage #dgDetail .more .title {
+  font-size: 17px;
+  border-bottom: 1px dotted #e3e3e3;
+}
+#dgDetailPage #dgDetail .more .award {
+  float: right;
+}
+#lotteryRecordPage {
+  width: 100%;
+  height: 100%;
+}
+#lotteryRecordPage #lotteryRecord {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#lotteryRecordPage #lotteryRecord .tabs {
+  width: 100%;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+}
+#lotteryRecordPage #lotteryRecord .tabs ul {
+  margin: 15px auto;
+}
+#lotteryRecordPage #lotteryRecord .tabs ul li {
+  width: 99px;
+  height: 29px;
+  line-height: 29px;
+  text-align: center;
+  background: url(lotteryTicket/view/res/images/tab_bg.png) no-repeat;
+  background-size: cover;
+}
+#lotteryRecordPage #lotteryRecord .tabs ul li[checked] {
+  color: #797979;
+}
+#lotteryRecordPage #lotteryRecord .tabs ul li.tab_left {
+  background-position: 0 0;
+}
+#lotteryRecordPage #lotteryRecord .tabs ul li.tab_left[checked] {
+  background-position: 0 -29px;
+}
+#lotteryRecordPage #lotteryRecord .tabs ul li.tab_cener {
+  background-position: 0 -58px;
+}
+#lotteryRecordPage #lotteryRecord .tabs ul li.tab_cener[checked] {
+  background-position: 0 -87px;
+}
+#lotteryRecordPage #lotteryRecord .tabs ul li.tab_right {
+  background-position: 0 -116px;
+}
+#lotteryRecordPage #lotteryRecord .tabs ul li.tab_right[checked] {
+  background-position: 0 -145px;
+}
+#lotteryRecordPage #lotteryRecord .lotteryList {
+  width: 100%;
+}
+#lotteryRecordPage #lotteryRecord .lotteryList li {
+  margin: 0 0 10px;
+  padding: 10px 5px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#lotteryRecordPage #lotteryRecord .lotteryList li:active {
+  background: #e8f3f8;
+}
+#lotteryRecordPage #lotteryRecord .lotteryList li img {
+  width: 40px;
+  height: 40px;
+}
+#lotteryRecordPage #lotteryRecord .lotteryList li .game {
+  margin: 0 10px;
+  font-size: 17px;
+}
+#lotteryRecordPage #lotteryRecord .lotteryList li .detail .time {
+  color: #666666;
+}
+#lotteryRecordPage #lotteryRecord .lotteryList li .detail .time .date {
+  float: right;
+  margin-left: 5px;
+}
+#lotteryRecordPage #lotteryRecord .lotteryList li .detail .more {
+  margin-top: 5px;
+}
+#lotteryRecordPage #lotteryRecord .lotteryList li .detail .more .redBall {
+  margin-right: 5px;
+  color: #f93737;
+}
+#lotteryRecordPage #lotteryRecord .lotteryList li .detail .more .blueBall {
+  margin-left: 5px;
+  color: #1688c0;
+}
+#kjDetailPage {
+  width: 100%;
+  height: 100%;
+}
+#kjDetailPage #kjDetail {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#kjDetailPage #kjDetail .ticketDetail {
+  margin: 0 0 10px;
+  padding-top: 10px;
+  border-bottom: 1px solid #e3e3e3;
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+#kjDetailPage #kjDetail .ticketDetail li {
+  height: 45px;
+  line-height: 45px;
+  padding: 0 10px;
+  background: #ffffff;
+  color: #666666;
+  border: 1px solid #c8c7cc;
+  border-bottom: none;
+}
+#kjDetailPage #kjDetail .ticketDetail li div {
+  padding-left: 30px;
+  color: #000000;
+}
+#kjDetailPage #kjDetail .ticketDetail li .redBall {
+  margin-right: 5px;
+  color: #f93737;
+}
+#kjDetailPage #kjDetail .ticketDetail li .blueBall {
+  margin-left: 5px;
+  color: #1688c0;
+}
+#kjDetailPage #kjDetail .ticketDetail li:first-child {
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
+#kjDetailPage #kjDetail .ticketDetail li:last-child {
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+#kjDetailPage #kjDetail .award {
+  border: 1px solid #c8c7cc;
+  border-bottom: none;
+  background: #ffffff;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#kjDetailPage #kjDetail .award li {
+  height: 45px;
+  line-height: 45px;
+  padding: 0 10px 0 0;
+  color: #666666;
+  border-bottom: 1px solid #e3e3e3;
+}
+#kjDetailPage #kjDetail .award li:last-child {
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+#kjDetailPage #kjDetail .award li div {
+  width: 80px;
+  text-align: center;
+}
+#kjDetailPage #kjDetail .award li.cont div {
+  color: #000000;
+}
+#kjDetailPage #kjDetail .award li.cont div:first-child {
+  color: #666666;
+}
+#checkOrderPage {
+  width: 100%;
+  height: 100%;
+}
+#checkOrderPage #checkOrder .textBox {
+  margin: 15px 10px;
+  padding: 15px 10px;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #ffffff;
+}
+#checkOrderPage #checkOrder .textBox .account {
+  padding-left: 30px;
+}
+#userInfoPage {
+  width: 100%;
+  height: 100%;
+}
+#userInfoPage #userInfo .detail {
+  margin: 0 10px;
+  padding-top: 10px;
+  border-bottom: 1px solid #e3e3e3;
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+#userInfoPage #userInfo .detail li {
+  height: 45px;
+  padding: 0 10px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-bottom: none;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#userInfoPage #userInfo .detail li .title {
+  width: 80px;
+  margin-right: 20px;
+}
+#userInfoPage #userInfo .detail li .quesiton {
+  width: 30px;
+  line-height: 45px;
+  font-weight: bold;
+  color: red;
+  text-align: center;
+}
+#userInfoPage #userInfo .detail li:first-child {
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
+#userInfoPage #userInfo .detail li:last-child {
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+#userInfoPage #userInfo .customerService {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  margin-top: 25px;
+}
+#userInfoPage #userInfo .customerService img {
+  width: 40px;
+  height: 30px;
+}
+#userInfoPage #userInfo .customerService .tipText {
+  margin: 5px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #666666;
+}
+#userInfoPage #userInfo .customerService .hotLine {
+  color: #2bb4ee;
+  text-decoration: underline;
+  font-weight: normal;
+}
+#tixianPage {
+  width: 100%;
+  height: 100%;
+}
+#tixianPage #tixian {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#tixianPage #tixian .detail {
+  padding-top: 10px;
+  border-bottom: 1px solid #e3e3e3;
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+#tixianPage #tixian .detail li {
+  height: 45px;
+  padding: 0 10px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-bottom: none;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#tixianPage #tixian .detail li .title {
+  width: 80px;
+  margin-right: 20px;
+}
+#tixianPage #tixian .detail li .quesiton {
+  width: 30px;
+  line-height: 45px;
+  font-weight: bold;
+  color: red;
+  text-align: center;
+}
+#tixianPage #tixian .detail li:first-child {
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
+#tixianPage #tixian .detail li:last-child {
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+#tixianPage #tixian .inputBox {
+  width: 100%;
+  display: block;
+  height: 44px;
+  margin: 10px 0 8px;
+  padding: 0 5px;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -webkit-box-sizing: border-box;
+}
+#tixianPage #tixian .tip {
+  padding-left: 6px;
+  color: #666666;
+}
+#tixianPage #tixian .selectedBank {
+  margin-top: 15px;
+  padding: 5px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#tixianPage #tixian .selectedBank:active {
+  background: #e8f3f8;
+}
+#tixianPage #tixian .selectedBank img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+#tixianPage #tixian .bigBtn {
+  margin-top: 15px;
+}
+#bankCardPage {
+  width: 100%;
+  height: 100%;
+}
+#bankCardPage #bankCard {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#bankCardPage #bankCard .bankcard {
+  padding-top: 10px;
+}
+#bankCardPage #bankCard .bankcard li {
+  margin-bottom: 10px;
+  padding: 5px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#bankCardPage #bankCard .bankcard li:active {
+  background: #e8f3f8;
+}
+#bankCardPage #bankCard .bankcard li .bankName {
+  height: 30px;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  border-bottom: 1px dotted #999999;
+}
+#bankCardPage #bankCard .bankcard li .bankName img {
+  width: 30px;
+  height: 30px;
+}
+#bankCardPage #bankCard .bankcard li .bankName .name {
+  margin: 0 5px;
+  font-size: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#bankCardPage .btn {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+}
+#bankCardPage .btn .bigBtn {
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
+#addBankcardPage {
+  width: 100%;
+  height: 100%;
+}
+#addBankcardPage #addBankcard {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#addBankcardPage #addBankcard form {
+  padding-top: 10px;
+}
+#addBankcardPage #addBankcard form .inputBox {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 10px;
+  padding: 0 5px;
+  -webkit-box-sizing: border-box;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#addBankcardPage #addBankcard form .selectBox {
+  position: relative;
+}
+#addBankcardPage #addBankcard form .selectBox .arrow {
+  position: absolute;
+  top: 14px;
+  right: 10px;
+}
+/*汽车票 less文件导入*/
+#busTicketPage {
+  width: 100%;
+  height: 100%;
+}
+#busTicketPage #busTicket {
+  padding: 45px 10px 0;
+}
+#busTicketPage #busTicket .station {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  padding-top: 10px;
+}
+#busTicketPage #busTicket .station .setOut .title,
+#busTicketPage #busTicket .station .arrived .title {
+  height: 40px;
+  line-height: 40px;
+  color: #ffffff;
+  font-size: 18px;
+  background: #2bb4ee;
+  border-radius: 5px 5px 0px 0px;
+  -moz-border-radius: 5px 5px 0px 0px;
+  -webkit-border-radius: 5px 5px 0px 0px;
+  text-align: center;
+}
+#busTicketPage #busTicket .station .setOut .stationContent,
+#busTicketPage #busTicket .station .arrived .stationContent {
+  font-size: 18px;
+  text-align: center;
+  height: 55px;
+  line-height: 55px;
+  background: #ffffff;
+  border-left: 1px solid #c8c7cc;
+  border-right: 1px solid #c8c7cc;
+  border-bottom: 1px solid #c8c7cc;
+  border-radius: 0px 0px 5px 5px;
+  -moz-border-radius: 0px 0px 5px 5px;
+  -webkit-border-radius: 0px 0px 5px 5px;
+}
+#busTicketPage #busTicket .station .setOut .stationContent:active,
+#busTicketPage #busTicket .station .arrived .stationContent:active {
+  background: #e8f3f8;
+}
+#busTicketPage #busTicket .station .icon {
+  margin: 0 5px;
+}
+#busTicketPage #busTicket .station .arrived .title {
+  background: #E76E5C;
+}
+#busTicketPage #busTicket .calendar {
+  border: 1px solid #c8c7cc;
+  background: #ffffff;
+  margin: 10px 0 20px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-size: 16px;
+}
+#busTicketPage #busTicket .calendar .date {
+  height: 45px;
+  line-height: 45px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  padding-right: 5px;
+}
+#busTicketPage #busTicket .calendar .date:active {
+  background: #e8f3f8;
+}
+#busTicketPage #busTicket .calendar .date img {
+  width: 16px;
+  height: 16px;
+  margin: 0 5px;
+}
+#busTicketPage #busTicket .calendar .date .title {
+  color: #666666;
+}
+#busTicketPage #busTicket .calendar .date .title span {
+  color: #000000;
+}
+#busTicketPage #busTicket .calendar .date .calendarDate {
+  padding-left: 10px;
+}
+#busTicketPage #busTicket .customerService {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  margin-top: 25px;
+}
+#busTicketPage #busTicket .customerService img {
+  width: 40px;
+  height: 30px;
+}
+#busTicketPage #busTicket .customerService .tipText {
+  margin: 5px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #666666;
+}
+#busTicketPage #busTicket .customerService .hotLine {
+  color: #2bb4ee;
+  text-decoration: underline;
+  font-weight: normal;
+}
+#ticketListPage {
+  width: 100%;
+  height: 100%;
+}
+#ticketListPage #ticketList .topBar {
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e5e5e5));
+  height: 40px;
+  line-height: 40px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#ticketListPage #ticketList .topBar .item {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  width: 20%;
+  max-width: 20%;
+  min-width: 20%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+#ticketListPage #ticketList .topBar .item .sortIcon {
+  width: 8px;
+  height: 11px;
+  margin-left: 5px;
+}
+#ticketListPage #ticketList .topBar .item .on_down {
+  background: url(busTicket/view/res/images/coach_sort_icon2.png) no-repeat;
+  background-size: cover;
+}
+#ticketListPage #ticketList .topBar .item .on_up {
+  background: url(busTicket/view/res/images/coach_sort_icon1.png) no-repeat;
+  background-size: cover;
+}
+#ticketListPage #ticketList .topBar .item .off_down {
+  background: url(busTicket/view/res/images/coach_sort_icon4.png) no-repeat;
+  background-size: cover;
+}
+#ticketListPage #ticketList .topBar .item .off_up {
+  background: url(busTicket/view/res/images/coach_sort_icon3.png) no-repeat;
+  background-size: cover;
+}
+#ticketListPage #ticketList .topBar .station {
+  width: 40%;
+  max-width: 40%;
+  min-width: 40%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+#ticketListPage #ticketList li {
+  padding: 10px 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+}
+#ticketListPage #ticketList li:active {
+  background: #e8f3f8;
+}
+#ticketListPage #ticketList li .price {
+  color: #fe5727;
+}
+#ticketListPage #ticketList li .station {
+  font-size: 16px;
+}
+#ticketListPage #ticketList li .item {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  width: 22%;
+  max-width: 22%;
+  min-width: 22%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+#ticketListPage #ticketList li .station {
+  width: 34%;
+  max-width: 34%;
+  min-width: 34%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+#ticketListPage .dateTime {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+}
+#ticketDetailPage #ticketDetail {
+  padding: 45px 10px 0 10px;
+}
+#ticketDetailPage #ticketDetail .station {
+  padding-top: 10px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#ticketDetailPage #ticketDetail .station .setOut .title,
+#ticketDetailPage #ticketDetail .station .arrived .title {
+  height: 40px;
+  line-height: 40px;
+  color: #ffffff;
+  font-size: 18px;
+  background: #2bb4ee;
+  border-radius: 5px 5px 0px 0px;
+  -moz-border-radius: 5px 5px 0px 0px;
+  -webkit-border-radius: 5px 5px 0px 0px;
+  text-align: center;
+}
+#ticketDetailPage #ticketDetail .station .setOut .stationContent,
+#ticketDetailPage #ticketDetail .station .arrived .stationContent {
+  font-size: 18px;
+  text-align: center;
+  height: 55px;
+  line-height: 55px;
+  background: #ffffff;
+  border-left: 1px solid #c8c7cc;
+  border-right: 1px solid #c8c7cc;
+  border-bottom: 1px solid #c8c7cc;
+  border-radius: 0px 0px 5px 5px;
+  -moz-border-radius: 0px 0px 5px 5px;
+  -webkit-border-radius: 0px 0px 5px 5px;
+}
+#ticketDetailPage #ticketDetail .station .setOut .stationContent:active,
+#ticketDetailPage #ticketDetail .station .arrived .stationContent:active {
+  background: #e8f3f8;
+}
+#ticketDetailPage #ticketDetail .station .icon {
+  margin: 0 5px;
+}
+#ticketDetailPage #ticketDetail .station .arrived .title {
+  background: #E76E5C;
+}
+#ticketDetailPage #ticketDetail .ticketMore {
+  margin: 10px 0;
+  background: #ffffff;
+  border-left: 1px solid #c8c7cc;
+  border-right: 1px solid #c8c7cc;
+  border-bottom: 1px solid #c8c7cc;
+}
+#ticketDetailPage #ticketDetail .ticketMore li {
+  padding: 15px 10px;
+  border-top: 1px solid #e3e3e3;
+  color: #666666;
+}
+#ticketDetailPage #ticketDetail .ticketMore li .title {
+  width: 90px;
+}
+#ticketDetailPage #ticketDetail .ticketMore li .data {
+  color: #000000;
+}
+#ticketDetailPage #ticketDetail .ticketMore li .data .hour {
+  margin-left: 10px;
+  color: #319fe9;
+}
+#ticketDetailPage #ticketDetail .ticketMore .folder {
+  width: 100%;
+  height: 40px;
+  background: #dedede;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+}
+#ticketDetailPage #ticketDetail .ticketMore .folder .image {
+  width: 10px;
+  height: 12px;
+  background: url(busTicket/view/res/images/zhankai.png) no-repeat;
+  background-size: cover;
+}
+#ticketDetailPage #ticketDetail .ticketMore .folder[fold] {
+  background: #dedede;
+}
+#ticketDetailPage #ticketDetail .ticketMore .folder[fold] .image {
+  background: url(busTicket/view/res/images/shouqi.png) no-repeat;
+  background-size: cover;
+}
+#ticketDetailPage #ticketDetail .passengers {
+  margin: 10px 0;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+}
+#ticketDetailPage #ticketDetail .passengers .title {
+  padding: 15px 10px;
+}
+#ticketDetailPage #ticketDetail .passengers .title .edit {
+  width: 17px;
+  height: 17px;
+  background: url(busTicket/view/res/images/edit.png) no-repeat;
+  background-size: cover;
+}
+#ticketDetailPage #ticketDetail .passengers .tipInfo {
+  padding-left: 10px;
+  color: #666666;
+}
+#ticketDetailPage #ticketDetail .passengers .passengerList {
+  display: none;
+  border-top: 1px solid #e3e3e3;
+}
+#ticketDetailPage #ticketDetail .passengers .passengerList li {
+  padding: 5px 10px;
+  line-height: 150%;
+  border-bottom: 1px dotted #e3e3e3;
+  font-size: 16px;
+}
+#ticketDetailPage #ticketDetail .passengers .passengerList li:last-child {
+  border: none;
+}
+#ticketDetailPage #ticketDetail .passengers .passengerList li .name {
+  margin-right: 20px;
+}
+#ticketDetailPage #ticketDetail .contact {
+  position: relative;
+  height: 66px;
+  padding: 0 10px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#ticketDetailPage #ticketDetail .contact input {
+  width: 210px;
+  height: 30px;
+  margin: 0 5px;
+}
+#ticketDetailPage #ticketDetail .contact .contacts {
+  width: 25px;
+  height: 25px;
+  background: url(busTicket/view/res/images/contacts.png) no-repeat;
+  background-size: cover;
+}
+#ticketDetailPage #ticketDetail .contact .contacts:active {
+  background: url(busTicket/view/res/images/contacts.png) -25px no-repeat;
+  background-size: cover;
+}
+#ticketDetailPage footer {
+  position: static;
+}
+#ticketDetailPage footer .needed {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  font-size: 16px;
+}
+#ticketDetailPage footer .needed img {
+  float: left;
+  width: 19px;
+  height: 19px;
+  margin-right: 5px;
+}
+#ticketInfoPage {
+  width: 100%;
+  height: 100%;
+}
+#ticketInfoPage #ticketInfo ul {
+  padding: 10px;
+  background: #eeeeee;
+}
+#ticketInfoPage #ticketInfo ul li {
+  margin-left: 25px;
+  list-style: decimal;
+  line-height: 160%;
+  background: #eeeeee;
+}
+#passengerChosePage {
+  width: 100%;
+  height: 100%;
+}
+#passengerChosePage #passengerChose .passengerList li {
+  line-height: 22px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#passengerChosePage #passengerChose .passengerList li .check {
+  width: 16px;
+  height: 16px;
+  margin: 0 10px;
+  background: url(busTicket/view/res/images/checkbox.png) no-repeat;
+  background-size: cover;
+}
+#passengerChosePage #passengerChose .passengerList li .check[checked] {
+  background: url(busTicket/view/res/images/checkbox_.png) no-repeat;
+  background-size: cover;
+}
+#passengerChosePage #passengerChose .passengerList li .center {
+  padding: 10px 0;
+  border-right: 1px solid #e3e3e3;
+}
+#passengerChosePage #passengerChose .passengerList li .center span {
+  margin-right: 6px;
+}
+#passengerChosePage #passengerChose .passengerList li .center .passenger {
+  padding-right: 45px;
+}
+#passengerChosePage #passengerChose .passengerList li .ticketType {
+  width: 30px;
+  height: 14px;
+  margin-left: 5px;
+  background: url(busTicket/view/res/images/full.png) no-repeat;
+  background-size: cover;
+}
+#passengerChosePage #passengerChose .passengerList li .ticketType.child {
+  background: url(busTicket/view/res/images/half.png) no-repeat;
+  background-size: cover;
+}
+#passengerChosePage #passengerChose .passengerList li .edit {
+  width: 17px;
+  height: 17px;
+  margin: 0 15px;
+  background: url(busTicket/view/res/images/edit.png) no-repeat;
+  background-size: cover;
+}
+#passengerChosePage .btn {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+}
+#passengerChosePage .btn .bigBtn {
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
+.passengerPage {
+  width: 100%;
+  height: 100%;
+}
+.passengerPage .passenger {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.passengerPage .passenger form {
+  padding-top: 10px;
+}
+.passengerPage .passenger form .textBox {
+  height: 44px;
+  line-height: 44px;
+  margin-bottom: 10px;
+  padding: 0 10px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+.passengerPage .passenger form .textBox input,
+.passengerPage .passenger form .textBox select {
+  display: block;
+}
+.passengerPage .passenger form .textBox .title {
+  width: 80px;
+}
+.passengerPage .passenger .bigBtn {
+  margin-top: 15px;
+}
+#buyListPage {
+  width: 100%;
+  height: 100%;
+}
+#buyListPage #buyList .monthOrder .month {
+  height: 40px;
+  line-height: 27px;
+  background: #e7eff2;
+  text-align: center;
+  border-bottom: 1px solid #d1e7ef;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+}
+#buyListPage #buyList .monthOrder .month .monthLabel {
+  width: 94px;
+  height: 32px;
+  background: url(busTicket/view/res/images/timeBg.png) no-repeat;
+  background-size: cover;
+}
+#buyListPage #buyList .monthOrder .ticketList li {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#buyListPage #buyList .monthOrder .ticketList li:active {
+  background: #e8f3f8;
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='0'] {
+  border-left: 5px solid #f4774c;
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='0'] .status:after {
+  color: #f4774c;
+  content: '未支付';
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='1'] {
+  border-left: 5px solid #858585;
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='1'] .status:after {
+  color: #7e7e7e;
+  content: '交易关闭';
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='2'] {
+  border-left: 5px solid #ffb400;
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='2'] .status:after {
+  color: #ffb400;
+  content: '出票中';
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='3'] {
+  border-left: 5px solid #20a90e;
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='3'] .status:after {
+  color: #20a90e;
+  content: '出票成功';
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='4'] {
+  border-left: 5px solid #ff0000;
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='4'] .status:after {
+  color: #ff2a00;
+  content: '出票失败';
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='5'] {
+  border-left: 10px solid #20a90e;
+}
+#buyListPage #buyList .monthOrder .ticketList li[status='5'] .status:after {
+  color: #20a90e;
+  content: '退票成功';
+}
+#buyListPage #buyList .monthOrder .ticketList li .date {
+  width: 50px;
+  height: 60px;
+  margin-right: 5px;
+  background: url(busTicket/view/res/images/time_bg.png) no-repeat;
+  background-size: cover;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#buyListPage #buyList .monthOrder .ticketList li .date .day {
+  margin-top: 9px;
+}
+#buyListPage #buyList .monthOrder .ticketList li .date .time {
+  margin-top: 6px;
+}
+#buyListPage #buyList .monthOrder .ticketList li .arrow {
+  margin: 0 6px;
+}
+#buyListPage #buyList .monthOrder .ticketList li .ticket .status,
+#buyListPage #buyList .monthOrder .ticketList li .ticket .jiage {
+  text-align: right;
+}
+#buyListPage #buyList .monthOrder .ticketList li .ticket .station {
+  font-size: 16px;
+}
+#buyListPage #buyList .monthOrder .ticketList li .ticket .time {
+  margin-top: 5px;
+  color: #999999;
+}
+#buyListPage #buyList .monthOrder .ticketList li .ticket .jiage {
+  margin-top: 5px;
+  color: #fe5727;
+}
+#buyTicketDetailPage {
+  width: 100%;
+  height: 100%;
+}
+#buyTicketDetailPage #buyTicketDetail .ticketDetail {
+  background: #ffffff;
+  padding: 0 10px;
+}
+#buyTicketDetailPage #buyTicketDetail .ticketDetail li {
+  width: 100%;
+  padding: 15px 0;
+  border-bottom: 1px dotted #b2b2b2;
+  color: #666666;
+}
+#buyTicketDetailPage #buyTicketDetail .ticketDetail li .detail {
+  float: right;
+  color: #000000;
+  text-align: right;
+}
+#buyTicketDetailPage #buyTicketDetail .ticketDetail li .detail span {
+  margin-left: 15px;
+}
+#buyTicketDetailPage #buyTicketDetail .ticketDetail li.amount {
+  -webkit-box-sizing: border-box;
+  padding: 15px 10px;
+  background: #87d6f8;
+  color: #ffffff;
+}
+#buyTicketDetailPage #buyTicketDetail .ticketDetail li.amount .detail {
+  color: #ffffff;
+}
+#buyTicketDetailPage footer {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: end;
+  -moz-box-pack: end;
+  -webkit-box-pack: end;
+}
+#busOrderConfirmPage {
+  width: 100%;
+  height: 100%;
+}
+#busOrderConfirmPage #busOrderConfirm {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#busOrderConfirmPage #busOrderConfirm .order {
+  padding-top: 10px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#busOrderConfirmPage #busOrderConfirm .order li {
+  padding: 15px 10px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-bottom: none;
+  color: #000000;
+}
+#busOrderConfirmPage #busOrderConfirm .order li .title {
+  width: 80px;
+  color: #666666;
+}
+#busOrderConfirmPage #busOrderConfirm .order li .hour {
+  margin-left: 10px;
+  color: #2bb4ee;
+}
+#busOrderConfirmPage #busOrderConfirm .order li .detail {
+  color: #000000;
+}
+#busOrderConfirmPage #busOrderConfirm .order li .detail .person {
+  margin-bottom: 5px;
+}
+#busOrderConfirmPage #busOrderConfirm .order li .detail span {
+  margin-right: 15px;
+}
+#busOrderConfirmPage #busOrderConfirm .order li .contactName {
+  margin-right: 15px;
+}
+#busOrderConfirmPage #busOrderConfirm .folder {
+  width: 100%;
+  height: 40px;
+  background: #dedede;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+}
+#busOrderConfirmPage #busOrderConfirm .folder .image {
+  width: 10px;
+  height: 12px;
+  background: url(busTicket/view/res/images/zhankai.png) no-repeat;
+  background-size: cover;
+}
+#busOrderConfirmPage #busOrderConfirm .folder[fold] {
+  background: #dedede;
+}
+#busOrderConfirmPage #busOrderConfirm .folder[fold] .image {
+  background: url(busTicket/view/res/images/shouqi.png) no-repeat;
+  background-size: cover;
+}
+.selectSitePage {
+  width: 100%;
+  height: 100%;
+}
+.selectSitePage .selectSite .search {
+  height: 36px;
+  margin: 5px 10px;
+  padding: 0 10px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+.selectSitePage .selectSite .search input,
+.selectSitePage .selectSite .search button {
+  display: block;
+}
+.selectSitePage .selectSite .search input {
+  height: 30px;
+  margin: 0 10px;
+}
+.selectSitePage .selectSite .search .searchBtn {
+  width: 15px;
+  height: 15px;
+  background: url(busTicket/view/res/images/searchIcon.png) no-repeat;
+  background-size: cover;
+}
+.selectSitePage .selectSite .places {
+  border-top: 1px solid #e3e3e3;
+}
+.selectSitePage .selectSite .places li .letter {
+  padding: 8px 10px;
+  background: #d2d2d2;
+  color: #ffffff;
+}
+.selectSitePage .selectSite .places li ul li {
+  background: #ffffff;
+  padding: 15px 10px;
+  border-bottom: 1px solid #e3e3e3;
+}
+.selectSitePage .selectSite .places li ul li:active {
+  background: #e8f3f8;
+}
+.selectSitePage .selectSite .letters {
+  border-left: 1px solid #e3e3e3;
+  width: 34px;
+  background: #e3e3e3;
+  color: #2bb4ee;
+  text-align: center;
+}
+.selectSitePage .selectSite .letters li {
+  font-size: 14px;
+  min-height: 13px;
+  line-height: 100%;
+  background: #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+}
+.selectSitePage .selectSite .letters li:active,
+.selectSitePage .selectSite .letters li[checked] {
+  background: #9e9e9e;
+  color: #ffffff;
+}
+/*余额查询 less文件导入*/
+#mySavingCardsPage {
+  width: 100%;
+  height: 100%;
+}
+#mySavingCardsPage #mySavingCards .cardList {
+  padding: 10px;
+}
+#mySavingCardsPage #mySavingCards .cardList li {
+  position: relative;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #ffffff;
+}
+#mySavingCardsPage #mySavingCards .cardList li .bank {
+  border-bottom: 1px dotted #c8c7cc;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#mySavingCardsPage #mySavingCards .cardList li .bank img {
+  width: 40px;
+  height: 40px;
+  margin: 5px 10px;
+  display: block;
+}
+#mySavingCardsPage #mySavingCards .cardList li .bank .bankName {
+  font-size: 17px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#mySavingCardsPage #mySavingCards .cardList li .cardNum {
+  margin: 6px 10px;
+  font-size: 18px;
+}
+#mySavingCardsPage #mySavingCards .cardList li .cardType {
+  color: #666666;
+}
+#mySavingCardsPage #mySavingCards .cardList li .cardType .cardIcon {
+  display: inline-block;
+  width: 16px;
+  height: 11px;
+  margin: 0 10px;
+  background: url(balanceInquiry/view/res/images/card.png) no-repeat;
+  background-size: cover;
+}
+#mySavingCardsPage #mySavingCards .cardList li .deleteCard {
+  margin-right: 10px;
+  width: 50px;
+  height: 23px;
+  background: url(balanceInquiry/view/res/images/delete.png) 0 -23px no-repeat;
+  background-size: cover;
+}
+#mySavingCardsPage #mySavingCards .cardList li .deleteCard:active {
+  background-position: 0 0;
+}
+#mySavingCardsPage .btn {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+}
+#mySavingCardsPage .btn .bigBtn {
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
+#addSavingCardPage {
+  width: 100%;
+  height: 100%;
+}
+#addSavingCardPage #addSavingCard {
+  padding: 45px 10px 0;
+}
+#addSavingCardPage #addSavingCard .inputBox {
+  width: 100%;
+  margin-top: 10px;
+  padding: 0 10px;
+  -webkit-box-sizing: border-box;
+  height: 44px;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #ffffff;
+}
+#addSavingCardPage #addSavingCard .supportList {
+  margin: 10px 5px;
+  text-align: right;
+  text-decoration: underline;
+  color: #107baf;
+}
+#addSavingCardPage #addSavingCard .bigBtn {
+  margin-bottom: 20px;
+}
+#supportBankListPage {
+  width: 100%;
+  height: 100%;
+}
+#supportBankListPage #supportBankList .topBar {
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e5e5e5));
+  height: 40px;
+  line-height: 40px;
+  padding-left: 10px;
+  border-bottom: 1px solid #c8c7cc;
+}
+#supportBankListPage #supportBankList .topBar .arrowBtn {
+  width: 36px;
+  height: 40px;
+  background: url(balanceInquiry/view/res/images/down_up.png) no-repeat;
+  background-size: cover;
+}
+#supportBankListPage #supportBankList .topBar .arrowBtn[checked] {
+  background-position: -36px 0;
+}
+#supportBankListPage #supportBankList .topBar .arrowBtn:active {
+  background: #f2f2f2 url(balanceInquiry/view/res/images/down_up.png) no-repeat;
+  background-size: cover;
+}
+#supportBankListPage #supportBankList .bankList {
+  padding: 10px 10px 0 0;
+}
+#supportBankListPage #supportBankList .bankList li {
+  position: relative;
+  float: left;
+  width: 50%;
+  max-width: 50%;
+  min-width: 50%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  margin: 0 0 10px 0;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  padding-left: 10px;
+}
+#supportBankListPage #supportBankList .bankList li div {
+  padding: 10px 0;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  font-size: 17px;
+}
+#supportBankListPage #supportBankList .bankList li div:active {
+  background: #f5f5f5;
+}
+#supportBankListPage #supportBankList .bankList li div .new {
+  display: inline-block;
+  width: 28px;
+  height: 13px;
+  margin-left: 5px;
+  background: url(balanceInquiry/view/res/images/new.png) no-repeat;
+  background-size: cover;
+}
+#supportBankListPage {
+  width: 100%;
+  height: 100%;
+}
+#supportBankListPage #supportBankList .condition {
+  padding: 10px;
+}
+#supportBankListPage #supportBankList .condition .bank {
+  padding: 8px 10px;
+  font-size: 17px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
+#supportBankListPage #supportBankList .condition .items {
+  padding: 5px 10px;
+  line-height: 160%;
+  background: #ffffff;
+  border-left: 1px solid #c8c7cc;
+  border-right: 1px solid #c8c7cc;
+  border-bottom: 1px solid #c8c7cc;
+  border-radius: 0 0 5px 5px;
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+}
+/*信用卡还款 less文件导入*/
+#creditCardPage {
+  width: 100%;
+  height: 100%;
+}
+#creditCardPage #creditCard .cardList {
+  padding: 10px;
+}
+#creditCardPage #creditCard .cardList li {
+  margin-bottom: 10px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+}
+#creditCardPage #creditCard .cardList li .bankName {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  font-size: 17px;
+}
+#creditCardPage #creditCard .cardList li .bankName .bankLogo {
+  width: 40px;
+  height: 40px;
+  display: block;
+  margin: 5px 8px;
+}
+#creditCardPage #creditCard .cardList li .tailNum {
+  padding: 5px 8px 10px;
+  color: #666666;
+}
+#creditCardPage #creditCard .cardList li .alreadyOpen,
+#creditCardPage #creditCard .cardList li .goPay {
+  color: #2bb4ee;
+}
+#creditCardPage #creditCard .cardList li .item {
+  text-align: center;
+  height: 40px;
+  line-height: 40px;
+  border-top: 1px solid #e3e3e3;
+}
+#creditCardPage #creditCard .cardList li .item .record {
+  border-left: 1px solid #e3e3e3;
+  border-right: 1px solid #e3e3e3;
+}
+#creditCardPage #creditCard .cardList li .item div:active {
+  background: #f3f3f3;
+}
+#creditCardPage #creditCard .cardList li .tip {
+  width: 110px;
+  padding-top: 7px;
+}
+#creditCardPage #creditCard .cardList li .tip .deadLine {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  margin: 5px 0;
+}
+#creditCardPage #creditCard .cardList li .tip .timeIcon {
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+#creditCardPage #creditCard .cardList li .tip .none {
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  margin-top: 8px;
+}
+#creditCardPage #creditCard .cardList li .tip .none img {
+  width: 30px;
+  height: 30px;
+}
+#creditCardPage #creditCard .cardList li .tip .notOpen {
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  color: #999999;
+}
+#creditCardPage .btn {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+}
+#creditCardPage .btn .bigBtn {
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
+#cardDetailPage {
+  width: 100%;
+  height: 100%;
+}
+#cardDetailPage #cardDetail .card {
+  height: 80px;
+  background: url(creditCard/view/res/images/bankBg.jpg) no-repeat;
+  background-size: 100% 100%;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#cardDetailPage #cardDetail .card img {
+  display: block;
+  width: 60px;
+  height: 60px;
+  margin: 0 10px;
+}
+#cardDetailPage #cardDetail .card .name {
+  font-size: 17px;
+  margin-bottom: 5px;
+}
+#cardDetailPage #cardDetail .remind {
+  margin: 15px 10px 0;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+}
+#cardDetailPage #cardDetail .remind .switch {
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#cardDetailPage #cardDetail .remind .switch button {
+  display: block;
+  width: 50px;
+  height: 25px;
+}
+#cardDetailPage #cardDetail .remind .switch button.on {
+  background: url(creditCard/view/res/images/on.png) no-repeat;
+  background-size: cover;
+}
+#cardDetailPage #cardDetail .remind .switch button.off {
+  background: url(creditCard/view/res/images/off.png) no-repeat;
+  background-size: cover;
+}
+#cardDetailPage #cardDetail .remind .switch,
+#cardDetailPage #cardDetail .remind .remindDate {
+  padding: 10px;
+}
+#billInquiryPage {
+  width: 100%;
+  height: 100%;
+}
+#billInquiryPage #billInquiry .card {
+  height: 80px;
+  background: url(creditCard/view/res/images/bankBg.jpg) no-repeat;
+  background-size: 100% 100%;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#billInquiryPage #billInquiry .card img {
+  display: block;
+  width: 60px;
+  height: 60px;
+  margin: 0 10px;
+}
+#billInquiryPage #billInquiry .card .name {
+  font-size: 17px;
+  margin-bottom: 5px;
+}
+#billInquiryPage #billInquiry .item {
+  margin: 10px 10px 0;
+  padding: 5px 10px;
+  line-height: 150%;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#addCreditCardPage {
+  width: 100%;
+  height: 100%;
+}
+#addCreditCardPage #addCreditCard {
+  padding: 45px 10px 0 10px;
+}
+#addCreditCardPage #addCreditCard .inputBox {
+  padding: 3px 10px;
+  margin: 10px 0;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #ffffff;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#addCreditCardPage #addCreditCard .inputBox input {
+  height: 38px;
+  display: block;
+}
+#addCreditCardPage #addCreditCard .remind {
+  margin: 10px 0 20px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+}
+#addCreditCardPage #addCreditCard .remind .switch {
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#addCreditCardPage #addCreditCard .remind .switch button {
+  display: block;
+  width: 50px;
+  height: 25px;
+}
+#addCreditCardPage #addCreditCard .remind .switch button.on {
+  background: url(creditCard/view/res/images/on.png) no-repeat;
+  background-size: cover;
+}
+#addCreditCardPage #addCreditCard .remind .switch button.off {
+  background: url(creditCard/view/res/images/off.png) no-repeat;
+  background-size: cover;
+}
+#addCreditCardPage #addCreditCard .remind .switch,
+#addCreditCardPage #addCreditCard .remind .remindDate {
+  padding: 10px;
+}
+#repayRecordPage {
+  width: 100%;
+  height: 100%;
+}
+#repayRecordPage #repayRecord .card {
+  height: 80px;
+  background: url(creditCard/view/res/images/bankBg.jpg) no-repeat;
+  background-size: 100% 100%;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#repayRecordPage #repayRecord .card img {
+  display: block;
+  width: 60px;
+  height: 60px;
+  margin: 0 10px;
+}
+#repayRecordPage #repayRecord .card .name {
+  font-size: 17px;
+  margin-bottom: 5px;
+}
+#repayRecordPage #repayRecord .record {
+  margin: 10px 10px 0;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+#repayRecordPage #repayRecord .record .status,
+#repayRecordPage #repayRecord .record .amount {
+  text-align: right;
+}
+#repayRecordPage #repayRecord .record .amount {
+  color: #fe5727;
+}
+#repayRecordPage #repayRecord .record[status='0'] .status {
+  color: #77c16b;
+}
+#repayRecordPage #repayRecord .record[status='0'] .status:after {
+  content: "还款成功";
+}
+#repayRecordPage #repayRecord .record[status='1'] .status {
+  color: #cdcdcd;
+}
+#repayRecordPage #repayRecord .record[status='1'] .status:after {
+  content: "还款失败";
+}
+#repayRecordPage footer {
+  height: 65px;
+  padding-top: 8px;
+}
+#bankListPage {
+  width: 100%;
+  height: 100%;
+}
+#bankListPage #bankList .bankUl li {
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  font-size: 17px;
+}
+#bankListPage #bankList .bankUl li img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin: 10px;
+}
+#bankListPage #bankList .bankUl li:active {
+  background: #e8f3f8;
+}
+#creditRepayPage {
+  width: 100%;
+  height: 100%;
+}
+#creditRepayPage #creditRepay .card {
+  height: 80px;
+  background: url(creditCard/view/res/images/bankBg.jpg) no-repeat;
+  background-size: 100% 100%;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#creditRepayPage #creditRepay .card img {
+  display: block;
+  width: 60px;
+  height: 60px;
+  margin: 0 10px;
+}
+#creditRepayPage #creditRepay .card .name {
+  font-size: 17px;
+  margin-bottom: 5px;
+}
+#creditRepayPage #creditRepay .repay {
+  padding: 10px;
+}
+#creditRepayPage #creditRepay .repay .inputBox {
+  margin-bottom: 8px;
+  padding: 0 10px;
+  background: #ffffff;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#creditRepayPage #creditRepay .repay .inputBox input {
+  display: block;
+}
+#creditRepayPage #creditRepay .repay .inputBox button {
+  background: none;
+  color: #2bb4ee;
+}
+#creditRepayPage #creditRepay .repay .bigBtn {
+  margin: 10px 0;
+}
+#repayRecordDetailPage {
+  width: 100%;
+  height: 100%;
+}
+#repayRecordDetailPage #repayRecordDetail .repayDetail {
+  float: left;
+  background: #ffffff;
+  padding: 0 10px;
+}
+#repayRecordDetailPage #repayRecordDetail .repayDetail li {
+  float: left;
+  width: 100%;
+  padding: 15px 0;
+  border-bottom: 1px dotted #e3e3e3;
+  color: #666666;
+}
+#repayRecordDetailPage #repayRecordDetail .repayDetail li .detail {
+  float: right;
+  color: #000000;
+  text-align: right;
+}
+#repayRecordDetailPage #repayRecordDetail .repayDetail li .detail span {
+  margin-left: 15px;
+}
+#repayRecordDetailPage #repayRecordDetail .repayDetail li.amount {
+  -webkit-box-sizing: border-box;
+  padding: 15px 10px;
+  background: #87d6f8;
+  color: #ffffff;
+}
+#repayRecordDetailPage #repayRecordDetail .repayDetail li.amount .detail {
+  color: #ffffff;
+}
+#repayRecordDetailPage #repayRecordDetail .repayDetail[status='0'] .status {
+  color: #77c16b;
+}
+#repayRecordDetailPage #repayRecordDetail .repayDetail[status='0'] .status:after {
+  content: "还款成功";
+}
+#repayRecordDetailPage #repayRecordDetail .repayDetail[status='1'] .status {
+  color: #cdcdcd;
+}
+#repayRecordDetailPage #repayRecordDetail .repayDetail[status='1'] .status:after {
+  content: "还款失败";
+}
+/*生活缴费 less文件导入*/
+#accountListPage {
+  width: 100%;
+  height: 100%;
+}
+#accountListPage #myAccountList .accountList {
+  padding: 10px;
+}
+#accountListPage #myAccountList .accountList li {
+  margin-bottom: 10px;
+  padding: 0 8px 0 8px;
+  border: 1px solid #c8c7cc;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  background: #ffffff;
+}
+#accountListPage #myAccountList .accountList li .list[status='0'] .status {
+  background: url(ya_lifePayment/view/res/images/icon15.png) no-repeat;
+  background-size: cover;
+}
+#accountListPage #myAccountList .accountList li .list[status='1'] .status {
+  background: url(ya_lifePayment/view/res/images/icon18.png) no-repeat;
+  background-size: cover;
+}
+#accountListPage #myAccountList .accountList li .list[status='2'] .status {
+  background: url(ya_lifePayment/view/res/images/icon22.png) no-repeat;
+  background-size: cover;
+}
+#accountListPage #myAccountList .accountList li .list[status='3'] .status {
+  background: url(ya_lifePayment/view/res/images/icon23.png) no-repeat;
+  background-size: cover;
+}
+#accountListPage #myAccountList .accountList li .list .status {
+  width: 32px;
+  height: 32px;
+  margin: 10px 6px;
+}
+#accountListPage #myAccountList .accountList li .list .detail {
+  width: 160px;
+  padding: 5px 0 0 8px;
+}
+#accountListPage #myAccountList .accountList li .list .detail .name {
+  font-size: 19px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#accountListPage #myAccountList .accountList li .list .detail .num {
+  font-size: 15px;
+  color: #cdcdcd;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#accountListPage #myAccountList .accountList li .list .alarm {
+  width: 15px;
+  background: url(ya_lifePayment/view/res/images/alarm_.png) no-repeat 0 36px;
+  background-size: 9px;
+}
+#accountListPage #myAccountList .accountList li .list .alarm[have] {
+  background: url(ya_lifePayment/view/res/images/alarm.png) no-repeat 0 36px;
+  background-size: 9px;
+}
+#accountListPage #myAccountList .accountList li .list .sound {
+  width: 15px;
+  background: url(ya_lifePayment/view/res/images/sound_.png) no-repeat 0 36px;
+  background-size: 9px;
+}
+#accountListPage #myAccountList .accountList li .list .sound[have] {
+  background: url(ya_lifePayment/view/res/images/sound.png) no-repeat 0 36px;
+  background-size: 9px;
+}
+#accountListPage #myAccountList .accountList li .item {
+  text-align: center;
+  padding: 8px 0;
+  height: 24px;
+  line-height: 24px;
+  border-top: 1px solid #e3e3e3;
+}
+#accountListPage #myAccountList .accountList li .item .history {
+  color: #666666;
+}
+#accountListPage #myAccountList .accountList li .item .history[have] {
+  color: #666666;
+}
+#accountListPage #myAccountList .accountList li .item .pay {
+  color: #77c16b;
+  border-left: 1px solid #e3e3e3;
+}
+#accountListPage #myAccountList .accountList li .item div:active {
+  background: #f3f3f3;
+}
+#accountListPage .btn {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+#addAccountPage {
+  width: 100%;
+  height: 100%;
+}
+#addAccountPage #addAccountCenter .accountInfo {
+  width: 100%;
+  padding-bottom: 15px;
+}
+#addAccountPage #addAccountCenter .accountInfo li {
+  padding: 0 10px;
+  height: 50px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#addAccountPage #addAccountCenter .accountInfo li:first-child {
+  border-top: 1px solid #e3e3e3;
+}
+#addAccountPage #addAccountCenter .accountInfo li.item:active {
+  background: #b9e6f9;
+}
+#addAccountPage #addAccountCenter .accountInfo li.arrowLabel span {
+  display: block;
+  width: 15px;
+  height: 15px;
+  background: url(portal/view/res/images/arrow.png) no-repeat;
+  background-size: cover;
+}
+#addAccountPage #addAccountCenter .accountInfo li.switch {
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#addAccountPage #addAccountCenter .accountInfo li.switch button {
+  display: block;
+  width: 51px;
+  height: 31px;
+}
+#addAccountPage #addAccountCenter .accountInfo li.switch button.on {
+  background: url(ya_lifePayment/view/res/images/switch_on.png) no-repeat;
+  background-size: cover;
+}
+#addAccountPage #addAccountCenter .accountInfo li.switch button.off {
+  background: url(ya_lifePayment/view/res/images/switch_off.png) no-repeat;
+  background-size: cover;
+}
+#addAccountPage #addAccountCenter .accountInfo li .time {
+  color: #2bb4ee;
+  text-align: right;
+}
+#addAccountPage #addAccountCenter .accountInfo li label,
+#addAccountPage #addAccountCenter .accountInfo li span {
+  display: inline-block;
+}
+#addAccountPage #addAccountCenter .accountInfo li label {
+  width: 110px;
+}
+#addAccountPage #addAccountCenter .accountInfo li span {
+  color: #2bb4ee;
+}
+#addAccountPage #addAccountCenter .accountInfo li span.noModify {
+  color: #aaa;
+}
+#addAccountPage #addAccountCenter .accountInfo li input,
+#addAccountPage #addAccountCenter .accountInfo li select {
+  text-align: right;
+  -webkit-text-align: right;
+  display: block;
+  height: 46px;
+  margin: 2px 0;
+}
+#editAccountPage {
+  width: 100%;
+  height: 100%;
+}
+#editAccountPage #editAccountCenter .accountInfo {
+  padding-bottom: 15px;
+}
+#editAccountPage #editAccountCenter .accountInfo li {
+  padding: 0 10px;
+  height: 50px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#editAccountPage #editAccountCenter .accountInfo li:first-child {
+  border-top: 1px solid #e3e3e3;
+}
+#editAccountPage #editAccountCenter .accountInfo li.item:active {
+  background: #b9e6f9;
+}
+#editAccountPage #editAccountCenter .accountInfo li.arrowLabel span {
+  display: block;
+  width: 15px;
+  height: 15px;
+  background: url(portal/view/res/images/arrow.png) no-repeat;
+  background-size: cover;
+}
+#editAccountPage #editAccountCenter .accountInfo li.switch {
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#editAccountPage #editAccountCenter .accountInfo li.switch button {
+  display: block;
+  width: 51px;
+  height: 31px;
+}
+#editAccountPage #editAccountCenter .accountInfo li.switch button.on {
+  background: url(ya_lifePayment/view/res/images/switch_on.png) no-repeat;
+  background-size: cover;
+}
+#editAccountPage #editAccountCenter .accountInfo li.switch button.off {
+  background: url(ya_lifePayment/view/res/images/switch_off.png) no-repeat;
+  background-size: cover;
+}
+#editAccountPage #editAccountCenter .accountInfo li .read {
+  text-align: right;
+  color: #cdcdcd;
+}
+#editAccountPage #editAccountCenter .accountInfo li .time {
+  color: #2bb4ee;
+  text-align: right;
+}
+#editAccountPage #editAccountCenter .accountInfo li label,
+#editAccountPage #editAccountCenter .accountInfo li span {
+  display: inline-block;
+}
+#editAccountPage #editAccountCenter .accountInfo li label {
+  width: 110px;
+}
+#editAccountPage #editAccountCenter .accountInfo li span {
+  color: #2bb4ee;
+}
+#editAccountPage #editAccountCenter .accountInfo li span.noModify {
+  color: #aaa;
+}
+#editAccountPage #editAccountCenter .accountInfo li input,
+#editAccountPage #editAccountCenter .accountInfo li select {
+  text-align: right;
+  display: block;
+  height: 46px;
+  margin: 2px 0;
+}
+#editAccountPage .btn {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+#historyListPage {
+  width: 100%;
+  height: 100%;
+}
+#historyListPage #historyListCenter .nameAccount {
+  background-color: #ecedee;
+  padding: 5px;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  height: 30px;
+  line-height: 30px;
+  color: #666666;
+  border-bottom: 1px solid #bbbbbb;
+}
+#historyListPage #historyListCenter .nameAccount[status='0'] .status {
+  background: url(ya_lifePayment/view/res/images/icon15.png) no-repeat;
+  background-size: cover;
+}
+#historyListPage #historyListCenter .nameAccount[status='1'] .status {
+  background: url(ya_lifePayment/view/res/images/icon18.png) no-repeat;
+  background-size: cover;
+}
+#historyListPage #historyListCenter .nameAccount[status='2'] .status {
+  background: url(ya_lifePayment/view/res/images/icon22.png) no-repeat;
+  background-size: cover;
+}
+#historyListPage #historyListCenter .nameAccount[status='3'] .status {
+  background: url(ya_lifePayment/view/res/images/icon23.png) no-repeat;
+  background-size: cover;
+}
+#historyListPage #historyListCenter .nameAccount .status {
+  width: 16px;
+  height: 16px;
+  margin: 0 5px 0 0;
+}
+#historyListPage #historyListCenter .nameAccount .name {
+  margin-left: 15px;
+}
+#historyListPage #historyListCenter ul {
+  display: none;
+}
+#historyListPage #historyListCenter ul[name="waterHistoryList"] {
+  border-top: 1px solid #e3e3e3;
+}
+#historyListPage #historyListCenter ul[name="waterHistoryList"] li {
+  padding: 10px 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#historyListPage #historyListCenter ul[name="waterHistoryList"] li .time {
+  padding: 0 5px;
+  color: #2bb4ee;
+  text-align: center;
+  word-break: break-all;
+  width: 85px;
+  border-right: 1px solid #E3E3E3;
+}
+#historyListPage #historyListCenter ul[name="waterHistoryList"] li .detail {
+  padding: 0 5px;
+}
+#historyListPage #historyListCenter ul[name="waterHistoryList"] li .detail .itemName {
+  color: #333333;
+  font-size: 17px;
+}
+#historyListPage #historyListCenter ul[name="waterHistoryList"] li .detail .itemNum {
+  padding-right: 5px ;
+  color: #999999;
+  font-size: 14px;
+}
+#historyListPage #historyListCenter ul[name="waterHistoryList"] li .money {
+  color: #fe5727;
+  font-size: 18px;
+  text-align: right;
+  width: 70px;
+  padding: 0 5px;
+  border-left: 1px solid #E3E3E3;
+}
+#historyListPage #historyListCenter ul[name="TVHistoryList"] {
+  border-top: 1px solid #e3e3e3;
+}
+#historyListPage #historyListCenter ul[name="TVHistoryList"] li {
+  padding: 10px 0;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e3e3;
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+}
+#historyListPage #historyListCenter ul[name="TVHistoryList"] li .time {
+  padding: 0 5px;
+  color: #2bb4ee;
+  text-align: left;
+}
+#historyListPage #historyListCenter ul[name="TVHistoryList"] li .money {
+  color: #fe5727;
+  font-size: 18px;
+  text-align: right;
+  width: 70px;
+  padding: 0 5px;
+}
+#waterPayDetailPage {
+  width: 100%;
+  height: 100%;
+}
+#waterPayDetailPage #waterPayDetail .fontGrey {
+  color: #cdcdcd;
+}
+#waterPayDetailPage #waterPayDetail .title {
+  color: #2bb4ee;
+  height: 30px;
+  line-height: 40px;
+  padding-left: 10px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#waterPayDetailPage #waterPayDetail .detail {
+  background-color: #ffffff;
+  padding: 10px 10px 0 10px;
+  height: 100px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#waterPayDetailPage #waterPayDetail .detail .info div {
+  padding: 0 10px 5px 0;
+}
+#waterPayDetailPage #waterPayDetail .detail[status='0'] .status {
+  background: url(ya_lifePayment/view/res/images/icon15.png) no-repeat;
+  background-size: cover;
+}
+#waterPayDetailPage #waterPayDetail .detail[status='1'] .status {
+  background: url(ya_lifePayment/view/res/images/icon18.png) no-repeat;
+  background-size: cover;
+}
+#waterPayDetailPage #waterPayDetail .detail[status='2'] .status {
+  background: url(ya_lifePayment/view/res/images/icon22.png) no-repeat;
+  background-size: cover;
+}
+#waterPayDetailPage #waterPayDetail .detail[status='3'] .status {
+  background: url(ya_lifePayment/view/res/images/icon23.png) no-repeat;
+  background-size: cover;
+}
+#waterPayDetailPage #waterPayDetail .detail .status {
+  width: 32px;
+  height: 32px;
+  margin: 0 6px;
+}
+#waterPayDetailPage #waterPayDetail .moneyDetail {
+  background-color: #ffffff;
+  padding: 10px;
+  height: 54px;
+  border-bottom: 1px solid #e3e3e3;
+  text-align: right;
+}
+#waterPayDetailPage #waterPayDetail .moneyDetail .money {
+  font-size: 32px;
+  color: #fe5727;
+}
+#waterPayDetailPage #waterPayDetail .moneyDetail .moneyInfo {
+  color: #cdcdcd;
+}
+#waterPayDetailPage #waterPayDetail .list {
+  background-color: #ffffff;
+  padding: 10px;
+  border-bottom: 1px solid #e3e3e3;
+  text-align: center;
+}
+#waterPayDetailPage #waterPayDetail .list .itemHead {
+  height: 25px;
+  line-height: 25px;
+}
+#waterPayDetailPage #waterPayDetail .list .itemHead .item {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  width: 25%;
+  max-width: 25%;
+  min-width: 25%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+#waterPayDetailPage #waterPayDetail .list .itemUl .itemLi {
+  height: 25px;
+  line-height: 25px;
+}
+#waterPayDetailPage #waterPayDetail .list .itemUl .itemLi .item {
+  box-align: center;
+  -moz-box-align: center;
+  -webkit-box-align: center;
+  box-pack: center;
+  -moz-box-pack: center;
+  -webkit-box-pack: center;
+  width: 25%;
+  max-width: 25%;
+  min-width: 25%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+#waterPayDetailPage .btn {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+#TVPayDetailPage {
+  width: 100%;
+  height: 100%;
+}
+#TVPayDetailPage #TVPayDetail .fontGrey {
+  color: #cdcdcd;
+}
+#TVPayDetailPage #TVPayDetail .title {
+  color: #2bb4ee;
+  height: 30px;
+  line-height: 40px;
+  padding-left: 10px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#TVPayDetailPage #TVPayDetail .detail {
+  background-color: #ffffff;
+  padding: 10px 10px 0 10px;
+  height: 80px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#TVPayDetailPage #TVPayDetail .detail .info div {
+  padding: 0 10px 5px 0;
+}
+#TVPayDetailPage #TVPayDetail .detail[status='0'] .status {
+  background: url(ya_lifePayment/view/res/images/icon15.png) no-repeat;
+  background-size: cover;
+}
+#TVPayDetailPage #TVPayDetail .detail[status='1'] .status {
+  background: url(ya_lifePayment/view/res/images/icon18.png) no-repeat;
+  background-size: cover;
+}
+#TVPayDetailPage #TVPayDetail .detail[status='2'] .status {
+  background: url(ya_lifePayment/view/res/images/icon22.png) no-repeat;
+  background-size: cover;
+}
+#TVPayDetailPage #TVPayDetail .detail[status='3'] .status {
+  background: url(ya_lifePayment/view/res/images/icon23.png) no-repeat;
+  background-size: cover;
+}
+#TVPayDetailPage #TVPayDetail .detail .status {
+  width: 32px;
+  height: 32px;
+  margin: 0 6px;
+}
+#TVPayDetailPage #TVPayDetail .detail .money {
+  margin-left: 10px ;
+  color: #fe5727;
+}
+#TVPayDetailPage #TVPayDetail .selectDetail {
+  background-color: #ffffff;
+  padding: 0 10px;
+  height: 40px;
+  line-height: 40px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#TVPayDetailPage #TVPayDetail .arrowLabel label {
+  margin-right: 10px;
+}
+#TVPayDetailPage #TVPayDetail .arrowLabel select {
+  display: block;
+  text-align: right;
+}
+#TVPayDetailPage #TVPayDetail .arrowLabel span {
+  display: block;
+  width: 15px;
+  height: 15px;
+  background: url(portal/view/res/images/arrow.png) no-repeat;
+  background-size: cover;
+  margin-top: 11px;
+}
+#TVPayDetailPage #TVPayDetail .totalDetail {
+  background-color: #ffffff;
+  padding: 0 10px;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #e3e3e3;
+}
+#TVPayDetailPage #TVPayDetail .totalDetail .totalMoney {
+  color: #fe5727;
+  font-size: 24px;
+  text-align: right;
+}
+#TVPayDetailPage .btn {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}

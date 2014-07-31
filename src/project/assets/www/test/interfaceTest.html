@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>12312</title>
+    <style>
+        .rightBtn{
+            padding: 15px 30px;
+            font-size: 40px;
+        }
+    </style>
+    <script>
+        var id,cardId;
+        function login(){
+            service.busynessMessage = "正在登录...";
+            xmesh.model["User"].login({
+                phone : "18628256929",
+                password : "123456",
+                login_ip : "192.168.1.2"
+            },function(data){
+                alert(JSON.stringify(data.data));
+                id =  data.data.id;
+                alert("登录成功");
+            },showErrorMessage);
+        }
+
+        function register(){
+            service.busynessMessage = "正在注册...";
+            xmesh.model["User"].register({
+                phone : "18628256929",
+                password : "111111",
+                identify_code : "08702",
+                reg_ip : "192.168.1.2"
+            },function(){
+                alert("注册成功");
+            },showErrorMessage);
+        }
+
+        function getIdentifyCode(){
+            service.busynessMessage = "正在获取验证码...";
+            System.getIdentifyCode({
+                phone : "18628256929",
+                type : "register"
+            },function(){
+                alert("验证码获取成功");
+            },showErrorMessage);
+        }
+
+        function getParValue(){
+            service.busynessMessage = "正在获取话费面额...";
+                xmesh.model["RechargeManager"].getParValue({phone:"18628256929"},function(data){
+                    alert(JSON.stringify(data));
+                },function(){
+                    alert("fail")
+                })
+            }
+
+
+        function createPhoneOrder(){
+            service.busynessMessage = "正在下单...";
+            xmesh.model["OrderManager"].createOrder({
+                phone_number : "18628256929",
+                par_value : "100",
+                u_id : id
+            },'phoneRecharge',function(){
+                alert("电话下单成功");
+            },showErrorMessage);
+        }
+
+        function createGameOrder(){
+            service.busynessMessage = "正在下单...";
+            xmesh.model["OrderManager"].createOrder({
+                u_id : id,
+                category_code :'AATXVVQQBK',
+                category_name:'腾讯QQ卡（Q币）',
+                product_code:'AATXVVQQBK005CV',
+                product_name:'QQ币5个Q币',
+                region_code:'5876',
+                server_code:'-1',
+                charge_account:'11100219',
+                ext_para1 :'',
+                ext_para2:'',
+                ext_para3:''
+            },'gameRecharge',function(){
+                alert("游戏下单成功");
+            },showErrorMessage);
+        }
+        function searchPub(){
+            service.busynessMessage = "正在查询...";
+            var param = {
+                cmobile:"18980023444",
+                dep:"昆山",
+                arr:"上海",
+                date:"2013-11-20",
+                train:"D",
+                train_no:"",
+                hour:"08:00-12:00",
+                page:"1",
+                pagesize:""
+            }
+            xmesh.model["TrainTicketManager"].searchPub(param,function(rs){
+                alert("查询成功")
+            },function(e){alert(e.MSG?e.MSG: e.message)})
+        }
+
+        function orderPub(){
+            service.busynessMessage = "正在下单...";
+            var param = {
+                cmobile:"18980023444",
+                train_info:"D151|2011-11-28|北京西|上海南|19:00|22:00",
+                passenger_info:"成人票|杨先生|二代身份证|513627756564738222|18980023455|二等座|405|5|6|2.5|0|1^儿童票|李明|二代身份证|5136222356473542|18980023455|二等座|202.5|5|0|0|1|1",
+                contact_info:"测试|1880028888&exp_info=1|15|杨军|18980028888|四川成都市二环路|610000|0|1"
+            };
+            xmesh.model["TrainTicketManager"].orderPub(param,function(rs){
+                alert("下单成功")
+            },function(e){alert(e.MSG?e.MSG: e.message)})
+        }
+
+        function statePub(){
+            service.busynessMessage = "正在更改订单状态...";
+            var param = {
+                orderid:"634643336002432500",
+                action:"pay",
+                sign:"检验串"
+            };
+            xmesh.model["TrainTicketManager"].orderPub(param,function(rs){
+                alert("更改订单状态成功")
+            },function(e){alert(e.MSG?e.MSG: e.message)})
+        }
+
+        function backTicketPub(){
+            service.busynessMessage = "正在退票...";
+            var param = {
+                orderid:"634643336002432500",
+                sign:""
+            };
+            xmesh.model["TrainTicketManager"].orderPub(param,function(rs){
+                alert("退票成功")
+            },function(e){alert(e.MSG?e.MSG: e.message)})
+        }
+
+        function orderListPub(){
+            service.busynessMessage = "正在查询历史订单列表...";
+            var param = {
+                cmobile:"18980023444",
+                bdate:"2012-6-10",
+                edate:"2012-6-15",
+                page:"1",
+                pagesize:"4"
+            };
+            xmesh.model["TrainTicketManager"].orderPub(param,function(rs){
+                alert("查询历史订单列表成功")
+            },function(e){alert(e.MSG?e.MSG: e.message)})
+        }
+
+        function orderInfoPub(){
+            service.busynessMessage = "正在查询历史订单详情...";
+            var param = {
+                orderid:"634733027407951250"
+            };
+            xmesh.model["TrainTicketManager"].orderPub(param,function(rs){
+                alert("查询历史订单详情成功")
+            },function(e){alert(e.MSG?e.MSG: e.message)})
+        }
+
+        function getUserValue(){
+            service.busynessMessage = "正在查询用户资料...";
+            xmesh.model["User"].search({phone:"18792925310"},function(data){
+                alert("查询成功");
+                alert(JSON.stringify(data));
+                alert(xmesh.model["User"].balance);
+            },showErrorMessage);
+        }
+
+        function supplementUserValue(){
+            alert(id);
+            service.busynessMessage = "正在补充用户资料...";
+            xmesh.model["User"].supplement({
+                u_id:id,
+                name:"yuany",
+                id_number:"888888888888888888",
+                phone:"18628256929"
+            },function(data){
+                alert("补充用户资料成功");
+                alert(JSON.stringify(data));
+                alert(xmesh.model["User"].idNumber);
+            },showErrorMessage);
+        }
+
+        function createLotteryOrder(){
+            service.busynessMessage = "正在充值...";
+            xmesh.model["OrderManager"].createLotteryOrder({
+                phone:"18628256929",
+                id_number:"888888888888888888",
+                amount:"5000",
+                action:"lottery_account_recharge"
+            },function(data){
+                alert("充值成功");
+                alert(JSON.stringify(data));
+            },showErrorMessage);
+        }
+
+        function registerCard(){
+            alert(id);
+            service.busynessMessage = "正在注册银行卡...";
+            xmesh.model["Card"].registerCard({
+                u_id:id,
+                bank_card_id:"",
+                phone:"18628256929",
+                bank_card_no:"66666666666666666666",
+                bank_card_name:"建设银行",
+                bank_name:"建设银行",
+                city_code:"0008",
+                branch_bank:"北京支行"
+            },function(){
+                alert("注册成功");
+            },showErrorMessage);
+        }
+        function cash(){
+            service.busynessMessage = "正在查询提现信息...";
+            xmesh.model["Card"].search({
+                page_size:"0",
+                page_index:"1",
+                u_id:id
+            },function(data){
+                alert(JSON.stringify(data));
+                alert(data.data.dataList[0].bankCardid);
+                cardId = data.data.dataList[0].bankCardid;
+                alert(cardId);
+            },showErrorMessage);
+        }
+
+        function withdrawCash(){
+            service.busynessMessage = "正在提现...";
+            xmesh.model["Card"].withdrawCash({
+                phone:"18628256929",
+                bank_card_id:"cc85d1cf-ea0f-4272-8cc6-bf0393c53c2c",
+                id_number:"888888888888888888",
+                money:"5000"
+            },function(){
+                alert("提现成功");
+            },showErrorMessage);
+        }
+
+        function withdrawCashList(){
+            service.busynessMessage = "正在查询提现信息...";
+            xmesh.model["Card"].withdrawCashList({
+                phone:"18628256929",
+                state:"3",
+                page_size:"2",
+                page_index:"0"
+            },function(data){
+                alert(JSON.stringify(data));
+            },showErrorMessage);
+        }
+
+        function bill(){
+            service.busynessMessage = "正在查询账单信息...";
+            xmesh.model["BillManager"].getMyBillsAll({
+                page_size:20,
+                page_index:1
+            },function(data){
+                alert(JSON.stringify(data));
+            },showErrorMessage);
+        }
+    </script>
+</head>
+<body>
+<header>
+    <h1 x-page="title"></h1>
+    <button class="rightBtn about" onclick="xmesh.back();">返回</button>
+</header>
+<span style="font-size: 30px">接口调试页面</span></br>
+<button class="rightBtn about" onclick="login()">登录接口调试</button></br>
+<button class="rightBtn about" onclick="register()">注册接口调试</button></br>
+<button class="rightBtn about" onclick="getIdentifyCode()">验证码接口调试</button></br>
+<button class="rightBtn about" onclick="getParValue()">话费面额接口调试</button></br>
+
+<button class="rightBtn" onclick="exitApp()">退出</button>
+<button class="rightBtn about" onclick="createPhoneOrder()">phone接口调试</button></br>
+<button class="rightBtn about" onclick="createGameOrder()">game接口调试</button></br>
+<button class="rightBtn about" onclick="searchPub()">火车票查询接口调试</button></br>
+<button class="rightBtn about" onclick="orderPub()">火车票下单接口调试</button></br>
+<button class="rightBtn about" onclick="statePub()">火车票查询接口调试</button></br>
+<button class="rightBtn about" onclick="backTicketPub()">火车票下单接口调试</button></br>
+<button class="rightBtn about" onclick="orderListPub()">火车票查询接口调试</button></br>
+<button class="rightBtn about" onclick="orderInfoPub()">火车票下单接口调试</button></br>
+
+<button class="rightBtn" onclick="exitApp()">退出</button>
+<button class="rightBtn about" onclick="getUserValue()">用户资料查询接口调试</button></br>
+<button class="rightBtn about" onclick="supplementUserValue()">补充用户资料接口调试</button></br>
+<button class="rightBtn about" onclick="createLotteryOrder()">彩票充值接口调试</button></br>
+<button class="rightBtn about" onclick="registerCard()">注册银行卡接口调试</button></br>
+<button class="rightBtn about" onclick="cash()">银行卡列表接口调试</button></br>
+<button class="rightBtn about" onclick="withdrawCash()">提现接口调试</button></br>
+<button class="rightBtn about" onclick="withdrawCashList()">查询提现信息接口调试</button></br>
+<button class="rightBtn about" onclick="bill()">我的账单接口调试</button></br>
+</body>
+</html>

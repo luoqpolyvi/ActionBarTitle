@@ -1,0 +1,39 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="text_size_10">10sp</dimen>
+    <dimen name="text_size_13">13sp</dimen>
+    <dimen name="text_size_15">15sp</dimen>
+    <dimen name="text_size_18">18sp</dimen>
+    <dimen name="text_size_20">20sp</dimen>
+    <dimen name="text_size_30">30sp</dimen>
+    <dimen name="text_size_40">40sp</dimen>
+    <dimen name="text_size_50">50sp</dimen>
+
+    <!-- sort values from less to more -->
+    <dimen name="DP_0">0dp</dimen>
+    <dimen name="DP_1">1dp</dimen>
+    <dimen name="DP_3">3dp</dimen>
+    <dimen name="DP_5">5dp</dimen>
+    <dimen name="DP_8">8dp</dimen>
+    <dimen name="DP_10">10dp</dimen>
+    <dimen name="DP_15">15dp</dimen>
+    <dimen name="DP_20">20dp</dimen>
+    <dimen name="DP_30">30dp</dimen>
+    <dimen name="DP_40">40dp</dimen>
+    <dimen name="DP_50">50dp</dimen>
+    <dimen name="DP_54">54dp</dimen>
+    <dimen name="DP_60">60dp</dimen>
+    <dimen name="DP_70">70dp</dimen>
+    <dimen name="DP_100">100dp</dimen>
+    <dimen name="DP_120">120dp</dimen>
+    <dimen name="DP_200">200dp</dimen>
+    <dimen name="DP_300">300dp</dimen>
+    <dimen name="DP_500">500dp</dimen>
+
+    <!-- Workaround for ActionBar on small screen -->
+    <dimen name="ACTION_BAR_HEIGHT">25dp</dimen>
+
+</resources>

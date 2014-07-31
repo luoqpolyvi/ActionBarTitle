@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>开奖详情</title>
+    <script>
+        var page = this;
+        var param = this.param;
+        page.named("termCode").html(param.termCode);
+        page.named("time").html(param.time);
+        switch (param.game) {
+            case "SSQ":
+            case "QLC":
+                var redCode = param.codes.substring(0, param.codes.indexOf("|"));
+                var blueCode = param.codes.substring(param.codes.indexOf("|") + 1, param.codes.length);
+                page.named("redCode").html(redCode);
+                page.named("blueCode").html(blueCode);
+                break;
+            case "3D":
+                var code = $.Element('span').addClass("redBall").html(param.codes);
+                page.named("codes").html("").append(code);
+                break;
+        }
+        page.named("sales").html(Validator.convertFenToYuan(param.sales));
+        page.named("winPools").html(Validator.convertFenToYuan(param.winPools));
+        var level = page.named("level");
+        $.each(param.level, function (property, item) {
+            var tep = page.named("template").child("li").clone(true).appendTo(level);
+            tep.child('[name=name]').html(item.name);
+            tep.child('[name=num]').html(item.num);
+            tep.child('[name=money]').html(Validator.convertFenToYuan(item.money));
+        })
+    </script>
+</head>
+
+<body>
+<div id="kjDetailPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">开奖详情</span>
+    </header>
+    <xtag:ScrollPane>
+        <div class="content" id="kjDetail" data-flex="1">
+                <ul class="ticketDetail">
+                    <li data-box="h">开奖期号：<div data-flex="1" name="termCode">2013042</div></li>
+                    <li data-box="h">开奖时间：<div data-flex="1" name="time">04－14 22：50</div></li>
+                    <li data-box="h">开奖号码：<div data-flex="1" name="codes"><span class="redBall" name="redCode">01 43 01 01 43 41</span>|<span class="blueBall" name="blueCode">32</span></div></li>
+                    <li data-box="h">本期销量：<div data-flex="1" name="sales">111.00元</div></li>
+                    <li data-box="h">奖池滚存：<div data-flex="1" name="winPools">111.00元</div> </li>
+                </ul>
+                <ul class="award" name="level">
+                    <li data-box="h"><div>奖项</div><div>注数</div><div data-flex="1">奖金</div></li>
+                </ul>
+        </div>
+    </xtag:ScrollPane>
+</div>
+<xtag:template name="template">
+    <li data-box="h" class="cont">
+        <div name="name">一等奖</div>
+        <div name="num">1111111</div>
+        <div data-flex="1" name="money">1111111111111111</div>
+    </li>
+</xtag:template>
+</body>
+</html>

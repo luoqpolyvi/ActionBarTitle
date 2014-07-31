@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>缴费确认</title>
+    <script>
+        var page = this;
+        var waterManager = xmesh.model['WaterManager'];
+        var waterDetailList = page.named('waterDetailList');
+        var template = page.named('template');
+        var pay = page.named('pay');
+        var moneyInfo = page.named('moneyInfo');
+
+        page.bind('pageReady',function(){
+            showWaterArrears();
+        });
+
+        function showWaterArrears(){
+            if(param.liquidatedDamages ==0)  moneyInfo.hide();
+            $.each(param.waterInfo,function(property,item){
+                var li = template.child('li').clone(true).appendTo(waterDetailList);
+                li.named('month').html(item.month);
+                li.named('startPoint').html(item.startPoint);
+                li.named('endPoint').html(item.endPoint);
+                li.named('waterNum').html(item.waterNum);
+            })
+        }
+        pay.bind('click',function(){
+            waterManager.payWater({
+                userNum:param.userNum,
+                userName:waterManager.userName,
+                money:waterManager.money
+            },function(data){
+                xmesh.model['Order'].yaPay(data.tn,function(){
+                    xmesh.back();
+                    window.getBill();
+                },function(e){showErrorMessage(e); window.getBill();});
+            },showErrorMessage);
+        })
+    </script>
+</head>
+<body>
+<div id="waterPayDetailPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <xtag:ScrollPane>
+    <div class="content" id="waterPayDetail" data-box="v">
+        <div class="title">账户信息</div>
+        <div class="detail" data-box="v" status="0">
+           <div data-box="h">
+               <div data-box="v" data-flex="1">
+                   <div data-box="h" class="info"><div class="fontGrey">账号</div><div x-field="WaterManager.userNum"></div></div>
+                   <div data-box="h" class="info"><div class="fontGrey">姓名</div><div x-field="WaterManager.userName"></div></div>
+               </div>
+               <div class="status"></div>
+           </div>
+           <div data-box="h" class="info"><div class="fontGrey">地址</div><div data-flex="1" x-field="WaterManager.address"></div></div>
+        </div>
+        <div class="title">应缴金额</div>
+        <div class="moneyDetail" data-box="v">
+            <div class="money"><span x-field="WaterManager.money"></span>元</div>
+            <div class="moneyInfo" name="moneyInfo">其中：包含违约金<span x-field="WaterManager.liquidatedDamages"></span>元</div>
+        </div>
+        <div class="title">用水记录</div>
+        <div class="list" data-box="v">
+             <div data-box="h" data-flex="1" class="itemHead">
+                 <div class="item fontGrey">月份</div>
+                 <div class="item fontGrey">起度</div>
+                 <div class="item fontGrey">止度</div>
+                 <div class="item fontGrey">水量（吨）</div>
+             </div>
+            <ul class="itemUl" name="waterDetailList"></ul>
+            <xtag:Template name="template">
+                <li data-box="h" data-flex="1" class="itemLi">
+                    <div class="item" name="month"></div>
+                    <div class="item" name="startPoint"></div>
+                    <div class="item" name="endPoint"></div>
+                    <div class="item" name="waterNum"></div>
+                </li>
+            </xtag:Template>
+        </div>
+    </div>
+        <div style="height:54px"></div>
+    </xtag:ScrollPane>
+    <div class="btn"><button class="bigBtn" name="pay">立即支付</button></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>购票记录</title>
+    <script>
+        var BusBuyTicketRecordManager = xmesh.model["BusBuyTicketRecordManager"];
+        var BusBuyTicketRecord = xmesh.model["BusBuyTicketRecord"];
+        var ticketList = BusBuyTicketRecordManager.ticketListSort;
+        var noList = this.named("noList");
+        var orderScrollPane = this.named("orderScrollPane");
+        var template = this.named("template");
+        var orderList = this.child("#orderList");
+        var lastUL;
+        var index = 1,size = 50;
+        var setData ={pageIndex:index,pageSize:size};
+
+        var page = this.bind("pageReady",function(){
+            var year,month,yearMonth,day,time;
+            orderList.as('ui.List',{'echoSelection':'true'});
+            getList();
+            function getList(){
+//                orderListScroll.hide();
+                service.busynessMessage = "正在查询购票记录...";
+                xmesh.model["BusBuyTicketRecordManager"].buyTicketRecord(setData,function(){
+                    if(BusBuyTicketRecordManager.totalCount==0){
+                        noList.css('display','-webkit-box');
+                        orderScrollPane.hide();
+                    }
+                    else{
+                        noList.css('display','none');
+//                        orderScrollPane.css("height",window.innerHeight+"px");
+                        setTimeout(function(){
+                            orderScrollPane.scrollTo(0,0,0);
+                            orderScrollPane.refresh();},100);
+                        $.each(BusBuyTicketRecordManager.ticketListSort,function(property,item){
+                            var date = formatDate(item.createTime);
+                            if(!yearMonth || yearMonth!=date.yearMonth) {
+                                yearMonth = date.yearMonth;
+                                var  ul =  lastUL = template.child("ul").clone(true).appendTo(orderList);
+                                ul.named('getYearMonth').html(date.year+"年"+date.month+"月");
+                                var li = template.child("li").clone(true).appendTo(ul);
+                                switch(item.state){
+                                    case "UNLOCKED" : li.attribute("status","1");break;
+                                    case "LOCKED" : li.attribute("status","0");break;
+                                    case "SELLING" : li.attribute("status","2");break;
+                                    case "SOLD" : li.attribute("status","3");break;
+                                    case "SALE_FAIL" : li.attribute("status","4");break;
+                                    case "BACK" : li.attribute("status","5");break;
+                                    case "BCAK_FAIL" : li.attribute("status","3");break;
+                                }
+                                li.named('getDay').html(date.day);
+                                li.named('getTime').html(date.time);
+                                li.named('state').html(item.originStation+"—"+item.targetStation);
+                                li.named('driveTime').html(item.driveTime);
+                                li.named('totalPrice').html(Validator.convertFenToYuan(item.totalPrice));
+                                li.bind("click",function(){
+                                    $.copyObject(xmesh.model["BusBuyTicketRecord"],item);
+                                    xmesh.model["BusBuyTicketRecord"].arrangePassengerInfo();
+                                    xmesh.act("orderDetail");
+                                })
+                            }else{
+                                var li = template.child("li").clone(true).appendTo(lastUL);
+                                switch(item.state){
+                                    case "UNLOCKED" : li.attribute("status","1");break;
+                                    case "LOCKED" : li.attribute("status","0");break;
+                                    case "SELLING" : li.attribute("status","2");break;
+                                    case "SOLD" : li.attribute("status","3");break;
+                                    case "SALE_FAIL" : li.attribute("status","4");break;
+                                    case "BACK" : li.attribute("status","5");break;
+                                    case "BCAK_FAIL" : li.attribute("status","3");break;
+                                }
+                                li.named('getDay').html(date.day);
+                                li.named('getTime').html(date.time);
+                                li.named('state').html(item.originStation+"—"+item.targetStation);
+                                li.named('driveTime').html(item.driveTime);
+                                li.named('totalPrice').html(Validator.convertFenToYuan(item.totalPrice));
+                                li.bind("click",function(){
+                                    $.copyObject(xmesh.model["BusBuyTicketRecord"],item);
+                                    xmesh.model["BusBuyTicketRecord"].arrangePassengerInfo();
+                                    xmesh.act("orderDetail");
+                                })
+                            }
+                            if(liList.length + 1 <BusBuyTicketRecordManager.totalCount){
+                                page.named("clickMore").css("display","block").bind("click",scrollPaneBottom);
+                            }
+                            else{
+                                page.named("clickMore").css("display","none");
+                            }
+                        })
+                    }
+                    setTimeout(function(){
+//                        orderListScroll.css('display','block');
+                        orderScrollPane.refresh();
+                        orderScrollPane.scrollTo(0,0,0);
+                    },30);
+                },showErrorMessage);
+            }
+            var liList = document.getElementsByTagName("li");
+            scrollPaneBottom = function(){
+                if(liList.length + 1 <BusBuyTicketRecordManager.totalCount){
+                    index++;
+                    setData ={pageIndex:index,pageSize:size};
+                    getList();
+                }
+                else{
+                    Dialog.toast("已经获取全部记录");
+                }
+            }
+        })
+
+        page.bind('show',function(){
+            if(xmesh.model["BusBuyTicketRecord"].isPay == true){
+                xmesh.model["BusBuyTicketRecord"].isPay = false;
+                var year,month,yearMonth,day,time;
+                orderList.as('ui.List',{'echoSelection':'true'});
+                getList();
+                function getList(){
+                    service.busynessMessage = "正在查询购票记录...";
+                    xmesh.model["BusBuyTicketRecordManager"].buyTicketRecord(setData,function(){
+                        if(BusBuyTicketRecordManager.totalCount==0){
+                            noList.css('display','-webkit-box');
+                            orderScrollPane.hide();
+                        }
+                        else{
+                            noList.css('display','none');
+//                            orderScrollPane.css("height",window.innerHeight+"px");
+                            setTimeout(function(){
+                                orderScrollPane.scrollTo(0,0,0);
+                                orderScrollPane.refresh();},100);
+                            $.each(BusBuyTicketRecordManager.ticketListSort,function(property,item){
+                                var date = formatDate(item.createTime);
+                                if(!yearMonth || yearMonth!=date.yearMonth) {
+                                    yearMonth = date.yearMonth;
+                                    var  ul =  lastUL = template.child("ul").clone(true).appendTo(orderList);
+                                    ul.named('getYearMonth').html(date.year+"年"+date.month+"月");
+                                    var li = template.child("li").clone(true).appendTo(ul);
+                                    switch(item.state){
+                                        case "UNLOCKED" : li.attribute("status","1");break;
+                                        case "LOCKED" : li.attribute("status","0");break;
+                                        case "SELLING" : li.attribute("status","2");break;
+                                        case "SOLD" : li.attribute("status","3");break;
+                                        case "SALE_FAIL" : li.attribute("status","4");break;
+                                        case "BACK" : li.attribute("status","5");break;
+                                        case "BCAK_FAIL" : li.attribute("status","3");break;
+                                    }
+                                    li.named('getDay').html(date.day);
+                                    li.named('getTime').html(date.time);
+                                    li.named('state').html(item.originStation+"—"+item.targetStation);
+                                    li.named('driveTime').html(item.driveTime);
+                                    li.named('totalPrice').html(Validator.convertFenToYuan(item.totalPrice));
+                                    li.bind("click",function(){
+                                        $.copyObject(xmesh.model["BusBuyTicketRecord"],item);
+                                        xmesh.model["BusBuyTicketRecord"].arrangePassengerInfo();
+                                        xmesh.act("orderDetail");
+                                    })
+                                }else{
+                                    var li = template.child("li").clone(true).appendTo(lastUL);
+                                    switch(item.state){
+                                        case "UNLOCKED" : li.attribute("status","1");break;
+                                        case "LOCKED" : li.attribute("status","0");break;
+                                        case "SELLING" : li.attribute("status","2");break;
+                                        case "SOLD" : li.attribute("status","3");break;
+                                        case "SALE_FAIL" : li.attribute("status","4");break;
+                                        case "BACK" : li.attribute("status","5");break;
+                                        case "BCAK_FAIL" : li.attribute("status","3");break;
+                                    }
+                                    li.named('getDay').html(date.day);
+                                    li.named('getTime').html(date.time);
+                                    li.named('state').html(item.originStation+"—"+item.targetStation);
+                                    li.named('driveTime').html(item.driveTime);
+                                    li.named('totalPrice').html(Validator.convertFenToYuan(item.totalPrice));
+                                    li.bind("click",function(){
+                                        $.copyObject(xmesh.model["BusBuyTicketRecord"],item);
+                                        xmesh.model["BusBuyTicketRecord"].arrangePassengerInfo();
+                                        xmesh.act("orderDetail");
+                                    })
+                                }
+                                if(liList.length + 1 <BusBuyTicketRecordManager.totalCount){
+                                    page.named("clickMore").css("display","block").bind("click",scrollPaneBottom);
+                                }
+                                else{
+                                    page.named("clickMore").css("display","none");
+                                }
+                            })
+                        }
+                        setTimeout(function(){
+//                            orderListScroll.css('display','block');
+                            orderScrollPane.refresh();
+                            orderScrollPane.scrollTo(0,0,0);
+                        },30);
+                    },showErrorMessage);
+                }
+                var liList = document.getElementsByTagName("li");
+                scrollPaneBottom = function(){
+                    if(liList.length + 1 <BusBuyTicketRecordManager.totalCount){
+                        index++;
+                        setData ={pageIndex:index,pageSize:size};
+                        getList();
+                    }
+                    else{
+                        Dialog.toast("已经获取全部记录");
+                    }
+                }
+            }
+        });
+
+        function  formatDate(date){
+            var year =  date.substring(0,4);
+            var month =  date.substring(5,7);
+            var yearMonth = date.substring(0,7);
+            var day =  date.substring(8,11);
+            var time = date.substring(11,16);
+            return{
+                year : year,
+                month : month,
+                yearMonth : yearMonth,
+                day : day,
+                time : time
+            }
+        }
+    </script>
+</head>
+
+<body>
+   <div id="buyListPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+       <div name="noList" class="noItem" data-box="v" data-flex="1" style="display:none"><div class="image"></div></div>
+       <xtag:ScrollPane name="orderScrollPane" useTransform = false data-flex="1" data-box="v">
+           <div class="content" id="buyList" data-flex="1">
+               <div class="monthOrder" id="orderList"></div>
+           </div>
+           <div name="clickMore" class="clickMore">点击加载更多</div>
+       </xtag:ScrollPane>
+       <xtag:Template name="template">
+           <ul class="ticketList" id="ticketList" data-box="v">
+               <div class="month"  data-box="h"><div class="monthLabel" name="getYearMonth"></div></div>
+           </ul>
+           <li data-box="h">
+               <div class="date" data-box="v"><div name="getDay" class="day"></div><div class="time" name="getTime"></div></div>
+               <div data-box="v" class="ticket" data-flex="1">
+                   <div data-box="h"><div data-flex="1" class="station" name="state"></div><div class="status" data-flex="1"></div></div>
+                   <div data-box="h"><div data-flex="1" class="time" name="driveTime"></div><div class="jiage" name="totalPrice" data-flex="1"></div></div>
+               </div>
+               <div class="arrow"></div>
+           </li>
+       </xtag:Template>
+   </div>
+</body>
+</html>

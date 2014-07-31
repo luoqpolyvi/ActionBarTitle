@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>确认订单</title>
+    <script>
+        var page = this;
+        var amount = page.named('amount');
+        var pay = page.named('pay');
+
+        page.bind("pageReady",function(){
+            amount.html(Validator.convertFenToYuan(param));
+            pay.bind("click",function(){
+                var value = {
+                    phone:xmesh.model["User"].phone,
+                    id_number:(xmesh.model["User"].idNumber == "")?xmesh.model["User"].id_number:xmesh.model["User"].idNumber,
+                    amount:param,
+                    action:"lottery_account_recharge"
+                }
+                service.busynessMessage = "正在下订单，请稍后...";
+                xmesh.model["OrderManager"].createLotteryOrder(value,function(){
+                    payOrder();
+                },showErrorMessage);
+            })
+        })
+
+        function payOrder(){
+            xmesh.model["Order"].pay(function(){
+                xmesh.model["User"].search({phone:xmesh.model["User"].phone},null,null);
+                window.getBill();
+                setTimeout('xmesh.to("/lotteryTicket")',600);
+                Order.reset();
+            },function(e){showErrorMessage(e); window.getBill();});
+        }
+
+    </script>
+</head>
+
+<body>
+   <div id="checkOrderPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content" id="checkOrder" data-flex="1">
+            <div class="textBox" data-box="h">充值金额<div class="account" data-flex="1" name="amount"></div></div>
+        </div>
+        <footer data-box="h"><div data-flex="1">应付金额<span class="price" name="amount"></span></div><button name="pay">支付</button></footer>
+   </div>
+</body>
+</html>

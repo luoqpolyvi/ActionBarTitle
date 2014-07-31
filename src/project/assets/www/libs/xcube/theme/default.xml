@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<theme xmlns:xtag="http://polyvi.com">
+
+	<body>
+		background-color:#EFEFEF;
+		color:#333;
+		<a>
+			color:#639;
+			text-decoration:none;
+		</a>
+		<a filter=":hover">color:blue;</a>
+	</body>
+	
+	<xtag:template>display:none;</xtag:template>
+	
+	<xtag:temp id="blankBox">
+		background-color:transparent;
+		padding:0px;
+		margin:0px;
+	</xtag:temp>
+	
+	<xtag:List>
+		<xtag:rule name=".item">
+			color:#333;
+			padding:8px 10px 8px 10px;
+			background-color:#FFF;
+			margin-bottom:1px;
+		</xtag:rule>
+		<xtag:rule name=".item" filter=":last-child">border-radius:0px 0px 10px 10px;</xtag:rule>
+		<xtag:rule name=".item" filter=":first-child">border-radius:10px 10px 0px 0px;</xtag:rule>
+  	</xtag:List>
+
+  	<xtag:ImageRoller>
+		background-color:white;
+		<img>border-width:0px;</img>
+	</xtag:ImageRoller>
+  
+	<xtag:ScrollPane>
+		<xtag:temp call="blankBox"/>
+		<xtag:rule name=".scrollBar">
+			<div>
+				border:1px solid #EEE;
+				background-color:#666;
+				padding:0px;
+				margin:0px;
+				border-radius:10px;
+			</div>
+		</xtag:rule>
+	</xtag:ScrollPane>
+	
+	<xtag:PageManager>
+		<xtag:temp call="blankBox"/>
+	</xtag:PageManager>
+	
+	<xtag:TileBox></xtag:TileBox>
+	
+</theme>

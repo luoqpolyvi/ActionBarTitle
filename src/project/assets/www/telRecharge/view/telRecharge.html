@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>话费充值</title>
+    <script>
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="telephoneCharge") xFace.app.close();
+                else xmesh.home();
+            }else{xmesh.home();}
+        })
+        var page = this.bind('pageReady', function(){
+            page.child("#telRecharge").as('ui.ScrollPane',{});
+            var input = this.named("input");  //电话号码输入框
+            var newParValue = this.named("newParValue");   //刷新后的面额区
+            var originParValue = this.named("originParValue");   //初始面额区
+            var callsAttribution = this.named("callsAttribution"); //归属地
+            var contactsBtn = this.named("contactsBtn");     //通讯录按钮
+            var lastNumber="";    //上次输入的电话号码长度
+            var next = this.named("next");
+            var parValue,dataNo,totleValue,phoneNum,dataList;
+
+            setTimeout(firstTime,500);
+            function firstTime(){
+                phoneNum = xmesh.model["User"].phone;
+                dataNo = 0;
+                getParValue(phoneNum);
+                if(dataList) alert(dataList);
+            }
+
+            next.bind('click',orderConfirm);
+
+            input.bind("input",function(){
+                phoneNum = input.value;    //当前输入的电话号码
+                if(isNaN(phoneNum)){
+                    Dialog.toast("请输入有效充值号码！");
+                    input.value = "";
+                    return;
+                }
+                //电话号码前7位判断归属地，若有变化再次查询
+                if(phoneNum.length >= 7 && phoneNum.substr(0,7) != lastNumber.substr(0,7)){
+                    getParValue(phoneNum);
+                }
+                lastNumber = phoneNum;
+            })
+            $.each(originParValue.child('li'),function(property,clip){
+                clip.bind('click',function(){
+                    removeAttribute(originParValue.child('li'),"checked");
+                    this.attribute('checked',true);
+                    this.child('[name=check]').addClass('check');
+                    this.child('[name=amount]').addClass('amount');
+                    dataNo = this.attribute("dataNo");
+                    if(dataList != undefined || input.value !=""){getParValue(phoneNum); createValueClip(dataList);}
+                });
+            })
+            function removeAttribute(node){
+                $.each(node,function(property,item){
+                    item.attribute("checked",null);
+                    item.child('[name=check]').removeClass('check');
+                    item.child('[name=amount]').removeClass('amount');
+                })
+            }
+            function createValueClip(data){
+                var valueList = data;
+                newParValue.html(valueList[dataNo].actureValue+"元");
+                totleValue=valueList[dataNo].actureValue;
+                parValue=valueList[dataNo].parValue;
+            }
+
+            function orderConfirm(evt){
+                evt.preventDefault();
+                evt.stopPropagation();
+                var target = $(evt.target);
+                var phoneNum = input.value;
+                //验证电话号码格式
+                if(!Validator.mobile(phoneNum) && !Validator.telphone(phoneNum)){
+                    return Dialog.toast("请输入有效充值号码！");
+                }
+                var attribution = callsAttribution.html();
+                var param = {
+                    phoneNum : phoneNum,                 //电话号码
+                    attribution : attribution,           //归属地
+                    parValue : parValue || '50',        //面额
+                    actureValue : totleValue     //实际金额
+                }
+                //转到充值确认界面
+                var RechargeManager = xmesh.model["RechargeManager"];
+                RechargeManager.phoneNumber = param.phoneNum;
+                RechargeManager.position = param.attribution;
+                RechargeManager.parValue = param.parValue;
+                RechargeManager.actureValue = param.actureValue;
+                xmesh.act('telOrderConfirm');
+            }
+
+            //通讯录
+            contactsBtn.bind("click",function(){
+                navigator.contacts.chooseContact(function(id, results){
+                    var phoneNumbers = results.phoneNumbers;
+                    if(phoneNumbers && phoneNumbers.length>0){
+                        phoneNum = phoneNumbers[0].value.replace(/\D/gi,'');
+                        input.value = phoneNum;
+                        getParValue(phoneNum);
+                    }
+                },($.isIOS ?{}:{allowsEditing:"true",fields:["phoneNumbers"]}));
+            })
+
+            //获取话费面额接口函数
+            function getParValue(phoneNum){
+                xmesh.model["RechargeManager"].getParValue({phone:phoneNum},function(res){
+                    var data = res.data;
+                    dataList = data.parValueList;
+                    createValueClip(dataList);
+                    callsAttribution.html(data.province+data.city+data.operater);
+                },function(data){
+                    Dialog.toast(data.message)
+                })
+            }
+        })
+    </script>
+</head>
+
+<body>
+<div id="telRechargePage" data-box="v" class="chargePage secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div class="content" id="telRecharge" data-flex="1" style="msTouchAction: none">
+        <div class="telBox" data-box="h"><input type="tel" data-flex="1" maxlength="11" placeholder="请输入充值号码" name="input" x-field="User.phone"/><button class="contacts" name="contactsBtn"></button></div>
+        <div class="guishu">归属地：<span name="callsAttribution"></span></div>
+        <ul class="rechargeType" name="originParValue">
+            <li data-box="v" dataNo="0" checked><div name="amount" class="amount">50元</div><span name="check" class="check"></span></li>
+            <li data-box="v" dataNo="1"><div name="amount" >100元</div><span name="check"></span></li>
+            <li data-box="v" dataNo="2"><div name="amount" >200元</div><span name="check"></span></li>
+            <li data-box="v" dataNo="3"><div name="amount" >300元</div><span name="check"></span></li>
+            <li data-box="v" dataNo="4"><div name="amount" >500元</div><span name="check"></span></li>
+            <li data-box="v" dataNo="5"><div name="amount" >1000元</div><span name="check"></span></li>
+        </ul>
+        <div class="price">售价：<span name="newParValue"></span></div>
+        <div style="height: 15px;"></div>
+        <div class="button"><button name="next" class="bigBtn blueBtn">下一步</button></div>
+        <div class="warmTips">
+            <div class="title">温馨提示</div>
+            <div>1、支持全国移动、联通和电信手机号充值（特殊号码段除外）。</div>
+            <div>2、充值到账时间5-10分钟，若超过30分钟未到账请联系客服核实。</div>
+            <div>3、客服24小时受理业务，客服电话4000-365-724。</div>
+        </div>
+        <div style="height:75px"></div>
+    </div>
+</div>
+</body>
+</html>

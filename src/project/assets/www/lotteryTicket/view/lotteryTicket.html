@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>彩票</title>
+    <script>
+        var firstTime;
+        var page = this.bind('pageReady', function(){
+//            page.child("#lotteryTicket").as('ui.ScrollPane',{});
+            firstTime = true;
+            var _this = this;
+            page.named("user").html("暂时无法使用！");
+            if(!xmesh.model["User"].phone){//第三方没有传入电话号码的情况，查询用户信息，获取phone
+                service.busynessMessage = "正在连接，请稍等...";
+                xmesh.model["User"].getUserInfo(function(data){
+                    getUserLotteryInfo(firstTime);
+                    firstTime=false;
+                },showErrorMessage)
+            }else{
+                getUserLotteryInfo(firstTime);
+                firstTime=false;
+            }
+        });
+
+        var page = this.bind('show', function(){
+            var _this = this;
+            if(!firstTime && xmesh.model["User"].phone){getUserLotteryInfo(firstTime);}
+        });
+
+        function getUserLotteryInfo(flag){
+            setTimeout(function(){
+                if(flag) service.busynessMessage = "正在连接，请稍等...";
+            xmesh.model["User"].search({phone:xmesh.model["User"].phone},function(data){
+                if(data.data != null && data.data.idNumber != null){
+                    page.named("user").html(this.balanceYuan);
+                }else{
+                    page.named("user").html("未注册！");
+                }
+                if(flag) firstTime = false;
+            },function(data){
+                firstTime = false;
+                if(data.code=="201")  page.named("user").html("未注册！");
+                else  if(flag)showErrorMessage(data);
+            })},500);
+        }
+
+        var shuangSeQiu = page.named('shuangSeQiu');
+        var fucai3d = page.named('fucai3d');
+        var qilecai = page.named('qilecai');
+        var recharge = page.named('recharge');
+        var tixian = page.named('tixian');
+        var lotteryHistory = page.named('lotteryHistory');
+        var buyHistory = page.named('buyHistory');
+        var userInfo = page.named('userInfo');
+
+        function goNext(){
+            var nextUrl  = this.attribute("name");
+            if(xmesh.model["User"].name && xmesh.model["User"].idNumber){
+                xmesh.act(nextUrl);
+            }else{
+                xmesh.act('lotteryRegister',{url:nextUrl});
+            }
+        }
+        shuangSeQiu.bind('click',goNext);          //双色球
+        fucai3d.bind('click',goNext);                  //福彩3D
+        qilecai.bind('click', goNext);                  //七乐彩
+        recharge.bind('click',goNext);                //充值
+        tixian.bind('click',goNext);                      //提现
+        buyHistory.bind('click', goNext);            //代购记录
+        userInfo.bind('click',goNext);                     //账户余额
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="lotteryTicket") xFace.app.close();
+                else xmesh.home();
+            }else{xmesh.home();}
+        })
+    </script>
+</head>
+
+<body>
+   <div id="lotteryTicketPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+            <button class="account" name="userInfo">账户</button>
+        </header>
+       <xtag:ScrollPane name="lotteryScroller">
+        <div class="content" id="lotteryTicket" data-flex="1">
+            <div class="ticketType" data-box="h" name="shuangSeQiu">
+               <img src="lotteryTicket/view/res/images/shuangseqiu.png"/><div data-flex="1" class="ticketTitle">福彩双色球</div><div class="arrow"></div>
+            </div>
+            <div class="ticketType" data-box="h" name="fucai3d">
+               <img src="lotteryTicket/view/res/images/fucai3d.png"/><div data-flex="1" class="ticketTitle">福彩3D</div><div class="arrow"></div>
+            </div>
+            <div class="ticketType" data-box="h" name="qilecai">
+               <img src="lotteryTicket/view/res/images/qilecai.png"/><div data-flex="1" class="ticketTitle">七乐彩</div><div class="arrow"></div>
+            </div>
+            <div data-box="h">
+                <div class="btn" data-flex="1"><button class="blueBtn" name="recharge">充值</button></div>
+                <div class="btn" data-flex="1"><button class="blueBtn" name="tixian">提现</button></div>
+            </div>
+            <div data-box="h">
+                <div class="btn" data-flex="1"><button class="blueBtn" name="lotteryHistory" onclick="xmesh.act('lotteryRecord')">开奖记录</button></div>
+                <div class="btn" data-flex="1"><button class="blueBtn" name="buyHistory">代购记录</button></div>
+            </div>
+            <div class="balance">账户余额<span class="account" x-field="User.balanceYuan" name="user"></span></div>
+        </div>
+           <div style="height:15px"></div>
+       </xtag:ScrollPane>
+   </div>
+</body>
+</html>

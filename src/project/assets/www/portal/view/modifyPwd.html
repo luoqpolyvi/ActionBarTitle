@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>修改登录密码</title>
+    <script>
+        var page = this;
+        function changePwd(){
+            service.busynessMessage = "正在修改登录密码...";
+            xmesh.model["User"].resetPassword(page.child('#oldPwd').value,page.child('#newPwd').value,page.child('#rePwd').value,function(){
+                Dialog.alert("修改成功",function(){xmesh.back();});
+            },showErrorMessage)
+        }
+    </script>
+</head>
+
+<body>
+<div id="modifyPwdPage" data-box="v" class="secondPage">
+   <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">修改登录密码</span>
+    </header>
+    <div class="content" id="modifyPwd" data-box="v" data-flex="1">
+        <form action="javascript:void(0)" id="modifyPwdForm">
+            <input name="password" id="oldPwd" type="password" maxlength="16" placeholder="请输入当前密码" class="inputBox"/>
+            <input name="password" id="newPwd"  type="password" maxlength="16" placeholder="请输入新密码" class="inputBox"/>
+            <input name="password" id="rePwd" type="password" maxlength="16" placeholder="请再次输入新密码" class="inputBox"/>
+            <button class="bigBtn" onClick="changePwd();">确认修改</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

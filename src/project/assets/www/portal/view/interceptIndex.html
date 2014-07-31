@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title></title>
+    <script>
+        this.bind('pageReady',function(evt){
+            if(System.data.userInfo.id == "" || System.data.userInfo.m_id == "" || System.data.userInfo.phone==""){
+                System.data.userInfo.isLogin = false;
+            }else{xmesh.model["User"].id = System.data.userInfo.id;xmesh.model["User"].m_id = System.data.userInfo.m_id;xmesh.model["User"].phone = System.data.userInfo.phone;xmesh.model["User"].u_id = System.data.userInfo.u_id;xmesh.model["User"].u_s = System.data.userInfo.u_s;}
+            switch (System.data.action){
+                case "login" ://登录
+                       setTimeout(function(){
+                           xmesh.act("login",{  success : null,url:""});
+                       },0);
+                    break;
+                case "register" ://注册
+                    setTimeout(function(){
+                        xmesh.act("register",{  success : null,url:""});
+                    },0);
+                    break;
+                case "personalCenter" ://个人中心
+                    checkLogin("personalCenter");
+                    break;
+                case "telephoneCharge" ://话费直充
+                    checkLogin("telephoneCharge");
+                    break;
+                case "gameCharge" ://网游直充
+                    checkLogin("gameCharge");
+                    break;
+                case "busTicket" ://汽车票
+                    checkLogin("busTicket");
+                    break;
+                case "lotteryTicket" ://彩票
+                    checkLogin("lotteryTicket");
+                    break;
+                case "coupons" ://电子券
+                    checkLogin("electricTicket");
+                    break;
+                case "messageCenter" ://我的消息
+                    checkLogin("messageCenter");
+                    break;
+                case "toBePaid" ://待付款
+                    checkLogin("orderList",{
+                        title:"待付款",
+                        value:xmesh.model["BillManager"].generatedBillTotalRs,
+                        type:"toBePaid"
+                    });
+                    break;
+                case "successPaid" ://交易成功
+                    checkLogin("orderList",{
+                        title:"交易成功",
+                        value:xmesh.model["BillManager"].generatedBillTotalRs,
+                        type:"successPaid"
+                    });
+                    break;
+                case "allBill" ://交易成功
+                    checkLogin("orderList",{
+                        title:"全部订单",
+                        value:xmesh.model["BillManager"].BillTotalRs,
+                        type:"all"
+                    });
+                    break;
+                case "ya_lifePayment" ://生活缴费
+                    checkLogin("accountList");
+                    break;
+                case "balanceInquiry" ://余额查询
+                    checkLogin("balanceInquiry");
+                    break;
+                case "creditCard" ://信用卡还款
+                    checkLogin("creditCard");
+                    break;
+                case "addressManager" ://常用地址管理
+                    checkLogin("addressManager");
+                    break;
+                case "contactManager" ://常用联系人
+                    checkLogin("ContactManager");
+                    break;
+                default : Dialog.alert("没有此跳转action");xFace.app.close();break;
+            }
+
+            function checkLogin(actionName,data){
+                setTimeout(function(){
+                    if(System.data.userInfo.isLogin){
+                        xmesh.act(actionName,data);
+                    }else{
+                        xmesh.act("login",{  success : function(){
+                            xmesh.act(actionName,data);
+                        },url:actionName});
+                    }
+                },0);
+            }
+        });
+
+    </script>
+</head>
+<body>
+</body>
+</html>

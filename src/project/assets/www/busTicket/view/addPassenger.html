@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>其它乘车人</title>
+    <script>
+        var page = this;
+        var addPassengerBtn = this.child("#addPassengerBtn");
+        var passengerNameForAdd = this.child("#passengerNameForAdd");
+        var credentialTypeForAdd = this.child("#credentialTypeForAdd");
+        var credentialNumForAdd = this.child("#credentialNumForAdd");
+        var passengerPhoneForAdd = this.child("#passengerPhoneForAdd");
+        var ticketTypeForAdd = this.child("#ticketTypeForAdd");
+        var BusPassengersManager = xmesh.model["BusPassengersManager"];
+        var BusPassengers = xmesh.model["BusPassengers"];
+        page.bind('pageReady',function(){
+            BusPassengersManager.isFirst = false;
+            BusPassengersManager.editFlag = false;
+        }) ;
+
+        this.child("#credentialNumForAddDiv").bind((device.version=="2.3.6")?"touchstart":"click",showCardComponent,false);
+        credentialNumForAdd.attribute("disabled",true);
+        addPassengerBtn.bind("click",function(){
+            var addDate = {
+                name:passengerNameForAdd.value,
+                credentialType:credentialTypeForAdd.value,
+                credentialNum:credentialNumForAdd.value,
+                type:ticketTypeForAdd.value,
+                mobileForAdd:passengerPhoneForAdd.value
+            }
+            service.busynessMessage = "正在增加乘车人，请稍候...";
+            BusPassengersManager.addPassenger(addDate,function(data){
+                BusPassengersManager.addFlag = true;
+                BusPassengers.passengerId = data.data.passengerId;
+                xmesh.back();
+            },showErrorMessage);
+        })
+        function showCardComponent(){
+            var cardType = credentialTypeForAdd.value;
+            if(cardType == 0){
+                var option = {
+                    type : "idcard",
+                    name : "id_number",
+                    id : "id_number",
+                    label : "请输入身份证号码",
+                    onconfirm : submitFn
+                }
+                var keyPassword = $.Element("div").as("Input",option);
+                keyPassword.prompt();
+                keyPassword.show();
+                function submitFn(){
+                    credentialNumForAdd.value = document.keyboard.value;
+                    credentialNumForAdd.attribute("disabled",true);
+                }
+            }else{
+                credentialNumForAdd.attribute("disabled",null);
+            }
+        }
+
+        function onchangeHanner(evt){
+            if (evt ==3){
+                ticketTypeForAdd.value = 1;
+                BusPassengers.type = 1;
+            }
+            else{
+                ticketTypeForAdd.value = 0;
+                BusPassengers.type = 0;
+            }
+            credentialNumForAdd.attribute("disabled",(evt == 0 ? true : null));
+        }
+
+        this.bind("backbutton",function(event){
+            if(document.keyboard.visible) {
+                event.preventDefault();
+                document.keyboard.hide();
+            }
+        })
+    </script>
+</head>
+
+<body>
+   <div id="addPassengerPage" data-box="v" class="passengerPage secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel">其它乘车人</span>
+        </header>
+       <xtag:ScrollPane>
+           <div class="content passenger" id="addPassenger" data-flex="1">
+               <form name="addPassenger">
+                   <div data-box="h" class="textBox"><div class="title">姓名</div><input type="text" id="passengerNameForAdd" placeholder="请输入姓名" maxlength="20" data-flex="1"/></div>
+                   <div data-box="h" class="textBox"><div class="title">证件类型</div>
+                       <select id="credentialTypeForAdd" data-flex="1" onchange="onchangeHanner(this.value)">
+                           <option value="0">身份证</option>
+                           <option value="1">护照</option>
+                           <option value="2">军官证</option>
+                           <option value="3">儿童</option>
+                       </select>
+                       <div class="arrow"></div>
+                   </div>
+                   <div data-box="h" class="textBox" id="credentialNumForAddDiv"><div class="title">证件号码</div><input type="text" id="credentialNumForAdd" placeholder="请输入证件号码" maxlength="20" data-flex="1"/></div>
+                   <div data-box="h" class="textBox"><div class="title">购票类型</div>
+                       <select id="ticketTypeForAdd" data-flex="1">
+                           <option value="0">全票</option>
+                           <option value="1">半票</option>
+                       </select>
+                       <div class="arrow"></div>
+                   </div>
+                   <div data-box="h" class="textBox"><div class="title">手机</div><input type="tel" id="passengerPhoneForAdd" placeholder="请输入手机号码" maxlength="11" data-flex="1"/></div>
+               </form>
+               <div class="warmTips">
+                   <div class="title">温馨提示</div>
+                   <div>1、成人及身高超过1.5米的儿童需购买全价票，共给座位。</div>
+                   <div>2、身高1.2米至1.5米的儿童购买半价儿童票，供给座位。</div>
+                   <div>3、请仔细核对姓名、证件类型以及证件号码，以免给您取票或乘车带来影响。</div>
+               </div>
+               <button class="bigBtn blueBtn" id="addPassengerBtn">确定</button>
+           </div>
+       </xtag:ScrollPane>
+
+   </div>
+</body>
+</html>

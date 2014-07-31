@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>交易详情</title>
+    <script>
+        var Records = xmesh.model["Records"];
+        var record = this.named('record');
+        var amount = this.named('amount');
+        var addition = this.named('addition');
+
+        var page = this.bind('pageReady',function(){
+            switch(Records.state){
+                case "success" : record.attribute("status","0");break;
+                case "failure" : record.attribute("status","1");break;
+            }
+            amount.html(Validator.convertFenToYuan(Records.amount));
+            addition.html(Records.addition.replace(/\n/g, "<br/>"));
+        })
+
+    </script>
+</head>
+
+<body>
+<div id="repayRecordDetailPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div class="content" id="repayRecordDetail" data-flex="1">
+        <ul class="repayDetail" name="record">
+            <li>交易编号<span class="detail" x-field="Records.orderId"></span></li>
+            <li>应用名称<span class="detail" x-field="Records.appName"></span></li>
+            <li>下单时间<span class="detail" x-field="Records.createTime"></span></li>
+            <li class="amount">交易金额<span class="detail" name="amount"></span></li>
+            <li>交易状态<span class="detail status"></span></li>
+            <li>备注<div class="detail"><div name="addition"></div></div></li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

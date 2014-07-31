@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>汽车票查询结果页面</title>
+    <script>
+        var page = this;
+        var BusTicketManager = xmesh.model["BusTicketManager"];
+        var BusPassengers = xmesh.model["BusPassengers"];
+        var tickets = this.param;
+        var ticketScroller = page.named("ticketScroller");
+        var ticketsList = page.named("ticketsList");
+        var schType={"0":"固定班","1":"滚动发班"};
+        page.bind("pageReady",function(){
+            loadTicketList(tickets.ticketList);
+            checkPrevAfterStatus();
+        });
+        page.bind('show',function(){
+            BusPassengers.BusPassengerChoose=[];
+            BusPassengers.chooseFlag=[];
+        });
+        function loadTicketList(ticketData){
+            ticketsList.html("");
+            $.each(ticketData,function(property,item){
+                var temp = page.named("template").child('li').clone(true);
+                if(item.schType=="1"){//滚动发班
+                    temp.named("driveTime").html(schType[item.schType]+"<br/>("+item.driveTime.substring(item.driveTime.indexOf(" ")+1,item.driveTime.length)+"止)");
+                }else{
+                    temp.named("driveTime").html(item.driveTime.substring(item.driveTime.indexOf(" ")+1,item.driveTime.length));
+                }
+                temp.named("originStation").html(item.originStation);
+                temp.named("targetStation").html(item.targetStation);
+                temp.named("fullPrice").html(Validator.convertFenToYuan(item.fullPrice));
+                temp.named("count").html(item.count);
+                temp.appendTo(ticketsList);
+                temp.bind("click",function(){
+                    $.copyObject(xmesh.model["BusTicket"],item);
+                    xmesh.model["BusTicket"].servicePrice = tickets.servicePrice;
+                    xmesh.act("busTicketDetail");
+                })
+                setTimeout(function(){ticketScroller.refresh();},0);
+            })
+            setTimeout(function(){ticketScroller.scrollTo(0,0,0);},0);
+            page.named("total").html("总共"+(tickets.total || 0)+"班次");
+        }
+
+        function checkPrevAfterStatus(){//检查前一天和后一天的状态
+            if(BusTicketManager.hasPrevDay()) page.named("prev").attribute("disabled",null) ;
+            else page.named("prev").attribute("disabled","disabled") ;
+            if(BusTicketManager.hasAfterDay()) page.named("after").attribute("disabled",null) ;
+            else page.named("after").attribute("disabled","disabled") ;
+        }
+
+        function getTicket(){
+            ticketScroller.scrollTo(0,0,0);
+            page.named("listContent").hide();
+            page.named("noList").hide();
+            tickets = {};
+            page.named("total").html("总共0班次");
+            page.named("time").child("div").className="sortIcon on_up";
+            page.named("price").child("div").className="sortIcon off_up";
+            page.named("countNum").child("div").className="sortIcon off_up";
+            service.busynessMessage = "网络连接中，请稍候...";
+            BusTicketManager.getTicket(function(res){
+                tickets = res;
+                if(tickets.total==0){
+                    page.named("listContent").hide();
+                    page.named("noList").show();
+                }else{
+                    page.named("listContent").css("display","block");
+                    page.named("noList").hide();
+                    loadTicketList(tickets.ticketList);
+                }
+            },showErrorMessage)
+        }
+
+        function _formatDate(day){
+            var d = ""+day;
+            return (d.length<2) ? ("0"+d) : d ;
+        }
+
+        page.named("listFooter").child("button").bind('click',function(evt){//获取前一天和后一天的票数
+            var dateArray = BusTicketManager.date.split("-");
+            var date = new Date(Number(dateArray[0]),Number(dateArray[1])-1,Number(dateArray[2]));
+            if(this.attribute("name")=="prev") date.setDate(date.getDate()-1);
+            else  date.setDate(date.getDate()+1);
+            BusTicketManager.date = date.getFullYear()+"-"+_formatDate(date.getMonth()+1)+"-"+ _formatDate(date.getDate());
+            checkPrevAfterStatus();
+            BusTicketManager.showDate = BusTicketManager.date+" "+Validator.formatDay(date.getDay());
+            getTicket();
+        })
+
+        page.named("sortBar").child("div").bind("click",function(){//按照时间，票价和余票排序
+            if(!tickets.ticketList) return;
+            var name = this.attribute("name");
+            if(!name) return;
+            var childICon = this.child("div");
+            if(childICon.hasClass("off_up")) {
+                page.named("time").child("div").className="sortIcon off_up";
+                page.named("price").child("div").className="sortIcon off_up";
+                page.named("countNum").child("div").className="sortIcon off_up";
+                var type="up";
+                childICon.removeClass("off_up").addClass("on_up");
+            }else if(childICon.hasClass('on_up')){
+                var type="down";
+                childICon.className= "sortIcon on_down";
+            }else{
+                var type="up";
+                childICon.className= "sortIcon on_up";
+            };
+            var sortResult = BusTicketManager.sort(tickets.ticketList,type,name);
+            setTimeout(function(){loadTicketList(sortResult);},0);
+        })
+
+        this.named('listContent').css("height",window.innerHeight- $("header").offsetHeight-100+"px");
+    </script>
+</head>
+
+<body>
+   <div id="ticketListPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-field="BusCityManager.line" class="returnLabel">成都市-眉山</span>
+        </header>
+        <div class="content" id="ticketList"  data-box="v" data-flex="1">
+            <div class="topBar" data-box="h" name="sortBar">
+                <div data-box="h" class="item" name="time">时间<div class="sortIcon on_up"></div></div>
+                <div data-box="h" class="item station">起点站－终点站</div>
+                <div data-box="h" class="item" name="price">票价<div class="sortIcon off_up"></div></div>
+                <div data-box="h" class="item" name="countNum">余票<div class="sortIcon off_up"></div></div>
+            </div>
+            <div class="noItem" name="noList" data-box="v" data-flex="1" style="display: none;"><div class="image"></div></div>
+            <div name="listContent">
+                <xtag:ScrollPane name="ticketScroller">
+                    <ul name="ticketsList"></ul>
+                </xtag:ScrollPane>
+            </div>
+        </div>
+        <footer data-box="h" name="listFooter">
+            <button name="prev">前一天</button>
+            <div data-flex="1" data-box="v" class="dateTime">
+                <div x-field="BusTicketManager.date">2014-01-02 星期四</div>
+                <div name="total">总共3班次</div>
+            </div>
+            <button name="after">后一天</button>
+        </footer>
+   </div>
+   <xtag:template name="template">
+       <li data-box="h">
+           <div class="item time" name="driveTime" data-box="h">16:00</div>
+           <div class="item station" data-box="v"><div class="start" name="originStation">城东客运站</div><div class="end" name="targetStation">眉山</div></div>
+           <div class="item price" name="fullPrice" data-box="h">120.00</div>
+           <div class="item num" name="count" data-box="h">40</div>
+       </li>
+   </xtag:template>
+</body>
+</html>

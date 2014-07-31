@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>购票记录详情</title>
+    <script>
+        var page = this.bind("pageReady",function(){
+            var _this = this;
+            var BusBuyTicketRecord = xmesh.model["BusBuyTicketRecord"];
+            var ticketState = _this.named('ticketState');
+            var payOrder = _this.named('payOrder');
+            var schType = _this.named('schType');
+            _this.named('totalPrice').html(Validator.convertFenToYuan(BusBuyTicketRecord.totalPrice));
+            _this.named('ticketPrice').html(Validator.convertFenToYuan(BusBuyTicketRecord.fullPrice));
+            _this.named('servicePrice').html(Validator.convertFenToYuan(BusBuyTicketRecord.servicePrice));
+//            _this.named('busType').html(BusBuyTicketRecord.busType);
+            _this.named('contactInfo').html(BusBuyTicketRecord.contactInfo.replace("|"," "));
+//            _this.named('mile').html(BusBuyTicketRecord.mile+"公里");
+            _this.named('startEnd').html(BusBuyTicketRecord.originCity+BusBuyTicketRecord.originStation+"—"+BusBuyTicketRecord.targetStation);
+            switch(BusBuyTicketRecord.state){
+                case "UNLOCKED" : ticketState.html("交易关闭");$("footer").hide();break;
+                case "LOCKED" : ticketState.html("未支付");break;
+                case "SELLING" : ticketState.html("出票中");$("footer").hide();break;
+                case "SOLD" : ticketState.html("出票成功");$("footer").hide();break;
+                case "SALE_FAIL" : ticketState.html("出票失败");$("footer").hide();break;
+                case "BACK" : ticketState.html("退票成功");$("footer").hide();break;
+                case "BCAK_FAIL" : ticketState.html("出票成功");$("footer").hide();break;
+            }
+            switch(BusBuyTicketRecord.schType){
+                case "0" : schType.html("固定班次");break;
+                case "1" : schType.html("滚动班次");break;
+            }
+            payOrder.bind("click",function(){
+                xmesh.model["Order"].billPay(BusBuyTicketRecord.billData.billId,function(){xmesh.model["BusBuyTicketRecord"].isPay = true;xmesh.back();window.getBill();},function(e){showErrorMessage(e);});
+            })
+        })
+    </script>
+</head>
+
+<body>
+   <div id="buyTicketDetailPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+       <xtag:ScrollPane>
+        <div class="content" id="buyTicketDetail" data-flex="1">
+            <ul class="ticketDetail">
+                <li>交易编号<span class="detail" x-field="BusBuyTicketRecord.orderId"></span></li>
+                <li>下单时间<span class="detail" x-field="BusBuyTicketRecord.createTime"></span></li>
+                <li>交易状态<span class="detail" status="0" name="ticketState"></span></li>
+                <li class="amount">交易金额<span class="detail" name="totalPrice"></span></li>
+                <li>起止站点<span class="detail" name="startEnd"></span></li>
+                <li>发车时间<span class="detail" x-field="BusBuyTicketRecord.driveTime"></span></li>
+                <li>班次类型<span class="detail" status="0" name="schType"></span></li>
+                <li>乘车人
+                    <div class="detail">
+                        <div class="person" x-field="BusBuyTicketRecord.passengerInfoAr">
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </li>
+                <li>联系人<span class="detail" name="contactInfo">fdfdas</span></li>
+                <li>票价<span class="detail" name="ticketPrice">fdfads</span></li>
+                <li>服务费<span class="detail" name="servicePrice">fdsafsd</span></li>
+                <!--<li>车型<span class="detail" name="busType">fdsafds</span></li>-->
+                <!--<li>公里数<span class="detail" name="mile">fdsa</span></li>-->
+            </ul>
+        </div>
+           <div style="height:60px; "></div>
+       </xtag:ScrollPane>
+        <footer data-box="h" style="background-color: #ffffff">
+           <button class="pay" name="payOrder">支付</button>
+        </footer>
+   </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>我的银行卡</title>
+    <script>
+        var page = this;
+        var temp = page.named("templateList");
+        var showList = page.named("showList");
+        var noList = page.named("noList");
+        var ScrollPaneList = page.named("ScrollPaneList");
+        var value = {
+            page_size:"0",
+            page_index:"1",
+            u_id:xmesh.model["User"].id}
+
+        page.bind("pageReady",function(){
+            service.busynessMessage = "正在获取银行卡信息...";
+            xmesh.model["Card"].search(value,function(data){
+                if(data.data.dataTotal == 0){
+                    noList.css('display','-webkit-box');
+                    ScrollPaneList.hide();
+                }
+                else{
+                    $.each(data.data.dataList,function(i,item){
+                        temp
+                                .get('cardDetail',{bankOtherName:item.bankNameCP,bankCard:Validator.formatBankCard(item.bankCardNo),CardImage:item.bankLogoUrl,cardType:item.cardType,bankName:item.bankName})
+                                .appendTo(showList)
+                                .bind("click",function(){
+                                    xmesh.model['User'].bankCardNo = Validator.formatBankCard(item.bankCardNo);
+                                    xmesh.model['User'].bankCardImage = item.bankLogoUrl;
+                                    xmesh.model['User'].bankCardId = item.bankCardNo;
+                                    xmesh.model['User'].bankName = (item.bankName == null)?"银联卡":item.bankName;
+                                    xmesh.model['User'].cardFlag = true;
+                                    xmesh.to('/lotteryTicket/tixian');
+                                });
+                    });
+                    setTimeout(function(){
+                        ScrollPaneList.scrollTo(0,0,0);
+                        ScrollPaneList.refresh();},100);
+
+                }
+
+            },showErrorMessage);
+        })
+
+
+    </script>
+</head>
+
+<body>
+<div id="bankCardPage" data-box="v" class="secondPage">
+   <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div name="noList" class="noItem" data-box="v" data-flex="1" style="display: none;height: 100%"><div class="image"></div></div>
+    <xtag:ScrollPane name="ScrollPaneList">
+        <div class="content" id="bankCard" data-flex="1"><ul class="bankcard" name="showList"></ul></div>
+        <div style="height: 45px"></div>
+    </xtag:ScrollPane>
+    <xtag:template name="templateList">
+        <li data-box="v" name="cardDetail">
+            <div data-box="h" class="bankName">
+                <img name="CardImage"/><div data-flex="1" class="name" name="bankName"></div><div class="otherName" name="bankOtherName"></div>
+            </div>
+            <div name="bankCard"></div>
+            <div name="cardType"></div>
+        </li>
+    </xtag:template>
+    <div class="btn"><button class="bigBtn blueBtn" onclick="xmesh.act('myCardDetail')">其他银行卡</button></div>
+</div>
+</body>
+</html>

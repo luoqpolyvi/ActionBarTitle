@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">智慧社区</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="alert">提示</string>
+    <string name="title_activity_property_fee">PropertyFeeActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="title_activity_base_action_bar">BaseActionBarActivity</string>
+    <string name="title_activity_parking_fee">ParkingFeeActivity</string>
+    <string name="network_not_connected">没有连接网络哦</string>
+    <string name="title_activity_my">MyActivity</string>
+
+</resources>

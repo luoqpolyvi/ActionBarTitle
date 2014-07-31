@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>充值信息</title>
+    <script>
+        var page = this;
+        var nextBtn = page.named('next');
+        var QQAccount = page.named("QQAccount");
+        var QQList = page.named("Q");
+        var catogery="";
+
+        page.bind("pageReady",function(){
+
+            QQList.bind("click",function(){
+                if(this.attribute("checked")) return;
+                removeAttribute(QQList,"checked");
+                var value = this.attribute("value");
+                this.attribute("checked",true);
+                this.child('[name=check]').addClass('check');
+                this.child('[name=amount]').addClass('amount');
+                catogery = xmesh.model["GameManager"].setChargeCategory("QCoin",value);
+            });
+
+            nextBtn.bind("click",function(){
+                var mes = check();
+                if(mes!=true) return Dialog.toast(mes);
+                xmesh.model["GameManager"].setChargeOrder("QCoin",{catogery:catogery, QQAccount:QQAccount.value});
+                service.busynessMessage = "网络连接中，请稍候...";
+                xmesh.model["OrderManager"].createOrder(xmesh.model["GameManager"].orderData,'gameRecharge',function(data){
+                    xmesh.model["GameManager"].payAmount = data.data.amount;
+                    xmesh.act("gameOrderConfirm");
+                },function(e){showErrorMessage(e);})
+            });
+        })
+
+
+        function check(){
+            if(!catogery) return "选择充值游戏类型";
+            if(!QQAccount.value) return "请输入QQ账号";
+            if(!Validator.number(QQAccount.value)) return "QQ账号格式不正确";
+            return true;
+        }
+
+        function removeAttribute(node,value){
+            $.each(node,function(property,item){
+                item.attribute("checked",null);
+                item.child('[name=check]').removeClass('check');
+                item.child('[name=amount]').removeClass('amount');
+            })
+        }
+    </script>
+</head>
+
+<body>
+   <div id="chargeQCoinPage" data-box="v" class="chargePage secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content charge" id="chargeQCoin" data-flex="1">
+            <ul class="rechargeType">
+                <li data-box="v" name="Q" value="Q5"><div name="amount" ><span class="type">Q币</span><span>5元</span></div><span name="check"></span></li>
+                <li data-box="v" name="Q" value="Q10"><div name="amount"><span class="type">Q币</span><span>10元</span></div><span name="check"></span></li>
+                <li data-box="v" name="Q" value="Q18"><div name="amount"><span class="type">Q币</span><span>18元</span></div><span name="check"></span></li>
+                <li data-box="v" name="Q" value="Q30"><div name="amount"><span class="type">Q币</span><span>30元</span></div><span name="check"></span></li>
+                <li data-box="v" name="Q" value="Q50"><div name="amount"><span class="type">Q币</span><span>50元</span></div><span name="check"></span></li>
+                <li data-box="v" name="Q" value="Q100"><div name="amount"><span class="type">Q币</span><span>100元</span></div><span name="check"></span></li>
+            </ul>
+            <div class="operate">
+                <input type="tel" placeholder="请输入QQ账号" maxlength="20" name="QQAccount" class="account"/>
+                <button class="bigBtn blueBtn" name="next">下一步</button>
+            </div>
+        </div>
+   </div>
+</body>
+</html>

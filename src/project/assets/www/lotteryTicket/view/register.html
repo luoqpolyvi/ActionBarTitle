@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>注册</title>
+    <script>
+        var page = this;
+        var url = this.param.url;
+        function register(){
+            service.busynessMessage = "正在提交补充信息...";
+            xmesh.model["User"].supplement({
+                u_id : xmesh.model["User"].id,
+                name : page.named('name').value,
+                id_number : page.named('idCardNum').value,
+                phone : xmesh.model["User"].phone
+            },function(data){
+                Dialog.alert("补充用户资料成功",function(){
+                    xmesh.lastQuote("index|lotteryTicket");
+                    setTimeout(function(){xmesh.act(url);}, 300);
+                });
+            },showErrorMessage)
+        }
+
+    </script>
+</head>
+
+<body>
+   <div id="lottryRegisterPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content" id="lottryRegister" data-flex="1">
+            <input name="name" maxlength="20" type="text" placeholder="请输入姓名" class="inputBox"/>
+            <!--<div type="text" name="idCardNum" placeholder="请输入身份证号码" class="inputBox"></div>-->
+            <xtag:input type="idcard" name="idCardNum" label="请输入身份证号码" id="idCardNum" placeholder="请输入身份证号码" class="inputBox"></xtag:input>
+            <div class="warmTips">
+                <div class="title">温馨提示</div>
+                <div>1、此信息为领奖凭证，注册后不可更改。</div>
+                <div>2、彩票购买必须为实名制，为保障您中奖后能成功兑奖，请务必准确填写身份信息。</div>
+            </div>
+            <button class="bigBtn blueBtn" onclick="register()">下一步</button>
+        </div>
+   </div>
+</body>
+</html>

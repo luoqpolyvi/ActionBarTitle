@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>电子券商城</title>
+    <script>
+        var scrollPan,list,index = 1,noList,clickMore,totalNumber;
+        xmesh.model['ElectricTickets'].deleteState = true;
+        var page = this
+                .bind('pageReady',function(){
+                    noList = page.named('noList');
+                    scrollPan = page.named('couponsList').as('ui.ScrollPane');
+                    list = page.named('List').as('ui.List',{'echoSelection':'true','onCreateItem':onCreateItem});
+                    clickMore = page.named('clickMore').bind('click',onReachBottom);
+                })
+                .bind('show',function(){
+                    noList.hide();
+//                    service.busynessMessage = "网络连接中，请稍候...";
+                    try{
+                        getCouponsList();
+                    }  catch(e){}
+                })
+                .bind('hide',function(){});
+
+        function getCouponsList(bAppend){
+            scrollPan.hide();
+            var _data={
+                page_index : index
+            };
+            xmesh.model['ElectricTickets'].getVolumeList(_data,function(rs){
+                var data = rs.data.dataList;
+                if(data.length==0){
+                    if(index==1)
+                    {
+                        noList.css('display','-webkit-box');
+                        scrollPan.hide();
+                    }
+                    else
+                        Dialog.toast("没有更多数据")
+                    return;
+                }
+                list.load(data,!!bAppend);
+                totalNumber = xmesh.model['ElectricTickets'].mallVolumeNumber;
+                if(list.length<totalNumber){
+                    clickMore.css("display","block");
+                }else{
+                    clickMore.css("display","none");
+                }
+                setTimeout(function(){
+                    scrollPan.show();
+                    scrollPan.refresh();
+                    scrollPan.scrollTo(0,0,0);
+                },30);
+                scrollPan.refresh();
+            },function(e){
+                showErrorMessage(e);
+                if(list.length==0){noList.css('display','-webkit-box');scrollPan.hide();}
+            })
+        }
+
+        function onCreateItem(event){
+            event.preventDefault();
+            var element = event.targetElement;
+            var data = event.data;
+            element.bind('click',function(){
+                xmesh.act('mallCouponsDetail',data) ;
+            });
+            var test = $.Element('li').appendTo(element);
+            test.attribute('data-box','v');
+            var contentDiv = $.Element('div')
+                    .appendTo(test)
+                    .addClass('ticket');
+            $.Image(data.icon.normal)
+                    .appendTo(contentDiv);
+//            if(data.state="presenting"){
+//                $.Element('span').addClass('status').attribute('status','1')
+//                        .appendTo(contentDiv);
+//            }
+        }
+
+        function onReachBottom(){
+            if(list.length<xmesh.model['ElectricTickets'].mallVolumeNumber){
+                index++;
+                getCouponsList(true);
+            }
+        }
+    </script>
+</head>
+
+<body>
+<div id="electricTicketPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div name="noList" class="noItem" data-box="v" data-flex="1"><div class="image"></div></div>
+    <div class="content" id="electricTicket" data-box="v" data-flex="1" name="couponsList">
+        <ul data-flex="1" class="ticketList" name="List">
+        </ul>
+        <div name="clickMore" class="clickMore" style="display: none">点击加载更多</div>
+    </div>
+</div>
+</body>
+</html>

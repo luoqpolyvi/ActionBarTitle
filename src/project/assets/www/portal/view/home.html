@@ -1,0 +1,216 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>中联商圈</title>
+    <script>
+        window.applicationCache.onnoupdate = function(){
+            console.error("noupdate")
+        }
+        applicationCache.onupdateready =function(){
+            window.applicationCache.swapCache();
+            document.getElementById("detailCache").innerHTML =  "100%";
+            document.getElementById("underCache").innerHTML =  "加载完成";
+            setTimeout(function(){
+                document.getElementById("coverCache").style.display = "none";
+            },100);
+        }
+        window.applicationCache.onprogress = function(e){
+            document.getElementById("coverCache").style.display = "-webkit-box";
+            document.getElementById("detailCache").innerHTML =  e.loaded ? (Math.round(e.loaded / e.total *100) + "%") : "";
+        }
+        window.applicationCache.oncached = function(){
+            document.getElementById("detailCache").innerHTML =  "100%";
+            document.getElementById("underCache").innerHTML =  "加载完成";
+            setTimeout(function(){
+                document.getElementById("coverCache").style.display = "none";
+            },100);
+        }
+        var page = this;var appsContainer = this.child("#appsContainer"),gridView,ICON_SIZE = 150;
+        var value={
+            page_size:50,
+            page_index:1
+        };
+
+        this.bind("backbutton",function(e){
+            e.preventDefault();
+            Dialog.confirm("确定要退出?",function(){navigator.app.exitApp()});
+        });
+
+        setTimeout(function(){loadAppsIcon();},10);
+        function loadAppsIcon(){
+            var appsContainers = [page.child(".app")[0],page.child(".app")[1]];
+            //创建九宫格
+            gridView = new GridView(appsContainer,appsContainers,{numColumns:4,xSpacing:2,ySpacing:4,horizontalSpacing:4,verticalSpacing:35,
+                offsetTop:72,wrapperHeight:(window.innerHeight-page.child(".personCenter").clientHeight),wrapperWidth:window.innerWidth});
+            gridView.bind("tapitem",function(e){
+                var app = e.currentTarget.app;
+                startApp(app);
+            },false);
+            $.each(apps,function(i,item){
+                gridView.add(createAppIcon(item),{width:80,height:99,draggable:item.editable});
+            })
+
+            function createAppIcon(app){
+                var box = $.Element("li").attribute("data-box","v");
+                var icon = $.Element("span").addClass("icon").append($.Image(app.icon));
+                var label = $.Element("span").addClass("appName").html(app.name);
+                box.append(icon).append(label);
+                box.app = app;
+                box.id = app.id;
+                return box;
+            }
+        }
+        var toBePaid = page.named('toBePaid');
+        var successPaid = page.named('successPaid');
+        var couponsList = page.named('couponsList');
+        var all = page.named('all');
+        var userNameDiv = page.named("userNameDiv");
+        var phone = page.named("phone");
+        var personButton = page.named("personButton");
+        page.bind("show",function(){
+            if(System.data){this.named("menu").hide();this.named("return").show();}else{this.named("menu").show();this.named("return").hide();}
+            if(!xmesh.model["User"].isLogin){
+                userNameDiv.html('请登录');
+                phone.html('');
+                successPaid.html('--').unbind("click",getSuccessPaid,false);
+                couponsList.html('--').unbind("click",gotoCouponsList,false);
+                all.html('--').unbind("click",getAll,false);
+                toBePaid.html('--').unbind("click",getToBePaid,false);
+                page.named("noRead").hide();
+            }
+            else{
+//                alert(xmesh.model["BillManager"].BillTotal);
+//                if(xmesh.model["BillManager"].BillTotal == 0) window.getBill();
+//                if(xmesh.model["BillManager"].BillTotal == 0) window.getBill();
+                userNameDiv.html(xmesh.model["User"].user_name);
+                phone.html(xmesh.model["User"].phoneFormat);
+                successPaid.html(xmesh.model["BillManager"].paidBillTotal);
+                couponsList.html(xmesh.model["ElectricTickets"].volumeListNumber);
+                toBePaid.html(xmesh.model["BillManager"].generatedBillTotal);
+                all.html(xmesh.model["BillManager"].BillTotal);
+                successPaid.bind("click",getSuccessPaid);
+                toBePaid.bind("click",getToBePaid);
+                couponsList.bind("click",gotoCouponsList);
+                all.bind("click",getAll);
+                var noRead = xmesh.model["UserNotify"].noRead;
+                if(noRead >0){
+                    page.named("noRead").css("display","inline-block").html(noRead);
+                }else{
+                    page.named("noRead").hide();
+                }
+            }
+        });
+        function getSuccessPaid(){
+            xmesh.act("orderList",{
+                title:"交易成功",
+                value:xmesh.model["BillManager"].paidBillTotalRs,
+                type:"successPaid"
+            });
+        }
+        function getToBePaid(){
+            xmesh.act("orderList",{
+                title:"待付款",
+                value:xmesh.model["BillManager"].generatedBillTotalRs,
+                type:"toBePaid"
+            });
+        }
+        function gotoCouponsList(){
+            xmesh.act("electricTicket");
+        }
+        function getAll(){
+            xmesh.act("orderList",{
+                title:"全部订单",
+                value:xmesh.model["BillManager"].BillTotalRs,
+                type:"all"
+            });
+        }
+        personButton.bind("click",function(){
+            if(xmesh.model["User"].isLogin){
+                xmesh.act("personalCenter");
+            }else{
+                xmesh.act("login",{  success : function(){
+                    xmesh.act("personalCenter");
+                },url:"personalCenter"});
+            }
+        });
+        page.named("mesBtn").bind("click",function(){
+            if(xmesh.model["User"].isLogin){
+                if(xmesh.model["UserNotify"].getNotify) return Dialog.toast("正在获取用户通知，请稍候");
+                else xmesh.act("messageCenter");
+            }else{
+                xmesh.act("login",{  success : function(){
+                    if(xmesh.model["UserNotify"].getNotify) return Dialog.toast("正在获取用户通知，请稍候");
+                    else xmesh.act("messageCenter");
+                },url:"messageCenter"});
+            }
+        });
+        xmesh.broadcast.listen("getNotify",function(url){
+            var noRead = xmesh.model["UserNotify"].noRead;
+            if(noRead >0){
+                page.named("noRead").css("display","inline-block").html(noRead);
+            }else{
+                page.named("noRead").hide();
+            }
+
+        });
+        xmesh.broadcast.listen("getGeneratedBill",function(){
+            successPaid.html(xmesh.model["BillManager"].paidBillTotal);
+        });
+        xmesh.broadcast.listen("getPaidBill",function(){
+            toBePaid.html(xmesh.model["BillManager"].generatedBillTotal);
+        });
+        xmesh.broadcast.listen("getTotalBill",function(){
+            all.html(xmesh.model["BillManager"].BillTotal);
+        });
+    </script>
+</head>
+
+<body>
+   <div id="homePage" data-box="v" class="secondPage">
+       <header data-box="h" id="header">
+           <div class="menu" name="menu" style="display: none;"></div>
+           <button class="return" name="return" style="display: none;"></button>
+            <span x-page="title"></span>
+            <button class="message" name="mesBtn"></button>
+           <div class="num" name="noRead"></div>
+        </header>
+        <div class="content" id="contentHome" data-box="v" data-flex="1">
+             <div class="personCenter" data-box="v">
+                 <div class="person" data-box="h" name="personButton">
+                     <div class="touxiang"></div>
+                     <div class="detail" data-flex="1">
+                        <div x-field="User.user_name" class="userName" name="userNameDiv"></div>
+                        <div x-field="User.phone" class="phone" name="phone"></div>
+                     </div>
+                     <button class="gerenBtn"></button>
+                 </div>
+                 <ul class="countNum" data-box="h" data-flex="1">
+                    <li data-flex="1" data-box="v"><div data-flex="1" data-box="v" name="toBePaid" class="num toBePaid"></div><div data-flex="1">待支付</div></li>
+                    <li data-flex="1" data-box="v"><div data-flex="1" data-box="v" name="successPaid" class="num successPaid"></div><div data-flex="1">已完成</div></li>
+                    <li data-flex="1" data-box="v"><div data-flex="1" data-box="v" name="all" class="num all"></div><div data-flex="1">全部订单</div></li>
+                    <li data-flex="1" data-box="v"><div data-flex="1" data-box="v" name="couponsList" class="num couponsList" x-field="ElectricTickets.volumeListNumber"></div><div data-flex="1">电子券</div></li>
+                 </ul>
+             </div>
+            <ul data-box="h" id="appsContainer" style="width: 100%; height: 100%; -webkit-transition: 260ms; transition: 260ms; -webkit-transform: translateX(0px);">
+                <li style="width: 100%;">
+                    <ul class="app" data-flex="1">
+                        <!--<li data-box="v"><span class="icon"><img src="portal/view/res/images/icon15.png"/></span><span class="appName"></span></li>-->
+                        <!--<li data-box="v"><span class="icon"><img src="portal/view/res/images/icon15.png"/></span><span class="appName"></span></li>-->
+                        <!--<li data-box="v"><span class="icon"><img src="portal/view/res/images/icon15.png"/></span><span class="appName"></span></li>-->
+                        <!--<li data-box="v"><span class="icon"><img src="portal/view/res/images/icon15.png"/></span><span class="appName"></span></li>-->
+                        <!--<li data-box="v"><span class="icon"><img src="portal/view/res/images/icon15.png"/></span><span class="appName"></span></li>-->
+                        <!--<li data-box="v"><span class="icon"><img src="portal/view/res/images/icon15.png"/></span><span class="appName"></span></li>-->
+                        <!--<li data-box="v"><span class="icon"><img src="portal/view/res/images/icon15.png"/></span><span class="appName"></span></li>-->
+                        <!--<li data-box="v"><span class="icon"><img src="portal/view/res/images/icon15.png"/></span><span class="appName"></span></li>-->
+                    </ul>
+                </li>
+                <li style="width: 100%;">
+                    <ul class="app" data-flex="1" >
+                    </ul>
+                </li>
+              </ul>
+        </div>
+   </div>
+</body>
+</html>

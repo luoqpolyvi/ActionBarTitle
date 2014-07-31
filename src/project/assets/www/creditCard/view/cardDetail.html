@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>信用卡详情</title>
+    <script>
+        var CreditCard = xmesh.model["CreditCard"];
+        var repaymentNotice = this.named('repaymentNotice');
+        var dateSet = this.named('dateSet');
+        var setDateDiv = this.named('setDateDiv');
+        var cardNumber = this.named('cardNumber');
+        var oldDate = param.noticeDate;
+        var oldNotice = param.repaymentNotice;
+        var date = new Date();
+
+        var page = this.bind("pageReady",function(){
+            CreditCard.repaymentNotice = param.repaymentNotice;
+            CreditCard.cardNumber = param.cardNumber;
+            CreditCard.noticeDate = param.noticeDate;
+            if(param.noticeDate == "") dateSet.html(date.getDate());
+            else dateSet.html(CreditCard.noticeDate);
+            CreditCard.creditId = param.creditId;
+            CreditCard.logoUrl = param.logoUrl;
+            CreditCard.bankName = param.bankName;
+            cardNumber.html(CreditCard.cardNumber.substring(CreditCard.cardNumber.length-4,CreditCard.cardNumber.length));
+            showButton();
+            repaymentNotice.bind('click',function(){
+                switch(CreditCard.repaymentNotice){
+                    case "true" : CreditCard.repaymentNotice = "false";showButton();break;
+                    case "false" : CreditCard.repaymentNotice = "true";showButton();break;
+                }
+            })
+        });
+
+        function showButton(){
+            switch(CreditCard.repaymentNotice){
+                case "true" : repaymentNotice.removeClass('off').addClass('on');setDateDiv.css('display','-webkit-box');break;
+                case "false" : repaymentNotice.removeClass('off').addClass('off');setDateDiv.hide();break;
+            }
+        }
+
+        function setDate(){
+                xmesh.model["CreditCardManager"].setDate({
+                    cardNumber : CreditCard.cardNumber,
+                    repaymentNotice : CreditCard.repaymentNotice,
+                    noticeDate : CreditCard.noticeDate
+                },function(data){
+                    CreditCard.isChange = true;
+                    xmesh.back();
+                },function(e){showErrorMessage(e);})
+        }
+
+        function deleteCreditCard(){
+            Dialog.confirm("确定删除该信用卡？",null,deleteCard,"提醒","取消,确定");
+        }
+
+        function deleteCard(){
+            service.busynessMessage = "正在删除...";
+            xmesh.model["CreditCardManager"].deleteCreditCard({
+                creditCardId : CreditCard.creditId
+            },function(){
+                Dialog.toast("删除成功");
+                CreditCard.isChange = true;
+                xmesh.back();
+            },showErrorMessage);
+        }
+
+        page.named('setDateDiv').bind('click',function(){
+            xFace.ui.Calendar.getDate(function(d){
+                if(d.day>28){
+                    Dialog.toast("日期仅可以选择1到28日中的一天");
+                }
+                else{
+                    CreditCard.noticeDate = d.day;
+                    page.named("dateSet").html(CreditCard.noticeDate);
+                }
+            },function(){
+                Dialog.alert('Calendar error');
+            })
+        });
+
+        this.bind("backbutton", function (event) {
+            event.preventDefault();
+            if(CreditCard.repaymentNotice != oldNotice || CreditCard.noticeDate != oldDate) setDate();
+            else xmesh.back();
+        })
+    </script>
+</head>
+
+<body>
+<div id="cardDetailPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+        <button class="delete" name="deleteCreditCard" onclick="deleteCreditCard()" ></button>
+    </header>
+    <div class="content" id="cardDetail" data-flex="1">
+        <div class="card" data-box="h">
+            <img name="logoUrl" x-field="CreditCard.logoUrl"/>
+            <div data-box="v">
+               <div class="name" name="bankName" x-field="CreditCard.bankName"></div>
+               <div>尾号 <span name="cardNumber"></span></div>
+            </div>
+        </div>
+        <div class="remind" style="display: none">
+           <div data-box="h" class="switch"><div data-flex="1">还款提醒</div><button name="repaymentNotice"></button></div>
+           <div data-box="h" class="remindDate" name="setDateDiv"><div data-flex="1">提醒日期</div>每月<div name="dateSet" x-field="CreditCard.noticeDate"></div>日</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>选择乘车人</title>
+    <script>
+    var BusPassengersManager = xmesh.model["BusPassengersManager"];
+    var BusPassengers = xmesh.model["BusPassengers"];
+    var clickNum,clickType=1;
+
+    var page = this.bind("pageReady",function(){
+        var _this = this;
+        var flag = false;
+        var index = 1;
+        var passengerList = _this.named("passengerList").as('ui.List',{'echoSelection':'true'});
+        passengerList.html('');
+        var passengerListScroll = _this.named("passengerListScroll");
+        var finishButton = _this.named("finishButton");
+        var addPassenger = _this.named("addPassenger");
+        if(device.version == "2.3.6") passengerListScroll.attribute('useTransform','false');
+        passengerListScroll.css("height",window.innerHeight-$("header").offsetHeight+"px");
+        var setData ={pageIndex:index};
+        setTimeout(function(){
+            passengerListScroll.scrollTo(0,0,0);
+            passengerListScroll.refresh();},100);
+        getPassengerList();
+
+        function getPassengerList(){
+            service.busynessMessage = "网络连接中，请稍候...";
+            BusPassengersManager.getPassenger(setData,function(data){
+                setPassengerList(data);
+            },showErrorMessage);
+        }
+
+        function setPassengerList(data){
+            $.each(data,function(property,item){
+                var passengerNameForCheck = item.name;
+                var template = _this.named("template").child("li").clone(true);
+                switch(item.type){
+                    case 0 : template.named("passengerNameType").removeClass('ticketType child').addClass("ticketType");break;
+                    case 1 : template.named("passengerNameType").removeClass('ticketType').addClass("ticketType child");break;
+                }
+                switch(item.credentialType){
+                    case 0 : template.named("credentialType").html("身份证");break;
+                    case 1 : template.named("credentialType").html("护照");break;
+                    case 2 : template.named("credentialType").html("军官证");break;
+                    case 3 : template.named("credentialType").html("半票");break;
+                }
+                template.named("passengerName").html(item.name);
+                template.named("credentialNum").html(item.credentialNum);
+                for(var i=0;i<BusPassengers.chooseFlag.length;i++){
+                    if(property == BusPassengers.chooseFlag[i]){
+                        template.attribute("checked",true);
+                        template.named('checkBtn').attribute("checked",true);
+                    }
+                }
+
+                template.child("[name=checkBtn]").bind("click",templateOnclick);
+                template.child("[name=templateCenter]").bind("click",templateOnclick);
+                template.named("editBtn").bind("click",function(evt){
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    if(clickType==1) {
+                        clickType = 0;
+                        setTimeout(function(){clickType=1},2000);
+                        BusPassengers.passengerId = item.passengerId;
+                        clickNum = property;
+                        xmesh.model["ContactsManager"].getContactList(function (data) {
+                            $.each(data.data.contractersList, function (i, item) {
+                                if (item.name == passengerNameForCheck) {
+                                    flag = true;
+                                    Dialog.alert("该联系人为个人中心所添加的联系人，请到个人中心修改！");
+                                }
+                            });
+                            if (flag == false) {
+                                xmesh.act("passengerEdit", clickNum);
+                            }
+                            flag = false;
+                        }, function () {
+                            xmesh.act("passengerEdit", clickNum);
+                        });
+                    }
+                });
+                function templateOnclick(){
+                    var checkedLength = _this.child(".passengerList > li[checked]") ? _this.child(".passengerList > li[checked]").length  :  0;
+                    if(template.attribute("checked")){template.attribute("checked",null);template.named('checkBtn').attribute("checked",null);}
+                    else {
+                        if(xmesh.model["BusTicket"].count<5 && xmesh.model["BusTicket"].count!=""){
+                            if(checkedLength >= xmesh.model["BusTicket"].count){Dialog.toast("余票不足");}
+                            else{
+                                template.attribute("checked",true);
+                                template.named('checkBtn').attribute("checked",true);
+                            }
+                        }
+                        else{
+                            if(checkedLength >= 5){Dialog.toast("最多只可添加5个乘车人");}
+                            else{
+                                template.attribute("checked",true);
+                                template.named('checkBtn').attribute("checked",true);
+                            }
+                        }
+                    }
+                }
+                if(liList.length+1<BusPassengersManager.totalCount){
+                    page.named("clickMore").css("display","block").bind("click",scrollPaneBottom);
+                }
+                else{
+                    page.named("clickMore").css("display","none");
+                }
+                passengerList.append(template);
+                passengerListScroll.refresh();
+            })
+        }
+
+
+
+        var liList = document.getElementById("passengerList").childNodes;
+        finishButton.bind("click",function(){
+            var j=0;
+            BusPassengers.BusPassengerChoose=[];
+            BusPassengers.chooseFlag=[];
+            for(var i=0;i<BusPassengersManager.totalCount;i++){
+                if( liList[i].attribute("checked"))
+                {
+                    BusPassengers.BusPassengerChoose[j] = BusPassengersManager.passengerList[i];
+                    BusPassengers.chooseFlag[j]=i;
+                    j++;
+                }
+            }
+            xmesh.back();
+        })
+
+        addPassenger.bind("click",function(){
+            xmesh.act("passengerAdd");
+        })
+
+        scrollPaneBottom = function(){
+            if(liList.length - 1 <BusPassengersManager.totalCount){
+                index++;
+                setData ={pageIndex:index};
+                getPassengerList();
+            }
+            else{
+                Dialog.toast("已经获取全部记录");
+            }
+        }
+    })
+
+    page.bind("show",function(){
+        if(BusPassengersManager.isFirst == false){
+            BusPassengersManager.isFirst = true;
+            if(BusPassengersManager.addFlag == true){
+                var _this = this;
+                var index = 1;
+                var flag = false;
+                var passengerList = _this.named("passengerList").as('ui.List',{'echoSelection':'true'});
+                passengerList.html('');
+                BusPassengersManager.addFlag = false;
+                var passengerListScroll = _this.named("passengerListScroll");
+                var finishButton = _this.named("finishButton");
+                var addPassenger = _this.named("addPassenger");
+                var setData ={pageIndex:index};
+                setTimeout(function(){
+                    passengerListScroll.scrollTo(0,0,0);
+                    passengerListScroll.refresh();},100);
+
+                getPassengerList();
+
+                function getPassengerList(){
+                    service.busynessMessage = "网络连接中，请稍候...";
+                    BusPassengersManager.getPassenger(setData,function(data){
+                        setPassengerList(data);
+                    },showErrorMessage);
+                }
+
+                function setPassengerList(data){
+                    $.each(data,function(property,item){
+                        var passengerNameForCheck = item.name;
+                        var template = _this.named("template").child("li").clone(true);
+                        switch(item.type){
+                            case 0 : template.named("passengerNameType").removeClass('ticketType child').addClass("ticketType");break;
+                            case 1 : template.named("passengerNameType").removeClass('ticketType').addClass("ticketType child");break;
+                        }
+                        switch(item.credentialType){
+                            case 0 : template.named("credentialType").html("身份证");break;
+                            case 1 : template.named("credentialType").html("护照");break;
+                            case 2 : template.named("credentialType").html("军官证");break;
+                            case 3 : template.named("credentialType").html("半票");break;
+                        }
+                        template.named("passengerName").html(item.name);
+                        template.named("credentialNum").html(item.credentialNum);
+                        if(item.passengerId ==BusPassengers.passengerId){
+                            template.attribute("checked",true);
+                            template.named('checkBtn').attribute("checked",true);
+                        }
+                        template.child("[name=checkBtn]").bind("click",templateOnclick);
+                        template.child("[name=templateCenter]").bind("click",templateOnclick);
+//                        template.named("editBtn").bind("click",function(evt){
+//                            evt.stopPropagation();
+//                            evt.preventDefault();
+//                            BusPassengers.passengerId = item.passengerId;
+//                            clickNum = property;
+//                            BusPassengers.credentialNum = item.credentialNum;
+//                            xmesh.model["ContactsManager"].getContactList(function(data){
+//                                $.each(data.data.contractersList,function(i,item){
+//                                    if(item.name == passengerNameForCheck){
+//                                        flag=true;
+//                                        Dialog.alert("该联系人为个人中心所添加的联系人，请到个人中心修改！");
+//                                    }
+//                                });
+//                                if(flag == false){
+//                                    xmesh.act("passengerEdit",clickNum);
+//                                }
+//                                flag=false;
+//                            },showErrorMessage);
+//                        });
+                        function templateOnclick(){
+                            var checkedLength = _this.child(".passengerList > li[checked]") ? _this.child(".passengerList > li[checked]").length  :  0;
+                            if(template.attribute("checked")){template.attribute("checked",null);template.named('checkBtn').attribute("checked",null);}
+                            else {
+                                if(xmesh.model["BusTicket"].count<5 && xmesh.model["BusTicket"].count!=""){
+                                    if(checkedLength >= xmesh.model["BusTicket"].count){Dialog.toast("余票不足");}
+                                    else{
+                                        template.attribute("checked",true);
+                                        template.named('checkBtn').attribute("checked",true);
+                                    }
+                                }
+                                else{
+                                    if(checkedLength >= 5){Dialog.toast("最多只可添加5个乘车人");}
+                                    else{
+                                        template.attribute("checked",true);
+                                        template.named('checkBtn').attribute("checked",true);
+                                    }
+                                }
+                            }
+                        }
+                        passengerList.append(template);
+                        passengerListScroll.refresh();
+                    })
+                }
+
+                var liList = document.getElementById("passengerList").childNodes;
+                finishButton.bind("click",function(){
+                    var j=0;
+                    BusPassengers.BusPassengerChoose=[];
+                    BusPassengers.chooseFlag=[];
+                    for(var i=0;i<BusPassengersManager.totalCount;i++){
+                        if( liList[i].attribute("checked"))
+                        {
+                            BusPassengers.BusPassengerChoose[j] = BusPassengersManager.passengerList[i];
+                            BusPassengers.chooseFlag[j]=i;
+                            j++;
+                        }
+                    }
+//                    xmesh.back();
+                })
+
+                addPassenger.bind("click",function(){
+                    xmesh.act("passengerAdd");
+                })
+            }
+            else if(BusPassengersManager.editFlag == true){
+                var liList = document.getElementById("passengerList").childNodes;
+                var setData ={pageIndex:1};
+                BusPassengersManager.editFlag = false;
+                BusPassengersManager.getPassenger(setData,function(data){
+                    liList[clickNum].named("passengerName").html(data[clickNum].name);
+                    liList[clickNum].named("credentialNum").html(data[clickNum].credentialNum);
+                    switch(data[clickNum].type){
+                        case 0 : liList[clickNum].named("passengerNameType").removeClass('ticketType child').addClass("ticketType");break;
+                        case 1 : liList[clickNum].named("passengerNameType").removeClass('ticketType').addClass("ticketType child");break;
+                    }
+                    switch(data[clickNum].credentialType){
+                        case 0 : liList[clickNum].named("credentialType").html("身份证");break;
+                        case 1 : liList[clickNum].named("credentialType").html("护照");break;
+                        case 2 : liList[clickNum].named("credentialType").html("军官证");break;
+                        case 3 : liList[clickNum].named("credentialType").html("半票");break;
+                    }
+                },showErrorMessage);
+            }
+        }
+    })
+
+
+
+    </script>
+</head>
+
+<body>
+<div id="passengerChosePage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+        <button class="sure" name="finishButton"></button>
+    </header>
+
+        <xtag:ScrollPane name="passengerListScroll" useTransform = false>
+            <div class="content" id="passengerChose" data-flex="1">
+            <ul class="passengerList" name="passengerList" id="passengerList"></ul>
+            </div>
+            <div name="clickMore" class="clickMore">点击加载更多</div>
+            <div style="height: 52px;"></div>
+        </xtag:ScrollPane>
+        <xtag:template name="template">
+            <li data-box="h">
+                <button class="check" name="checkBtn"></button>
+                <div data-flex="1" data-box="v" class="center" name="templateCenter">
+                    <div data-box="h" class="passenger"><div name="passengerName"></div><div name="passengerNameType" class="ticketType"></div></div>
+                    <div><span name="credentialType"></span><span name="credentialNum"></span></div>
+                </div>
+                <button class="edit" name="editBtn"></button>
+            </li>
+        </xtag:template>
+
+    <div class="btn"><button class="bigBtn blueBtn" name="addPassenger">+其他乘车人</button></div>
+</div>
+</body>
+</html>

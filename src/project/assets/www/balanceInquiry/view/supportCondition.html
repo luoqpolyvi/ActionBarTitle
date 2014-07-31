@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>银行支持条件</title>
+</head>
+<script>
+    var param = this.param,supportBankName = this.named("supportBankName"),supportBankInfo = this.named("supportBankInfo");
+    var supportBankId = param.supportBankId;
+    service.busynessMessage = "正在获取银行详情...";
+    xmesh.model["BankManager"].getSupportBankDetail(supportBankId,function(){
+        supportBankName.html(xmesh.model["BankManager"].supportBankInfo.supportBankName);
+        supportBankInfo.html(xmesh.model["BankManager"].supportBankInfo.supportBankInfo);
+    },function(e){
+        showErrorMessage(e);
+        xmesh.back();
+    });
+</script>
+<body>
+<div id="supportBankListPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">银行支持条件</span>
+    </header>
+    <div class="content" id="supportBankList" data-flex="1">
+        <div class="condition">
+           <div class="bank" name="supportBankName">建设银行</div>
+           <div class="items" name="supportBankInfo">
+           </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>登录</title>
+    <script>
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="login") xFace.app.close();
+                else xmesh.home();
+            }else{xmesh.home();}
+        });
+        var page = this;     page.named('tel').value = xmesh.model["User"].getLastUserPhone() || "";
+        var success = this.param.success;
+        var url = this.param.url;
+
+        function forgetPassword(){
+            Dialog.confirm("拨打客服95516？",function(){
+                xFace.Telephony.initiateVoiceCall("95516",null,function(){
+                    Dialog.alert("拨打客服失败")
+                })
+            })
+        }
+
+        function login(){
+            service.busynessMessage = "正在登录...";
+            xmesh.model["User"].login({
+                phone : page.named('tel').value,
+                password : page.named('password').value,
+                login_ip : "192.168.1.2"
+            },function(){
+                xmesh.model["UserNotify"].getNotify = true;
+                xmesh.model["UserNotify"].clear();
+                if(System.data){
+                    if(System.data.action=="login") xFace.app.close();
+                    else{
+                        if(success) success(url);
+                    }
+                }else{ if(success) success(url);}
+                setTimeout( function(){
+                    window.getBill();
+                    getMyVolumeList();
+                    getInfo();
+                },2000);
+            },showErrorMessage);
+        }
+
+
+        //获取通知列表
+
+        function getInfo(){
+            xmesh.model["UserNotify"].getUserNotify(false,function(data){
+                xmesh.model["UserNotify"].getNotify = false;
+                xmesh.broadcast.emit("getNotify",url);
+            },function(){
+                xmesh.model["UserNotify"].getNotify = false;
+                xmesh.broadcast.emit("getNotify",url);
+            })
+        }
+        //获取我的电子券
+        function getMyVolumeList(){
+            xmesh.model['ElectricTickets'].getTicketAndVolumeList(function(rs){},function(){})
+        }
+    </script>
+</head>
+
+<body>
+   <div id="loginPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel">登录</span>
+        </header>
+        <div class="content" id="login" data-box="v" data-flex="1">
+              <div data-box="v" id="loginForm">
+                  <input name="tel" type="tel" maxlength="11" placeholder="手机号码" class="inputBox telphone"/>
+                  <input name="password" type="password" maxlength="16" placeholder="登录密码" class="inputBox password"/>
+                  <button onclick="login()" class="loginBtn">登录</button>
+              </div>
+              <div class="tips" data-box="h">没有账号或忘记密码？</div>
+              <div data-box="h">
+                  <button class="middleBtn" onclick="xmesh.model['RegisterForm'].reset();xmesh.act('register')" data-flex="1">注册</button>
+                  <button onclick="forgetPassword();" class="middleBtn" data-flex="1">忘记密码？</button>
+              </div>
+        </div>
+   </div>
+</body>
+</html>

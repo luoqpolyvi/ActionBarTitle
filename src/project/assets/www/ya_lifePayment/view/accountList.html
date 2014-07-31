@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>生活缴费</title>
+    <script>
+        var page = this;
+        var waterManager = xmesh.model['WaterManager'];
+        var TVManager = xmesh.model['TVManager'];
+        var LifePaymentAccount = xmesh.model['LifePaymentAccount'];
+        var accountList = page.named('accountList');
+        var template = page.named('template');
+        var noList = page.named('noList');
+        var addAccount = page.named('addAccount');
+        var accountListScroll = page.named('accountListScroll');
+
+        page.bind('pageReady',function(){
+           waterManager.statuses = 0;
+           service.busynessMessage = "正在获取列表，请稍候...";
+           waterManager.getPaymentAccount(function(){
+               getAccountList();
+           },showErrorMessage);
+        });
+        page.bind('show',function(){
+           if(waterManager.statuses == 1){
+               waterManager.statuses = 0;
+               accountList.html('');
+               waterManager.getPaymentAccount(function(){
+                   getAccountList();
+               },showErrorMessage);
+               setTimeout(function(){
+                   accountListScroll.scrollTo(0,0,0);
+                   accountListScroll.refresh();},100);
+           }
+        });
+
+        function getAccountList(){
+            if(waterManager.accountList.length == 0){
+                noList.css('display','-webkit-box');
+                accountListScroll.hide();
+            }
+            else{
+                noList.hide();
+                accountListScroll.css('display','-webkit-box');
+                $.each(waterManager.accountList,function(property,item){
+                    var li = template.child('li').clone(true).appendTo(accountList);
+                    var data={userNum:item.identifyCode};
+                    var typeData = {userNum:item.identifyCode,type:item.type};
+                    switch (item.type){
+                        case "1": li.named('status').attribute('status','0');
+                            li.named('payment').bind('click',function(){getWaterArrears(data)});
+                            li.named('history').bind('click',function(){getWaterHistoryList(data)});
+                            break;
+                        case "2": li.named('status').attribute('status','1');break;
+                        case "3": li.named('status').attribute('status','2');break;
+                        case "4": li.named('status').attribute('status','3');
+                            li.named('payment').bind('click',function(){getTVBalance(data)});
+                            li.named('history').bind('click',function(){getTVHistoryList(data)});
+                            break;
+                    }
+                    li.named('status').bind('click',function(){
+                        xmesh.model['LifePaymentAccount'].identifyCode = item.identifyCode;
+                        xmesh.model['LifePaymentAccount'].remark = item.remark;
+                        xmesh.act('editAccount',item);
+                    });
+                    li.named('remark').html(item.remark);
+                    li.named('identifyCode').html(item.identifyCode);
+                    switch (item.nf){
+                        case "0": li.named('nf').attribute('have',null);break;
+                        case "1": li.named('nf').attribute('have',true);break;
+                    }
+                    switch (item.nf1){
+                        case "0": li.named('nf1').attribute('have',null);break;
+                        case "1": li.named('nf1').attribute('have',true);break;
+                    }
+                    setTimeout(function(){
+                        accountListScroll.scrollTo(0,0,0);
+                        accountListScroll.refresh();},100);
+                })
+            }
+
+        }
+
+        function getWaterArrears(data){
+            service.busynessMessage = "正在查询支付账单...";
+            waterManager.getWaterArrears(data,function(rs){
+                xmesh.act('payDetailWater',rs);
+            },function(){
+                Dialog.alert("暂无可支付账单");
+            });
+        }
+
+        function getTVBalance(data){
+            service.busynessMessage = "正在查询支付账单...";
+            TVManager.getTVBalance(data,function(rs){
+                xmesh.act('payDetailTV',rs);
+            },function(){
+                Dialog.alert("暂无可支付账单");
+            });
+        }
+
+        function getWaterHistoryList(data){
+            service.busynessMessage = "正在查询历史账单...";
+            waterManager.getWaterPayment(data,function(rs){
+              LifePaymentAccount.accountType = "1";
+              xmesh.act('historyList',rs);
+            },function(){
+                Dialog.alert("暂无该用户缴费历史");
+            });
+        }
+
+        function getTVHistoryList(data){
+            service.busynessMessage = "正在查询历史账单...";
+            TVManager.getTVPayment(data,function(rs){
+                LifePaymentAccount.accountType = "4";
+                xmesh.act('historyList',rs);
+            },function() {
+                Dialog.alert("暂无该用户缴费历史");
+            });
+        }
+
+        addAccount.bind('click',function(){
+            xmesh.act('addAccount');
+        })
+
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="ya_lifePayment") xFace.app.close();
+                else xmesh.home();
+            }else{xmesh.home();}
+        })
+    </script>
+</head>
+<body>
+<div id="accountListPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div name="noList" class="noItem" data-box="v" data-flex="1" style="display: none"><div class="image"></div></div>
+    <xtag:ScrollPane name="accountListScroll" useTransform = false>
+        <div class="content" id="myAccountList" data-flex="1">
+            <ul class="accountList" name="accountList"></ul>
+        </div>
+        <div style="height: 52px;"></div>
+    </xtag:ScrollPane>
+    <xtag:Template name="template">
+        <li>
+            <div data-box="h" class="list" name="status">
+                <div class="status"></div>
+                <div data-box="v" data-flex="1" class="detail">
+                    <div class="name" name="remark">123</div>
+                    <div class="num" data-box="v" name="identifyCode"></div>
+                </div>
+                <div class="alarm" name="nf"></div>
+                <div class="sound" name="nf1"></div>
+            </div>
+            <div data-box="h" class="item">
+                <div data-flex="1" class="history" name="history">缴费历史</div>
+                <div data-flex="1" class="pay" name="payment">立即缴费</div>
+            </div>
+        </li>
+    </xtag:Template>
+    <div class="btn"><button class="bigBtn" name="addAccount">添加缴费账号</button></div>
+</div>
+</body>
+</html>

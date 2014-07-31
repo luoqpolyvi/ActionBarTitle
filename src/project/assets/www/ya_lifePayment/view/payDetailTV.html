@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>缴费确认</title>
+    <script>
+        var page = this;
+        var TVManager = xmesh.model['TVManager'];
+        var pay = page.named('pay');
+        var totalMoney = page.named('totalMoney');
+        var accountType = page.named('accountType');
+        var totalMoneyNum;
+
+        page.bind('pageReady',function(){
+            showTVBalance();
+            pay.bind('click',payTV);
+        });
+
+        function showTVBalance(){
+            totalMoneyNum = Number(TVManager.usedMoney) + Number(accountType.value);
+            totalMoney.html(totalMoneyNum);
+        }
+
+        function payTV(){
+            TVManager.payTV({
+                money:totalMoneyNum
+            },function(data){
+                xmesh.model['Order'].yaPay(data.tn,function(){
+                    xmesh.back();
+                    window.getBill();
+                },function(e){showErrorMessage(e); window.getBill();});
+            },showErrorMessage);
+        }
+    </script>
+</head>
+<body>
+<div id="TVPayDetailPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div class="content" id="TVPayDetail" data-box="v">
+        <div class="title">账户信息</div>
+        <div class="detail" data-box="v" status="3">
+            <div data-box="h">
+                <div data-box="v" data-flex="1">
+                    <div data-box="h" class="info"><div class="fontGrey">账号</div><div x-field="TVManager.userNum"></div></div>
+                    <div data-box="h" class="info"><div class="fontGrey">姓名</div><div x-field="TVManager.userName"></div></div>
+                </div>
+                <div class="status"></div>
+            </div>
+            <div data-box="h"><div class="fontGrey">欠费金额</div><div data-flex="1" class="money"><span  x-field="TVManager.usedMoney"></span>元</div></div>
+        </div>
+        <div class="title">请选择预付套餐类型</div>
+        <div class="selectDetail" data-box="v">
+            <div data-box="h" class="arrowLabel" data-flex="1"><label class="fontGrey">光纤收视费</label>
+                <select data-flex="1" name="accountType">
+                    <option value="312">12个月（312.00元）</option>
+                </select>
+                <span></span>
+            </div>
+        </div>
+        <div class="title">应缴金额</div>
+        <div class="totalDetail" data-box="v">
+            <div data-box="h"><div class="fontGrey">总计</div><div data-flex="1" class="totalMoney"><span name="totalMoney"></span>元</div></div>
+        </div>
+    </div>
+    <div class="btn"><button class="bigBtn" name="pay">立即支付</button></div>
+</div>
+</body>
+</html>

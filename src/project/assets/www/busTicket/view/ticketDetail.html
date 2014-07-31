@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>汽车票详情页面</title>
+    <script>
+        var page = this;
+        var BusTicketManager = xmesh.model["BusTicketManager"];
+        xmesh.model["BusPassengersManager"].isFirst = true;
+        var BusPassengers = xmesh.model["BusPassengers"];
+        var ticketDetailScroller = page.named("ticketDetailScroller");
+        var passengerList = page.named("passengerList");
+        var ticketType={"0":"全票","1":"半票"};
+        var credentialType={"0":"身份证","1":"护照","2":"军官证","3":"儿童"};
+        this.child('#ticketDetail').css("height",window.innerHeight- $("header").offsetHeight-this.named("ticketFooter").offsetHeight-65+"px");
+        page.named("folder").bind("click",function(){
+            if(this.attribute("fold")){
+                this.attribute("fold",null);
+                page.named("busType").show();
+                page.named("mile").show();
+                ticketDetailScroller.refresh();
+            }else{
+                this.attribute("fold","fold");
+                page.named("busType").hide();
+                page.named("mile").hide();
+                ticketDetailScroller.refresh();
+            }
+        });
+        page.bind('pageReady',function(){
+            BusTicketManager.contactPhone = "";
+            BusTicketManager.contactName = "";
+        });
+        page.bind("show",function(){
+            passengerList.html("");
+            var passengers = BusPassengers.BusPassengerChoose;
+            $.each(passengers,function(property,item){
+                passengerList.css('display','block');
+                var temp = page.named("template").child("li").clone(true);
+                temp.named("name").html(item.name);
+                temp.named("ticketType").html(ticketType[item.type]);
+                temp.named("credentialType").html(credentialType[item.credentialType]);
+                temp.named("credentialNum").html(item.credentialNum || "");
+                temp.appendTo(passengerList);
+            })
+            setTimeout(function(){ticketDetailScroller.refresh();},0);
+        })
+
+        function call(){
+            Dialog.confirm("是否拨打400-660-8787？",null,function(){
+                xFace.Telephony.initiateVoiceCall("4006608787",null,function(){
+                    Dialog.alert("拨打客服电话失败")
+                })
+            },"系统提示",["取消","确定"]);
+        }
+
+        function callContactBook(){//调用引擎联系人API
+            navigator.contacts.chooseContact(function(id, results){
+                var displayName = results.displayName ? results.displayName : results.name.formatted;
+                if(!results.phoneNumbers  || !results.phoneNumbers.length){
+                    return Dialog.alert("手机号码错误，请重新选择");
+                }
+                var phone = Validator.formatPhoneNumNoSpace(results.phoneNumbers[0].value);
+                if(!Validator.mobile(phone)){
+                    return Dialog.alert("手机号码错误，请重新选择");
+                }
+                BusTicketManager.contactName = displayName;
+                BusTicketManager.contactPhone = phone;
+            },($.isIOS ?{}:{allowsEditing:"true",fields:["displayName","name", "phoneNumbers", "emails"]}));
+        }
+
+        function checkOrder(){
+            if(BusPassengers.BusPassengerChoose.length==0) return Dialog.toast("请添加乘车人");
+            if(!BusTicketManager.contactName)return Dialog.toast("请输入联系人姓名");
+            if(!BusTicketManager.contactPhone) return Dialog.toast("请输入联系人手机号码");
+            if(!Validator.mobile(BusTicketManager.contactPhone)) return Dialog.toast("请输入正确的联系人手机号码");
+            xmesh.act('busOrderConfirm');
+        }
+
+    </script>
+</head>
+
+<body>
+   <div id="ticketDetailPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span  x-field="BusCityManager.line" class="returnLabel">成都—眉山</span>
+            <button class="callService" onclick="call()"></button>
+        </header>
+        <div class="content" id="ticketDetail" data-flex="1">
+            <xtag:ScrollPane  name="ticketDetailScroller"  useTransform = false>
+            <div class="station" data-box="h">
+                <div class="setOut" data-flex="1">
+                   <div class="title">出发</div>
+                   <div class="stationContent" x-field="BusTicket.originStation">成都</div>
+                </div>
+                 <div class="icon"><img src="busTicket/view/res/images/coach_arr.png"/></div>
+                <div class="arrived" data-flex="1">
+                   <div class="title">到达</div>
+                   <div class="stationContent" x-field="BusTicket.targetStation">巴中</div>
+                </div>
+            </div>
+            <ul class="ticketMore">
+                <li data-box="h"><div class="title">出发时间</div><div class="data" data-box="h"><div x-field="BusTicket.date">2014-01-02</div><div class="hour" x-field="BusTicket.time">08:00</div></div></li>
+                <li data-box="h"><div class="title">票价</div><span class="data" x-field="BusTicket.fullPrice">120.00元</span></li>
+                <li data-box="h"><div class="title">服务费</div><span class="data" x-field="BusTicket.servicePrice">3.00元</span></li>
+                <li data-box="h"><div class="title">班次类型</div><span class="data" x-field="BusTicket.schType">固定班</span></li>
+                <li data-box="h"  style="display: none"  name="busType"><div class="title">车型</div><span class="data" x-field="BusTicket.busType">高级</span></li>
+                <li data-box="h" style="display: none"  name="mile"><div class="title">公里数</div><span class="data" x-field="BusTicket.mile">100.0公里</span></li>
+                <div class="folder" name="folder" fold="fold" data-box="h"><div class="image"></div></div>
+            </ul>
+            <div class="passengers">
+               <div class="title" data-box="h" onclick="xmesh.act('passengerChose')">乘车人<div class="tipInfo" data-flex="1">最多添加5个乘车人</div><div class="edit"></div></div>
+               <ul class="passengerList" name="passengerList">
+               </ul>
+            </div>
+            <div class="contact" data-box="h">
+                <div>联系人</div>
+                <div data-box="v" data-flex="1">
+                    <input type="text" placeholder="姓名" maxlength="20" x-field="BusTicketManager.contactName"/>
+                    <input type="tel" placeholder="手机号码（用于接收通知短信）" maxlength="11" x-field="BusTicketManager.contactPhone"/>
+                </div>
+                <button class="contacts" onclick="callContactBook()"></button>
+            </div>
+            </xtag:ScrollPane>
+        </div>
+        <footer data-box="h" name="ticketFooter">
+             <div data-box="h" data-flex="1" class="needed"><a onclick="xmesh.act('ticketInfo')"><img src="busTicket/view/res/images/help.png"/>购票须知</a></div><button onclick="checkOrder()">确定</button>
+        </footer>
+   </div>
+   <xtag:template name="template">
+       <li>
+           <div data-box="h"><div name="name" class="name">张三</div><div name="ticketType">全票</div></div>
+           <div data-box="h"><div name="credentialType" class="name">护照</div><div name="credentialNum">4234321412</div></div>
+       </li>
+   </xtag:template>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<action name="index" src="portal/view/home.html">
+
+    <!--
+    ###############################################################
+        引用Model文件
+    ###############################################################
+    -->
+    <!--<model name="InformationManager" src="model/InformationManager.js"/>-->
+    <model name="User" src="portal/model/User.js"/>
+    <model name="OrderManager" src="portal/model/OrderManager.js"/>
+    <model name="Order" src="portal/model/Order.js"/>
+    <model name="AddressManager" src="portal/model/AddressManager.js"/>
+    <model name="Address" src="portal/model/Address.js"/>
+    <model name="BillManager" src="portal/model/BillManager.js"/>
+    <model name="Bill" src="portal/model/Bill.js"/>
+    <model name="ContactsManager" src="portal/model/ContactsManager.js"/>
+    <model name="Contact" src="portal/model/Contact.js"/>
+    <model name="RechargeManager" src="telRecharge/model/RechargeManager.js"/>
+    <model name="RegisterForm" src="portal/model/RegisterForm.js"/>
+    <model name="GameManager" src="gameRecharge/model/GameManager.js"/>
+    <model name="CreditCardManager" src="creditCard/model/CreditCardManager.js"/>
+    <model name="CreditCard" src="creditCard/model/CreditCard.js"/>
+    <model name="BankList" src="creditCard/model/BankList.js"/>
+    <model name="Records" src="creditCard/model/Records.js"/>
+    <model name="ElectricTickets" src="portal/model/ElectricTickets.js"/>
+    <model name="Lottery3D" src="lotteryTicket/model/Lottery3D.js"/>
+    <model name="LotteryQLC" src="lotteryTicket/model/LotteryQLC.js"/>
+    <model name="LotterySSQ" src="lotteryTicket/model/LotterySSQ.js"/>
+    <model name="LotteryInfoManager" src="lotteryTicket/model/LotteryInfoManager.js"/>
+    <model name="UserNotify" src="portal/model/UserNotify.js"/>
+    <model name="Card" src="lotteryTicket/model/Card.js"/>
+    <model name="BusTicketManager" src="busTicket/model/BusTicketManager.js"/>
+    <model name="BusTicket" src="busTicket/model/BusTicket.js"/>
+    <model name="BusCityManager" src="busTicket/model/BusCityManager.js"/>
+    <model name="BusPassengersManager" src="busTicket/model/BusPassengersManager.js"/>
+    <model name="BusPassengers" src="busTicket/model/BusPassengers.js"/>
+    <model name="BusBuyTicketRecord" src="busTicket/model/BusBuyTicketRecord.js"/>
+    <model name="BusBuyTicketRecordManager" src="busTicket/model/BusBuyTicketRecordManager.js"/>
+
+    <model name="Bank" src="balanceInquiry/model/Bank.js"/>
+    <model name="BankManager" src="balanceInquiry/model/BankManager.js"/>
+
+    <!--
+    ###############################################################
+        定义会被多处引用的业务流程模板
+    ###############################################################
+    -->
+    <actionTemp>
+        <action name="test" src="creditCard/view/interfaceTest.html"/>
+
+        <!--                        游戏订单确定                   -->
+        <action name="gameOrderConfirm" src="gameRecharge/view/gameOrderConfirm.html"/>
+
+        <!--                        用户登录注册模块                   -->
+        <action name="login" src="portal/view/login.html">
+            <action name="register" src="portal/view/register.html"/>
+            <action name="@lotteryTicket"/>
+            <action name="@messageCenter"/>
+            <action name="@trainTicket"/>
+            <action name="@telephoneCharge"/>
+            <action name="@electricTicket"/>
+            <action name="@gameCharge"/>
+            <!--<action name="@electricTickets"/>-->
+            <action name="@personalCenter"/>
+            <action name="@betsList"/>
+            <action name="@balanceInquiry"/>
+            <action name="@creditCard"/>
+            <action name="@busTicket"/>
+            <!--<action name="@accountList"/>-->
+        </action>
+
+        <!--                        彩票列表                   -->
+        <action name="betsList" src="lotteryTicket/view/betsList.html">
+            <action name="recharge" src="lotteryTicket/view/recharge.html">
+                <action name="checkOrder" src="lotteryTicket/view/checkOrder.html">
+                    <action name="payOrder" src="lotteryTicket/view/payOrder.html">
+                        <action name="paySuccess" src="lotteryTicket/view/paySuccess.html"/>
+                        <action name="payFail" src="lotteryTicket/view/payFail.html"/>
+                    </action>
+                </action>
+            </action>
+        </action>
+
+        <action name="personalCenter" src="portal/view/personalCenter.html">
+            <action name="addressManager" src="portal/view/addressManager.html">
+                <action name="addAddress" src="portal/view/addAddress.html"/>
+            </action>
+            <action name="ContactManager" src="portal/view/contactManager.html">
+                <action name="addContact" src="portal/view/addContact.html"/>
+            </action>
+            <action name="modifyPwd" src="portal/view/modifyPwd.html"/>
+        </action>
+
+        <!--<action name="electricTickets" src="view/electricTickets/myElectricTickets.html"></action>-->
+
+        <action name="electricTicket" src="portal/view/electricTicket.html">
+            <action name="eTicketDetail" src="portal/view/eTicketDetail.html"/>
+            <action name="eTicketMall" src="portal/view/eTicketMall.html">
+                <action name="mallCouponsDetail" src="portal/view/eTicketMallDetail.html"/>
+            </action>
+        </action>
+
+        <!--                        游戏直充             -->
+        <action name="gameCharge" src="gameRecharge/view/gameRecharge.html">
+            <action name="chargeQCoin" src="gameRecharge/view/chargeQCoin.html">
+                <action name="@gameOrderConfirm"/>
+            </action>
+            <action name="chargeWarCraftWorld" src="gameRecharge/view/chargeWarCraftWorld.html">
+                <action name="@gameOrderConfirm"/>
+            </action>
+        </action>
+
+        <!--                     话费充值                 -->
+        <action name="telephoneCharge" src="telRecharge/view/telRecharge.html">
+            <action name="telOrderConfirm" src="telRecharge/view/telOrderConfirm.html"/>
+        </action>
+
+        <!--<action name="trainTicket" src="view/trainTicket/trainTicket.html">-->
+            <!--<action name="ticketList" src="view/trainTicket/ticketList.html">-->
+                <!--<action name="selectPassenger" src="view/trainTicket/selectPassenger.html">-->
+                    <!--<action name="passengerList" src="view/trainTicket/passengerList.html">-->
+                        <!--<action name="editPassenger" src="view/trainTicket/editPassenger.html"></action>-->
+                        <!--<action name="addPassenger" src="view/trainTicket/addPassenger.html"></action>-->
+                    <!--</action>-->
+                <!--</action>-->
+            <!--</action>-->
+            <!--<action name="ticketRecord" src="view/trainTicket/ticketRecord.html"></action>-->
+        <!--</action>-->
+
+        <!--                        用户通知模块                   -->
+        <action name="messageCenter" src="portal/view/messageCenter.html">
+            <action name="messageDetail" src="portal/view/messageDetail.html"/>
+        </action>
+
+
+        <!--                        彩票注册                   -->
+        <action name="lotteryTicket" src="lotteryTicket/view/lotteryTicket.html">
+            <action name="lotteryRegister" src="lotteryTicket/view/register.html"/>
+            <action name="shuangSeQiu" src="lotteryTicket/view/shuangSeQiu.html">
+                <action name="@betsList"/>
+            </action>
+            <action name="fucai3d" src="lotteryTicket/view/fucai3d.html">
+                <action name="@betsList"/>
+            </action>
+            <action name="qilecai" src="lotteryTicket/view/qilecai.html">
+                <action name="@betsList"/>
+            </action>
+            <action name="buyHistory" src="lotteryTicket/view/dgRecord.html">
+                <action name="buyDetail" src="lotteryTicket/view/dgDetail.html"/>
+            </action>
+            <action name="lotteryRecord" src="lotteryTicket/view/lotteryRecord.html">
+                <action name="ticketDetail" src="lotteryTicket/view/kjDetail.html"/>
+            </action>
+            <action name="recharge" src="lotteryTicket/view/recharge.html">
+                <action name="checkOrder" src="lotteryTicket/view/checkOrder.html">
+                    <action name="payOrder" src="lotteryTicket/view/payOrder.html"/>
+                </action>
+            </action>
+            <action name="tixian" src="lotteryTicket/view/tixian.html">
+                <action name="myCard" src="lotteryTicket/view/bankCard.html">
+                    <action name="myCardDetail" src="lotteryTicket/view/addBankcard.html">
+                    </action>
+                </action>
+            </action>
+            <action name="userInfo" src="lotteryTicket/view/userInfo.html"/>
+        </action>
+
+        <!--                       汽车票                  -->
+        <action name="busTicket" src="busTicket/view/busTicket.html">
+            <action name="busTicketList" src="busTicket/view/ticketList.html">
+                <action name="busTicketDetail" src="busTicket/view/ticketDetail.html">
+                    <action name="ticketInfo" src="busTicket/view/ticketInfo.html"/>
+                    <action name="passengerChose" src="busTicket/view/passengerChose.html">
+                        <action name="passengerEdit" src="busTicket/view/editPassenger.html"/>
+                        <action name="passengerAdd" src="busTicket/view/addPassenger.html"/>
+                    </action>
+                    <action name="busOrderConfirm" src="busTicket/view/busOrderConfirm.html"/>
+                </action>
+            </action>
+            <action name="destinationSite" src="busTicket/view/destinationSite.html"/>
+            <action name="selectCity" src="busTicket/view/selectCity.html">
+                <action name="departureSite" src="busTicket/view/departureSite.html"/>
+            </action>
+            <action name="orderList" src="busTicket/view/buyList.html">
+                <action name="orderDetail" src="busTicket/view/buyTicketDetail.html"/>
+            </action>
+        </action>
+
+
+        <action name="orderList" src="portal/view/orderList.html">
+            <action name="orderDetail" src="portal/view/orderDetail.html"/>
+        </action>
+
+        <action name="balanceInquiry" src="balanceInquiry/view/mySavingCards.html">
+            <action name="addCard" src="balanceInquiry/view/addSavingCard.html">
+                <action name="supportList" src="balanceInquiry/view/supportBankList.html">
+                    <action name="supportCondition" src="balanceInquiry/view/supportCondition.html"/>
+                </action>
+            </action>
+        </action>
+
+
+
+        <!--                       信用卡还款                  -->
+        <action name="creditRepay" src="creditCard/view/creditRepay.html">
+            <action name="searchOrder" src="creditCard/view/billInquiry.html"/>
+        </action>
+
+        <action name="creditCard" src="creditCard/view/creditCard.html">
+            <action name="setTime" src="creditCard/view/cardDetail.html"/>
+            <action name="searchOrder" src="creditCard/view/billInquiry.html"/>
+            <action name="@creditRepay"/>
+            <action name="history" src="creditCard/view/repayRecord.html">
+                <action name="historyDetail" src="creditCard/view/repayRecordDetail.html"/>
+            </action>
+            <action name="addCreditCard" src="creditCard/view/addCreditCard.html">
+                <action name="bankList" src="creditCard/view/bankList.html"/>
+                <action name="@creditRepay"/>
+            </action>
+        </action>
+
+        <!--                      生活缴费                      -->
+        <!--<action name="accountList" src="ya_lifePayment/view/accountList.html">-->
+            <!--<action name="addAccount" src="ya_lifePayment/view/addAccount.html"/>-->
+            <!--<action name="editAccount" src="ya_lifePayment/view/editAccount.html"/>-->
+            <!--<action name="historyList" src="ya_lifePayment/view/historyList.html"/>-->
+            <!--<action name="payDetailWater" src="ya_lifePayment/view/payDetailWater.html"/>-->
+        <!--</action>-->
+    </actionTemp>
+
+    <!--<action name="advertisement" src="view/home/advertisement.html"></action>-->
+    <!--
+    ###############################################################
+        从主页开始往下走的业务流程
+    ###############################################################
+    -->
+
+    <action name="@login"/>
+    <action name="@lotteryTicket"/>
+    <action name="@messageCenter"/>
+    <!--<action name="@trainTicket"/>-->
+    <action name="@telephoneCharge"/>
+    <action name="@electricTicket"/>
+    <action name="@gameCharge"/>
+    <!--<action name="@electricTickets"/>-->
+    <action name="@personalCenter"/>
+    <action name="@balanceInquiry"/>
+    <action name="@creditCard"/>
+    <action name="@busTicket"/>
+    <!--<action name="@accountList"/>-->
+    <!--<action name="@betsList"/>-->
+
+    <!--                        通讯接口测试模块                   -->
+    <action name="interfaceTest" src="test/interfaceTest.html"/>
+
+
+</action>

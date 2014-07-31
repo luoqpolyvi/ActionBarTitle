@@ -1,0 +1,78 @@
+<widget xmlns="http://www.w3.org/ns/widgets" id="com.polyvi.circle" version="1.0">
+	<name short="bizcircle">bizcircle</name>
+
+	<icon src="icon.png"/>
+
+	<content encoding="UTF-8" src="index.html"/>
+
+	<preference name="type" readonly="true" value="xapp"/>
+	<preference name="mode" readonly="true" value="local"/>
+
+	<description>
+	A sample widget to demonstrate some of the possibilities.
+	</description>
+
+	<author email="foo-bar@polyvi.com/" href="http://polyvi.com/">polyvi</author>
+	<license>Copyright 2012-2013, Polyvi Inc.</license>
+
+	<plugins>
+		<plugin id="org.apache.cordova.contacts" version="r0.2.10"/>
+		<plugin id="org.apache.cordova.console" version="r0.2.7"/>
+		<plugin id="com.polyvi.xface.extension.xapp" version="r1.0.4"/>
+		<plugin id="com.polyvi.xface.extension.uppay" version="r1.0.8"/>
+		<plugin id="com.polyvi.xface.extension.telephony" version="r1.0.3"/>
+		<plugin id="com.polyvi.xface.extension.security" version="r1.0.3"/>
+		<plugin id="com.polyvi.xface.extension.upp-security" version="r1.0.0"/>
+		<plugin id="org.apache.cordova.statusbar" version="r0.1.5"/>
+		<plugin id="org.apache.cordova.device" version="r0.2.8"/>
+		<plugin id="com.polyvi.xface.extension.calendar" version="r1.0.1"/>
+		<plugin id="com.polyvi.xface.extension.device-capability" version="r1.0.1"/>
+		<plugin id="com.polyvi.xface.extension.xmlhttprequest" version="r1.0.1"/>
+		<plugin id="org.apache.cordova.device-motion" version="r0.2.5"/>
+		<plugin id="org.apache.cordova.device-orientation" version="r0.3.5"/>
+		<plugin id="org.apache.cordova.dialogs" version="r0.2.5"/>
+		<plugin id="org.apache.cordova.network-information" version="r0.2.7"/>
+		<plugin id="org.apache.cordova.splashscreen" version="r0.2.8"/>
+		<plugin id="org.apache.cordova.vibration" version="r0.3.6"/>
+
+        <!-- 3.2插件-->
+        <!--<plugin id="com.polyvi.xface.extension.advancedfiletransfer"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.ams"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.bluetooth"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.calendar"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.device-capability"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.idlewatcher"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.messaging"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.push"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.security"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.telephony"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.trafficstats"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.umeng"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.upp-security"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.uppay"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.xapp"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.xmlhttprequest"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.zbar"/>-->
+        <!--<plugin id="com.polyvi.xface.extension.zip"/>-->
+        <!--<plugin id="org.apache.cordova.battery-status"/>-->
+        <!--<plugin id="org.apache.cordova.camera"/>-->
+        <!--<plugin id="org.apache.cordova.console"/>-->
+        <!--<plugin id="org.apache.cordova.contacts"/>-->
+        <!--<plugin id="org.apache.cordova.device"/>-->
+        <!--<plugin id="org.apache.cordova.device-motion"/>-->
+        <!--<plugin id="org.apache.cordova.device-orientation"/>-->
+        <!--<plugin id="org.apache.cordova.dialogs"/>-->
+        <!--<plugin id="org.apache.cordova.file"/>-->
+        <!--<plugin id="org.apache.cordova.file-transfer"/>-->
+        <!--<plugin id="org.apache.cordova.geolocation"/>-->
+        <!--<plugin id="org.apache.cordova.globalization"/>-->
+        <!--<plugin id="org.apache.cordova.inappbrowser"/>-->
+        <!--<plugin id="org.apache.cordova.labs.keyboard"/>-->
+        <!--<plugin id="org.apache.cordova.media"/>-->
+        <!--<plugin id="org.apache.cordova.media-capture"/>-->
+        <!--<plugin id="org.apache.cordova.network-information"/>-->
+        <!--<plugin id="org.apache.cordova.splashscreen"/>-->
+        <!--<plugin id="org.apache.cordova.statusbar"/>-->
+        <!--<plugin id="org.apache.cordova.vibration"/>-->
+	</plugins>
+</widget>

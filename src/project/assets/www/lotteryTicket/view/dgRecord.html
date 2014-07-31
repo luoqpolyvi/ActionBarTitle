@@ -1,0 +1,136 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>代购记录</title>
+    <script>
+        var state = {
+            "0":"出票中",
+            "1":"出票成功",
+            "2":"出票失败",
+            "3":"未中奖",
+            "4":"中小奖",
+            "5":"中大奖"
+        }
+        var LotteryInfoManager = xmesh.model["LotteryInfoManager"];
+        var container = this.named("container").css("height",window.innerHeight-$("header").offsetHeight-this.named("daigouRecordTabs").offsetHeight-90+"px");
+        var page = this.bind("pageReady", function () {
+            var _this = this;
+            var flag = "0";
+            var dgList = _this.named("dgList");
+            var point = {"tab_left":"0", "tab_right":"1"};
+            var dgScroller = this.named("dgScroller");
+            var noRecord = this.named("noRecord");
+
+            LotteryInfoManager.clearBuyLotteryRecord();
+            getLotteryList();
+
+            page.named("daigouRecordTabs").child("li").bind("click", function () {
+                if (this.attribute("checked")) return;
+                page.named("daigouRecordTabs").child("li").attribute("checked", null);
+                this.attribute("checked", true);
+                dgList.html("");
+                noRecord.hide();
+                flag = point[this.className];
+                if (flag == "0") {
+                    if ( LotteryInfoManager.buyLotteryAllList.list().length > 0) { dgScroller.show();setLotteryList( LotteryInfoManager.buyLotteryAllList.list());}
+                    else    getLotteryList();
+                } else {
+                    if ( LotteryInfoManager.buyLotteryWinList.list().length > 0) { dgScroller.show(); setLotteryList( LotteryInfoManager.buyLotteryWinList.list());}
+                    else    getLotteryList();
+                }
+                dgScroller.refresh();
+                dgScroller.scrollTo(0,0,0);
+            })
+            _this.named("clickMore").bind("click", getLotteryList);
+            function getLotteryList() {
+                _this.named("clickMore").hide();
+                service.busynessMessage = "网络连接中，请稍候...";
+                LotteryInfoManager.getBuyLotteryList(flag, function (data) {
+                    var list = (flag == "0") ?  LotteryInfoManager.buyLotteryAllList.list().length :  LotteryInfoManager.buyLotteryWinList.list().length;
+                    if(list ==0) {noRecord.show();dgScroller.hide();}
+                    else{
+                        dgScroller.show();
+                        if(data.length==0) return Dialog.toast("无更多记录");
+                        setLotteryList(data);
+                        dgScroller.refresh();
+                    }
+                }, showErrorMessage);
+            }
+
+            function setLotteryList(data) {
+                $.each(data, function (property, item) {
+                    var template = _this.named("template").child("li").clone(true);
+                    switch (item.game) {
+                        case "QLC" :
+                            template.named("logo").attribute("src", "lotteryTicket/view/res/images/qilecai.png");
+                            break;
+                        case "SSQ" :
+                            template.named("logo").attribute("src", "lotteryTicket/view/res/images/shuangseqiu.png");
+                            break;
+                        case "3D" :
+                            template.named("logo").attribute("src", "lotteryTicket/view/res/images/fucai3d.png");
+                            break;
+                    }
+                    template.named("termCode").html(item.termCode);
+                    template.named("sellTime").html(item.sellTime);
+                    template.named("sellMoney").html(Validator.convertFenToYuan(item.sellMoney));
+                    template.named("winMoney").html(state[item.state]);
+                    template.bind("click", function () {
+                        getLotteryDetail(template,item);
+                    })
+                    if(data.length==LotteryInfoManager.page_size) _this.named("clickMore").css("display","block");
+                    dgList.append(template);
+                    setTimeout(function(){dgScroller.refresh();},0)
+                })
+            }
+
+            function getLotteryDetail(target,item) {
+                service.busynessMessage = "网络连接中，请稍候...";
+                LotteryInfoManager.getBuyLotteryDetail({index:item.index, name:item.game, phone:xmesh.model["User"].phone}, function (data) {
+                    if(data.state!=item.state) {
+                        item.state = data.state;
+                        target.named("winMoney").html(state[item.state]);
+                    }
+                    xmesh.act("buyDetail", data);
+                }, showErrorMessage);
+            }
+        })
+    </script>
+</head>
+
+<body>
+<div id="dgRecordPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">代购记录</span>
+    </header>
+    <div class="content" id="dgRecord" data-flex="1">
+        <div class="tabs" data-box="h">
+            <ul data-box="h" name="daigouRecordTabs">
+                <li class="tab_left" checked>全部</li>
+                <li class="tab_right">已中奖</li>
+            </ul>
+        </div>
+
+        <div name="container" data-box="v" data-flex="1">
+            <div name="noRecord" class="noItem" data-box="v" data-flex="1" style="height: 100%;display: none"><div class="image"></div></div>
+            <xtag:ScrollPane name="dgScroller" data-box="v" data-flex="1">
+                <ul class="dgList" name="dgList" data-box="v">
+                </ul>
+                <div name="clickMore" class="clickMore">点击加载更多</div>
+            </xtag:ScrollPane>
+        </div>
+    </div>
+</div>
+<xtag:template name="template">
+    <li data-box="h">
+        <img src="res/images/shuangseqiu.png" name="logo"/>
+        <div data-flex="1" data-box="v" class="detail">
+            <div class="time">第<span name="termCode">2013042</span>期<span class="date" name="sellTime">2013-09-13</span></div>
+            <div class="more"><span name="sellMoney">14.00元</span><span class="status" name="winMoney">未中奖</span></div>
+        </div>
+        <div class="arrow"></div>
+    </li>
+</xtag:template>
+</body>
+</html>

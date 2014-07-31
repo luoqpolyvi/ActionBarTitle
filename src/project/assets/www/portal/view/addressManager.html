@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>常用收货地址</title>
+    <script>
+        var addressLists = this.named('addressLists');
+        var addressManager = this.child('#addressManager');
+        var template = this.named('template');
+//        var setUseTransform = (device.version == "2.3.6") ? false : true;
+        var secondLevelScrollPane = this.named('secondLevelScrollPane').as("ui.ScrollPane", {bounce:true, vScroll:true, useTransform:true});
+        var noList = this.named("noList");
+        var page = this.bind('pageReady', function () {
+            noList.hide();
+            if(!xmesh.model["AddressManager"].addressList){reateListItem(xmesh.model["AddressManager"].addressList);}
+            else{
+                xmesh.model["AddressManager"].getAddressList(function(data){
+                    createListItem(xmesh.model["AddressManager"].addressList);
+                })
+            }
+        });
+
+        function createListItem(data) {
+            addressLists.html("");
+            if (data.length == 0) {
+                noList.css('display','-webkit-box');
+                addressManager.hide();
+            } else {
+                noList.hide();
+                addressManager.show();
+            }
+            $.each(data, function (i, item) {
+                var tep = template.child(".address").clone(true);
+                tep.child("[name=name]").html(item.name);
+                tep.child("[name=phone]").html(Validator.formatPhone(item.phone));
+                tep.child("[name=address]").html(item.address);
+                tep.child("[name=postCode]").html(item.postCode);
+                tep.child("[name=delAddress]").bind("click", function () {
+                    Dialog.confirm("您确定要删除此收货地址吗？", null,function () {
+                        service.busynessMessage = "正在删除收货地址...";
+                        xmesh.model["AddressManager"].delAddress(item, function () {
+                            createListItem(xmesh.model["AddressManager"].addressList);
+                        }, showErrorMessage);
+                    },"提醒",["取消","确定"]);
+                });
+                tep.child("[name=editAddress]").bind("click", function () {
+                    xmesh.act("addAddress", {address:item, success:function () {
+                        createListItem(xmesh.model["AddressManager"].addressList)
+                    }});
+                });
+                addressLists.append(tep);
+            })
+            setTimeout(function () {
+                secondLevelScrollPane.scrollTo(0, 0, 0);
+                secondLevelScrollPane.refresh();
+            }, 100);
+        }
+
+        function addAddress() {
+            if (xmesh.model["AddressManager"].addressList.length >= 6) {
+                Dialog.toast("最多添加6个收货地址");
+            } else {
+                xmesh.model['Address'].reset();
+                xmesh.act("addAddress", {address:null, success:function () {
+                    createListItem(xmesh.model["AddressManager"].addressList)
+                }})
+            }
+        }
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="addressManager") xFace.app.close();
+                else xmesh.back();
+            }else{xmesh.back();}
+        })
+    </script>
+</head>
+<body>
+<div id="addressManagerPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div name="noList" class="noItem" data-box="v" data-flex="1"><div class="image"></div></div>
+    <div class="content" id="addressManager" data-box="v" data-flex="1" name="secondLevelScrollPane">
+        <div class="addressList" data-flex="1" name="addressLists">
+        </div>
+        <div style="height: 45px"></div>
+    </div>
+    <button class="bigBtn" name="addBtn" onclick="addAddress()">添加</button>
+</div>
+<xtag:Template name="template">
+    <div class="address">
+        <div class="title" data-flex="h">
+            <div class="setDefault" style="display: none"></div>
+            <button class="delete" name="delAddress"></button>
+            <button class="edit" name="editAddress"></button>
+        </div>
+        <div class="addressName" name="address"></div>
+        <div class="contactInfo"><span name="name"></span><span name="phone"></span><span name="postCode"></span>
+        </div>
+    </div>
+</xtag:Template>
+</body>
+</html>

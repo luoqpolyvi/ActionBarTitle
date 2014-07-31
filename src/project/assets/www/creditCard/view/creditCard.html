@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>信用卡列表</title>
+    <script>
+        var CreditCard = xmesh.model["CreditCard"];
+        var CreditCardManager = xmesh.model["CreditCardManager"];
+        var template = this.named("template");
+        var scrollPane = this.named("scrollPane");
+        var creditCardList = this.named("creditCardList");
+        var addCreditCard = this.named("addCreditCard");
+        var noList = this.named("noList");
+        var tryAgain = this.named("tryAgain");
+        var tryAgainBtn = this.named("tryAgainBtn");
+
+        var page = this.bind("pageReady",function(){
+            noList.hide();scrollPane.hide();tryAgain.css('display','none');
+            service.busynessMessage = "正在查询...";
+            setTimeout(getCreditCardList,500);
+            addCreditCard.bind('click',goToAddCreditCard);
+            tryAgainBtn.bind('click',tryAgainFunction);
+        });
+
+        page.bind('show',function(){
+            if(CreditCard.isChange == true){
+                creditCardList.html('');
+                CreditCard.isChange = false;
+                getCreditCardList();
+            }
+            if(CreditCard.isAdd == true){
+                creditCardList.html('');
+                CreditCard.isAdd = false;
+                service.busynessMessage = "正在查询...";
+                getCreditCardList();
+            }
+
+        });
+
+        function getCreditCardList(){
+            CreditCardManager.getCreditCard(function(data){
+                tryAgain.css('display','none');
+                if(data.data.accountList.length == 0){
+                    noList.css('display','-webkit-box');
+                    scrollPane.hide();
+                }
+                else{
+                    noList.hide();
+                    scrollPane.css('display','block');
+                    creditCardList.html('');
+                    $.each(data.data.accountList,function(property,item){
+                        var card = template.child("[name=cardCard]").clone(true).appendTo(creditCardList);
+                        var noticeTrue = card.child("[name=noticeTrue]");
+                        var noticeFalse = card.child("[name=noticeFalse]");
+                        card.child("[name=logoUrl]").src = item.logoUrl;
+                        card.child("[name=bankName]").html(item.bankName);
+                        card.child("[name=cardNumber]").html(item.cardNumber.substring(item.cardNumber.length-4,item.cardNumber.length));
+                        card.child("[name=searchOrder]").bind('click',function(){$.copyObject(xmesh.model["CreditCard"],item);goToSearchOrder()});
+                        card.child("[name=history]").bind('click',function(){goToHistory(item)});
+                        card.child("[name=repayment]").bind('click',function(){$.copyObject(xmesh.model["CreditCard"],item);goToRepayment()});
+                        card.child("[name=notice]").bind('click',function(){$.copyObject(xmesh.model["CreditCard"],item);goToSetTime(item)});
+//                        if(false){                                 //item.repaymentNotice == "true"
+//                            noticeFalse.hide();
+//                            noticeTrue.show();
+//                            noticeTrue.child("[name=noticeDate]").html(item.noticeDate);
+//                            noticeTrue.child("[name=remainDate]").html(item.remainDate);
+//                            noticeTrue.child("[name=repaymentNotice]").html("已开通提醒");
+//                        }
+//                        else{
+//                            noticeTrue.hide();
+//                            noticeFalse.show();
+//                        }
+                    });
+                    scrollPane.refresh();
+                }
+            },function(e){noList.hide();scrollPane.hide();tryAgain.css('display','-webkit-box');showErrorMessage(e);});
+        }
+
+        function goToSetTime(event){
+            xmesh.act('setTime',event);
+        }
+
+        function goToSearchOrder(){
+            xmesh.act('searchOrder');
+        }
+
+        function goToHistory(event){
+            xmesh.act('history',event);
+        }
+
+        function goToRepayment(){
+            xmesh.act('creditRepay');
+        }
+
+        function goToAddCreditCard(){
+            xmesh.act('addCreditCard');
+        }
+
+        function tryAgainFunction(){
+            service.busynessMessage = "正在查询...";
+            getCreditCardList();
+        }
+
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="creditCard") xFace.app.close();
+                else xmesh.home();
+            }else{xmesh.home();}
+        })
+    </script>
+</head>
+
+<body>
+<div id="creditCardPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div name="noList" class="noItem" data-box="v" data-flex="1" style="height:100%;display: none"><div class="image"></div></div>
+    <div name="tryAgain" class="noItem" data-box="v" data-flex="1" style="display: -webkit-box">
+        <div>获取数据失败</div>
+        <button class="reload" name="tryAgainBtn">点击重新加载</button>
+    </div>
+    <xtag:ScrollPane name="scrollPane" style="display: none">
+        <div class="content" id="creditCard" data-flex="1">
+            <ul class="cardList" name="creditCardList">
+            </ul>
+        </div>
+        <div style="height: 45px"></div>
+    </xtag:ScrollPane>
+    <xtag:Template name="template">
+        <li name="cardCard">
+            <div data-box="h" name="notice">
+                <div data-flex="1">
+                    <div data-box="h" class="bankName"><img name="logoUrl" class="bankLogo"/><span name="bankName"></span></div>
+                    <div class="tailNum">尾号：<span name="cardNumber"></span></div>
+                </div>
+                <div class="tip" name="noticeTrue" style="display: none">
+                    <div>每月<span name="noticeDate"></span>日还款</div>
+                    <div class="deadLine" data-box="h"><img src="creditCard/view/res/images/time.png" class="timeIcon"/><span name="remainDate"></span>天</div>
+                    <div class="alreadyOpen" name="repaymentNotice">已开通提醒</div>
+                </div>
+                <div class="tip" name="noticeFalse" style="display: none">
+                    <div class="none" data-box="h"><img src="creditCard/view/res/images/none.png"/></div>
+                    <div class="notOpen" data-box="h">未开通提醒</div>
+                </div>
+            </div>
+            <div data-box="h" class="item">
+                <div data-flex="1" name="searchOrder">账单查询</div>
+                <div data-flex="1" class="record" name="history">还款记录</div>
+                <div data-flex="1" class="goPay" name="repayment">立即还款</div>
+            </div>
+        </li>
+    </xtag:Template>
+    <div class="btn"><button class="bigBtn blueBtn"  name="addCreditCard">添加信用卡</button></div>
+</div>
+</body>
+</html>

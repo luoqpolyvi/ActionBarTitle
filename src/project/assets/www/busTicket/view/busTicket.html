@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>汽车票</title>
+    <script>
+        var BusTicketManager = xmesh.model["BusTicketManager"];
+        var page = this;
+        var today = new Date();
+
+        BusTicketManager.date = BusTicketManager.date ? BusTicketManager.date : (today.getFullYear()+"-"+_formatDate(today.getMonth()+1)+"-"+ _formatDate(today.getDate()));
+        var defaultDate =BusTicketManager.date;
+
+        page.bind("show",function(){
+            BusTicketManager.date = defaultDate;
+        })
+
+        page.named("calendar").bind("click",function(){//调用日历控件
+            var dateArray = BusTicketManager.date.split("-");
+            xFace.ui.Calendar.getDate(function(d){
+                var selectDate = new Date(d.year,d.month-1,d.day);
+                if(!Validator.compareDay(today,selectDate,1)) return Dialog.toast("出发日期不能晚于当天日期");
+                if(Validator.compareDay(selectDate,today,8)){
+                    BusTicketManager.date = d.year+"-"+_formatDate(d.month)+"-"+ _formatDate(d.day);
+                    defaultDate =BusTicketManager.date;
+                }else{
+                    Dialog.toast("出发日期只能选择10天以内的日期");
+                }
+            },function(){
+                Dialog.alert('Calendar error');
+            }, Number(dateArray[0]),Number(dateArray[1]),Number(dateArray[2]))
+        })
+
+        function inquiry(){
+            if(!xmesh.model["BusCityManager"].originStationName) return Dialog.toast("请选择出发站点");
+            if(!xmesh.model["BusCityManager"].targetCityName || xmesh.model["BusCityManager"].targetCityName=="请选择") return Dialog.toast("请选择到达站点");
+            service.busynessMessage = "网络连接中，请稍候...";
+            BusTicketManager.getTicket(function(res){
+                if(res.total==0) Dialog.alert("暂无数据");
+                else xmesh.act("busTicketList",res);
+            },showErrorMessage)
+        }
+
+        function _formatDate(day){
+            var d = ""+day;
+            return (d.length<2) ? ("0"+d) : d ;
+        }
+
+        function call(){
+            Dialog.confirm("是否拨打400-660-8787？",null,function(){
+                xFace.Telephony.initiateVoiceCall("4006608787",null,function(){
+                    Dialog.alert("拨打客服电话失败")
+                })
+            },"系统提示",["取消","确定"]);
+        }
+
+        this.bind("backbutton",function(event){
+            event.preventDefault();
+            if(System.data){
+                if(System.data.action=="busTicket") xFace.app.close();
+                else xmesh.home();
+            }else{xmesh.home();}
+        })
+    </script>
+</head>
+
+<body>
+   <div id="busTicketPage" data-box="v" class="secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel">汽车票</span>
+            <button class="ticketRecord"  onclick="xmesh.act('orderList')">购票记录</button>
+        </header>
+        <div class="content" id="busTicket" data-flex="1">
+            <div class="station" data-box="h">
+                <div class="setOut" data-flex="1">
+                   <div class="title">出发</div>
+                   <div class="stationContent" x-field="BusCityManager.originStationName" onclick="xmesh.act('selectCity')"></div>
+                </div>
+                 <div class="icon"><img src="busTicket/view/res/images/coach_arr.png"/></div>
+                <div class="arrived" data-flex="1">
+                   <div class="title">到达</div>
+                   <div class="stationContent" x-field="BusCityManager.targetCityName" onclick="xmesh.act('destinationSite')"></div>
+                </div>
+            </div>
+            <div class="calendar">
+                <div class="date" name="calendar" data-box="h"><img src="busTicket/view/res/images/coach_date_icon.png"/><div class="title" data-flex="1">出发日期<span class="calendarDate" name="date" x-field="BusTicketManager.date">2014-01-02 星期四</span></div><div class="arrow"></div></div>
+            </div>
+            <button class="bigBtn blueBtn" onclick="inquiry()">查询</button>
+            <div class="customerService" data-box="v">
+                <img src="busTicket/view/res/images/chat.png"/>
+                <div class="tipText">如有问题，请联系客服。</div>
+                <div class="hotLine" onclick="call()">400-660-8787</div>
+            </div>
+        </div>
+   </div>
+</body>
+</html>

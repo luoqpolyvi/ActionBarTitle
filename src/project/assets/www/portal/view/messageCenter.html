@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>消息中心</title>
+    <script>
+        var UserNotify = xmesh.model["UserNotify"];
+        var NotifyList = UserNotify.notifyPage.list();
+        var year;
+        var template = this.named('template');
+        var messageScroller = this.named("messageScroller");
+        var messContainer = this.named("messContainer");
+        messContainer.css("height", window.innerHeight - this.named("mesHeader").offsetHeight-45 + "px");
+        var lastUL;
+        var noList = this.named("noList");
+        var page = this.bind("pageReady", function () {
+            if (System.data) {
+                if(System.data.action=="messageCenter"){
+                    service.busynessMessage = "正在获取消息...";
+                    xmesh.model["UserNotify"].getNotify = true;
+                    xmesh.model["UserNotify"].clear();
+                    xmesh.model["UserNotify"].getUserNotify(false, function (data) {
+                        xmesh.model["UserNotify"].getNotify = false;
+                        NotifyList = UserNotify.notifyPage.list();
+                        createUserNotifyList();
+                    }, function () {
+                        xmesh.model["UserNotify"].getNotify = false;
+                        Dialog.toast("获取用户通知列表失败");
+                    });
+                }else  createUserNotifyList();
+            } else {
+                createUserNotifyList();
+            }
+
+            function createUserNotifyList() {
+                if (xmesh.model["UserNotify"].dataTotal == 0) {
+                    noList.css('display','-webkit-box');
+                    messageScroller.hide();
+                } else {
+                    noList.css('display','none');
+                    $.each(NotifyList, function (property, item) {
+                        var date = formatDate(item.date);
+                        if (!year || year != date.year) {
+                            year = date.year;
+                            var temp = template.child(".yearMessages").clone(true).appendTo(messageScroller);
+                            temp.named('gapYear').html(date.year);
+                            lastUL = temp.child("ul");
+                            var li = template.child("li").clone(true).appendTo(lastUL);
+                            if (item.state == "notread") li.addClass('unread');
+                            else li.addClass("readed");
+                            li.named('day').html(date.day);
+                            li.named('time').html(date.time);
+                            li.named('mesTitle').html(item.title);
+                            li.named('mesText').html(item.content.text);
+                            li.bind('click', function () {
+                                updateMesState(this, item);
+
+                            })
+                        } else {
+                            var li = template.child("li").clone(true).appendTo(lastUL);
+                            if (item.state == "notread") li.addClass('unread');
+                            else li.addClass("readed");
+                            li.named('day').html(date.day);
+                            li.named('time').html(date.time);
+                            li.named('mesTitle').html(item.title);
+                            li.named('mesText').html(item.content.text);
+                            li.bind('click', function () {
+                                updateMesState(this, item);
+                            })
+                        }
+                    })
+                   setTimeout(function(){ messageScroller.refresh();},0);
+                }
+            }
+        })
+
+        function updateMesState(target, item) {
+            if (item.state == "notread") {
+//                service.busynessMessage = "网络连接中，请稍候...";
+                UserNotify.updateUserNotifyState("list", item.id, function (rs) {
+                    target.removeClass("unread");
+                    target.addClass("readed");
+                    xmesh.act("messageDetail", item);
+                }, showErrorMessage);
+            } else {
+                xmesh.act("messageDetail", item);
+            }
+        }
+        this.named("clearMes").bind("click", clearNotify);
+        function clearNotify() {
+            if (xmesh.model["UserNotify"].dataTotal == 0) return;
+            Dialog.confirm("是否清空消息?", null, function () {
+                service.busynessMessage = "网络连接中，请稍候...";
+                UserNotify.deleteUserAllNotify(function (rs) {
+                    noList.css('display','-webkit-box');
+                    messageScroller.hide();
+                    messageScroller.html("");
+                    messageScroller.refresh();
+                    messageScroller.scrollTo(0, 0, 0);
+                }, showErrorMessage);
+            }, "系统提示", ["取消", "确定"])
+
+        }
+
+        function formatDate(date) {
+            var year = date.substring(0, date.indexOf("-"));
+            var day = date.substring(date.indexOf("-") + 1, date.indexOf(" "));
+            var time = date.substring(date.indexOf(" ") + 1, date.lastIndexOf(":"));
+            return{
+                year:year,
+                day:day,
+                time:time
+            }
+        }
+        this.bind("backbutton", function (event) {
+            event.preventDefault();
+            if (System.data) {
+                if (System.data.action=="messageCenter") xFace.app.close();
+                else  xmesh.home();
+            } else {
+                xmesh.home();
+            }
+        })
+    </script>
+</head>
+
+<body>
+<div id="messageCenterPage" data-box="v" class="secondPage">
+    <header data-box="h" name="mesHeader">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">消息中心</span>
+        <button class="delete" name="clearMes"></button>
+    </header>
+
+    <div class="content" id="messageCenter" data-box="v" data-flex="1">
+        <div name="messContainer">
+            <div name="noList" class="noItem" data-box="v" data-flex="1" style="height: 100%;display: none"><div class="image"></div></div>
+            <xtag:ScrollPane name="messageScroller">
+            </xtag:ScrollPane>
+        </div>
+    </div>
+</div>
+<xtag:Template name="template">
+    <div class="yearMessages">
+        <div class="yearTotal">
+            <div class="year" name="gapYear">2014</div>
+        </div>
+        <ul></ul>
+    </div>
+    <li data-box="h">
+        <div class="time" data-flex="v">
+            <div name="day">03-20</div>
+            <div name="time">22:33</div>
+        </div>
+        <div class="status"></div>
+        <div data-box="v" data-flex="2" class="detail">
+            <div class="messageTitle" name="mesTitle">手机支付暂停通知</div>
+            <div class="messageDetail" name="mesText">尊敬的手机支付用户：由于系统维护，手机支付</div>
+        </div>
+    </li>
+</xtag:Template>
+</body>
+</html>

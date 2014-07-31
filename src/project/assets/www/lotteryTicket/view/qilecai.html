@@ -1,0 +1,163 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>七乐彩</title>
+    <script>
+        var LotteryQLC = xmesh.model["LotteryQLC"];
+        var select_way = "1"; //1= 手选 | 2=机选
+        var cast_num = 0;
+        var cast_amount = 0;
+        var watchID = null;
+        LotteryQLC.reset();
+        LotteryQLC.cast_info.length = 0;
+        var page = this.bind("pageReady",function(){
+            var _this = this;
+            var codeList = _this.child("li");
+
+            service.busynessMessage = "网络连接中，请稍候...";
+            LotteryQLC.getLotteryInfo(function(data){
+                _this.named("termCode").html(this.termCode+"期");
+                _this.named("termEndTime").html(this.termEndTime);
+            },showErrorMessage);
+
+            _this.bind("SHAKED",function(){
+                select_way = "2";
+                var autoNum = LotteryQLC.randomSelect();
+                setAutoNum(autoNum);
+                setCastNum();
+            });
+
+            xmesh.broadcast.listen("handleSelect",function(e){
+                if(e=="QLC"){
+                    setTimeout(function(){
+                        _this.child(".redBalls > li").attribute("checked",null);
+                        setCastNum();
+                    },100)
+                }
+            })//再手选一注时清空选项
+
+            codeList.bind("click",function(){
+                var checked = _this.child(".redBalls > li[checked]") ? (_this.child(".redBalls > li[checked]").length  ? _this.child(".redBalls > li[checked]").length : 1 ) :  0;
+                select_way = "1";
+                if(this.attribute("checked")) this.attribute("checked",null);
+                else if(checked < 16){ this.attribute("checked",true);  }
+                setCastNum();
+            });
+            this.named("clear").bind("click",function(){
+                codeList.attribute("checked",null);
+                setCastNum();
+            });
+            this.named("shakePause").bind("click",function(){
+                _this.trigger($.Event("SHAKED"));
+            });
+            this.named("sure").bind("click",function(){
+                var codeList = _this.child("ul > li[checked]");
+                if(LotteryQLC.cast_info.length>0 && !codeList){
+                    xmesh.act("betsList","QLC");
+                }else{
+                    var msg = LotteryQLC.checkCodeLength(codeList);
+                    if(msg!=true) return Dialog.toast(msg);
+                    var codeArray=[];
+                    $.each(codeList,function(property,item){
+                        codeArray.push(item.html());
+                    });
+                    var bet_code = codeArray.join(",");
+                    LotteryQLC.cast_info.push(LotteryQLC.perCastInfo(select_way,bet_code,cast_num,cast_amount*100));
+                    xmesh.act("betsList","QLC");
+                }
+            });
+
+            function setAutoNum(num){
+                codeList.attribute("checked",null);
+                $.each(codeList,function(property,item){
+                    $.each(num,function(property,code){
+                        if(item.html()==code) item.attribute("checked",true);
+                    })
+                })
+            }
+
+            function setCastNum(){
+                var checked = _this.child("ul > li[checked]") ? _this.child("ul > li[checked]").length  :  0;
+                cast_num = LotteryQLC.get_zhu(checked);
+                cast_amount = cast_num *2;
+                _this.named("QLC_total_zhu").html(cast_num);
+                _this.named("QLC_total_amount").html(cast_amount);
+            }
+
+        })
+        function play(){
+            Dialog.alert(LotteryQLC.gameTips,null,"玩法");
+        }
+        page.bind("show",function(){
+            var options = {frequency :500};
+            //onWatchSuccess是获取加速信息成功的回调函数
+            watchID = navigator.accelerometer.watchAcceleration(onWatchSuccess,function(){Dialog.alert("handle error!")},options);
+            function onWatchSuccess(acceleration){
+                //判断x,y,z任意方向上的加速超过13即为摇动
+                if(Math.abs(acceleration.x)>13 || Math.abs(acceleration.y)>13  ||Math.abs(acceleration.z)>13){
+                    page.trigger($.Event("SHAKED"));
+                }
+            }
+        })
+
+        page.bind("hide",function(){
+            if (watchID) {
+                navigator.accelerometer.clearWatch(watchID);
+                watchID = null;
+            }
+        })
+    </script>
+</head>
+
+<body>
+   <div id="qilecaiPage" data-box="v" class="selectBallsPage secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel">七乐彩</span>
+            <button class="play" onclick="play()" >玩法</button>
+        </header>
+        <div class="content selectBalls" id="qilecai" data-flex="1">
+            <div class="time"><span class="periods" name="termCode">20140211期</span>截止日期到<span class="deadline" name="termEndTime">2014-11-28 19:20</span></div>
+            <div class="selectNumbers">
+                <div class="tip">至少选择7个<span class="redBall">红球</span></div>
+                <ul class="redBalls">
+                    <li>01</li>
+                    <li>02</li>
+                    <li>03</li>
+                    <li>04</li>
+                    <li>05</li>
+                    <li>06</li>
+                    <li>07</li>
+                    <li>08</li>
+                    <li>09</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+            <div class="bottomInfo"><span  name="shakePause" class="shake">摇一摇机选！</span><span class="total">共<span name="QLC_total_zhu">0</span>注<span name="QLC_total_amount">0</span>元</span></div>
+            <div class="clear"></div>
+            <div class="btns" data-box="h"><button class="blueBtn" name="clear" data-flex="1">清空</button><button class="redBtn" name="sure" data-flex="1">确认</button></div>
+        </div>
+   </div>
+</body>
+</html>

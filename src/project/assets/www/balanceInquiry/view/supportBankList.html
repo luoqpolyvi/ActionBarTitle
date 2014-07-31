@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>支持银行卡列表</title>
+</head>
+<script>
+    var bankList = this.named("bankList");var template = this.named('template');var page = this;
+    var scroller = this.named("scroller");
+    service.busynessMessage = "正在获取银行卡支持列表...";
+    xmesh.model["BankManager"].getSupportBankList("1",function(){
+        createListItem(xmesh.model["BankManager"].supportDebitBank);
+    },function(e){
+        showErrorMessage(e);
+        xmesh.back();
+    });
+
+    function createListItem(rs){
+        bankList.html("");
+        $.each(rs, function (i, item) {
+            var tep = template.named("bankTemplate").clone(true);
+            tep.child("[name=supportBankName]").html(item.supportBankName);
+            if(item.supportBankState != "NEW"){tep.child("[name=supportBankState]").hide()}
+            tep.bind("click",function(){
+                xmesh.act("supportCondition",{supportBankId:item.supportBankId})
+            });
+            if(i>10){tep.setAttribute("class","bankHide");tep.hide();}
+            bankList.append(tep);
+        });
+        setTimeout(function(){
+            scroller.refresh();
+            scroller.scrollTo(0, 0, 0);
+        },100);
+    }
+
+    function showAllBank(){
+        if(page.child(".bankHide")[0].style.display == "none"){
+            page.child(".bankHide").show();
+            page.child("#rightBtn").setAttribute("checked","true");
+        }else{page.child(".bankHide").hide();page.child("#rightBtn").removeAttribute("checked");}
+        setTimeout(function(){
+            scroller.refresh();
+            scroller.scrollTo(0, 0, 0);
+        },100);
+
+    }
+</script>
+<body>
+<div id="supportBankListPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">支持银行卡列表</span>
+    </header>
+    <div class="content" id="supportBankList"data-box="v"  data-flex="1">
+        <div class="topBar" data-box="h"><div data-flex="1">借记卡支持列表</div><button class="arrowBtn" id="rightBtn" onclick="showAllBank();"></button></div>
+        <xtag:ScrollPane name="scroller" data-box="v" data-flex="1">
+        <ul class="bankList" name="bankList" style="display: inline-block">
+        </ul>
+        </xtag:ScrollPane>
+    </div>
+</div>
+<xtag:Template name="template">
+    <li data-box="h" name="bankTemplate"><div data-flex="1"><span name="supportBankName">建设银行</span><span class="new" name="supportBankState"></span></div></li>
+</xtag:Template>
+</body>
+</html>

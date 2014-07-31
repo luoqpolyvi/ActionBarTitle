@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>信用卡还款</title>
+    <script>
+        var page = this;
+        var CreditCard = xmesh.model["CreditCard"];
+        xmesh.model["CreditCard"].isAdd = true;
+
+        function creditRepay(){
+            xmesh.model["CreditCard"].isAdd = true;
+            var amount = page.named("amount").value;
+            if(!amount) return Dialog.toast("请输入还款金额");
+            service.busynessMessage = "网络连接中，请稍候...";
+            xmesh.model["OrderManager"].createOrder({
+                card_number : CreditCard.cardNumber,
+                amount : parseInt(amount)*100,
+                u_id : xmesh.model["User"].id
+            },'creditCard',function(data){
+                this.pay(function(){
+                    xmesh.model['Order'].notice(function(){},showErrorMessage);
+                    xmesh.model["CreditCard"].isAdd = true;
+                    xmesh.to("/creditCard");
+                    window.getBill();
+                },function(e){
+//                   xmesh.model['Order'].notice(function(){},showErrorMessage);
+                    xmesh.model["CreditCard"].isAdd = true;
+                    showErrorMessage(e);
+                    window.getBill();
+                });
+            },function(e){showErrorMessage(e);})
+        }
+
+    </script>
+</head>
+
+<body>
+<div id="creditRepayPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">信用卡还款</span>
+        <!--<button class="delete"></button>-->
+    </header>
+    <div class="content" id="creditRepay" data-flex="1">
+        <div class="card" data-box="h">
+            <img src="" x-field="CreditCard.logoUrl"/>
+            <div data-box="v">
+               <div class="name" x-field="CreditCard.bankName"></div>
+               <div>尾号 <span x-field="CreditCard.lastFourNum"></span></div>
+            </div>
+        </div>
+        <div class="repay">
+            <div class="inputBox" data-box="h"><xtag:input type="amount" placeholder="请输入还款金额" label="请输入还款金额" data-box="h" data-flex="1" name="amount"></xtag:input><button onclick="xmesh.act('searchOrder')">查询账单</button></div>
+            <div>到账时间：<span x-field="CreditCard.arriveTime">即时到账</span></div>
+            <button class="bigBtn blueBtn" onclick="creditRepay()">确认还款</button>
+            <div class="warmTips">
+                <div class="title">温馨提示</div>
+                <div>1、为了确保您的信用卡正常使用，避免因理解差异导致还款延期，建议您在最后还款日之前三个工作日还款完成还款。</div>
+                <div>2、即时到账时间为3-5分钟。</div>
+            </div> 
+        </div>
+    </div>
+</div>
+</body>
+</html>

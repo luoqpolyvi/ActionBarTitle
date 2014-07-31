@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>消息详情</title>
+    <script>
+        var param = this.param;
+        this.named("text").html(param.content.text);
+        this.named("title").html(param.title);
+        this.named("time").html(param.date);
+    </script>
+</head>
+
+<body>
+<div id="messageDetailPage" data-box="v" class="secondPage">
+   <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel"></span>
+    </header>
+    <div class="content" id="messageDetail" data-box="v" data-flex="1">
+        <div class="title" name="title"></div>
+        <div class="time"><span class="timeIcon"></span><span name="time"></span></div>
+        <div class="detail" name="text"></div>
+    </div>
+</div>
+</body>
+</html>

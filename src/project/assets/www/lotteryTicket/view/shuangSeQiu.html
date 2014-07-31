@@ -1,0 +1,217 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>双色球</title>
+    <script>
+        var LotterySSQ = xmesh.model["LotterySSQ"];
+        var select_way = "1"; //1= 手选 | 2=机选
+        var cast_num = 0;
+        var cast_amount = 0;
+        var watchID = null;
+        LotterySSQ.reset();
+        LotterySSQ.cast_info.length = 0;
+        var page = this.bind("pageReady",function(){
+            var _this = this;
+            var redBalls= _this.child(".redBalls li");
+            var blueBalls = _this.child(".blueBalls li");
+            xmesh.broadcast.listen("handleSelect",function(e){
+                if(e=="SSQ"){
+                    setTimeout(function(){
+                        redBalls.attribute("checked",null);
+                        blueBalls.attribute("checked",null);
+                        setCastNum();
+                    },100)
+                }
+            })//再手选一注时清空选项
+
+            service.busynessMessage = "网络连接中，请稍候...";
+            LotterySSQ.getLotteryInfo(function(data){
+                _this.named("termCode").html(this.termCode+"期");
+                _this.named("termEndTime").html(this.termEndTime);
+            },showErrorMessage);
+
+            redBalls.bind("click",setRedBalls);
+            blueBalls.bind("click",setSelectNum);
+
+            _this.bind("SHAKED",function(data){
+                select_way = "2";
+                var autoNum = LotterySSQ.randomSelect();
+                setAutoNum(autoNum);
+            });
+
+            function setSelectNum(evt){
+                select_way = "1";
+                if(this.attribute("checked")) this.attribute("checked",null);
+                else this.attribute("checked",true);
+                setCastNum();
+            }
+
+            function setRedBalls(){
+                select_way = "1";
+                var checked = _this.child(".redBalls > li[checked]") ? (_this.child(".redBalls > li[checked]").length  ? _this.child(".redBalls > li[checked]").length : 1 ) :  0;
+                if(this.attribute("checked")) this.attribute("checked",null);
+                else if(checked < 20) { this.attribute("checked",true); }
+                setCastNum();
+            }
+
+            this.named("clear").bind("click",function(){
+                redBalls.attribute("checked",null);
+                blueBalls.attribute("checked",null);
+                setCastNum();
+            });
+
+            this.named("sure").bind("click",function(){
+                var redList = _this.child(".redBalls > li[checked]");
+                var blueList = _this.child(".blueBalls > li[checked]");
+                if(LotterySSQ.cast_info.length>0 && !redList && !blueList)  xmesh.act("betsList","SSQ");
+                else {
+                    var msg = LotterySSQ.checkCodeLength(redList,blueList);
+                    if(msg!=true) return Dialog.toast(msg);
+                    var redArray=[];
+                    var blueArray=[];
+                    $.each(redList,function(property,item){
+                        redArray.push(item.html());
+                    });
+                    if(!blueList.length) {
+                        blueArray.push(blueList.html())
+                    }else {
+                        $.each(blueList,function(property,item){
+                            blueArray.push(item.html());
+                        })
+                    };
+                    var bet_code = redArray.join(",")+"|"+blueArray.join(",");
+                    LotterySSQ.cast_info.push(LotterySSQ.perCastInfo(select_way,bet_code,cast_num,cast_amount*100));
+                    xmesh.act("betsList","SSQ");
+                }
+            });
+
+            this.named("shakePause").bind("click",function(){
+                _this.trigger($.Event("SHAKED"));
+            });
+
+            function setAutoNum(num){
+                redBalls.attribute("checked",null);
+                blueBalls.attribute("checked",null);
+                $.each(redBalls,function(property,item){
+                    $.each(num[0],function(property,code){
+                        if(item.html()==code) item.attribute("checked",true);
+                    })
+                })
+                $.each(blueBalls,function(property,item){
+                    if(item.html()==num[1][0]) item.attribute("checked",true);
+                })
+                setCastNum();
+            }
+            function setCastNum(){
+                var redLength = _this.child(".redBalls > li[checked]") ? _this.child(".redBalls > li[checked]").length  :  0;
+                var blueLength = _this.child(".blueBalls > li[checked]") ? (_this.child(".blueBalls > li[checked]").length ? _this.child(".blueBalls > li[checked]").length : 1)     :  0;
+                cast_num = LotterySSQ.get_zhu(redLength,blueLength);
+                cast_amount = cast_num *2;
+                _this.named("SSQ_total_zhu").html(cast_num);
+                _this.named("SSQ_total_amount").html(cast_amount);
+            }
+
+        })
+
+        function play(){
+            Dialog.alert(LotterySSQ.gameTips,null,"玩法");
+        }
+        page.bind("show",function(){
+            var options = {frequency :500};
+            //onWatchSuccess是获取加速信息成功的回调函数
+            watchID = navigator.accelerometer.watchAcceleration(onWatchSuccess,function(){Dialog.alert("handle error!")},options);
+            function onWatchSuccess(acceleration){
+                //判断x,y,z任意方向上的加速超过13即为摇动
+                if(Math.abs(acceleration.x)>13 || Math.abs(acceleration.y)>13  ||Math.abs(acceleration.z)>13){
+                    page.trigger($.Event("SHAKED"));
+                }
+            }
+        })
+
+        page.bind("hide",function(){
+            if (watchID) {
+                navigator.accelerometer.clearWatch(watchID);
+                watchID = null;
+            }
+        })
+    </script>
+</head>
+
+<body>
+   <div id="shuangSeQiuPage" data-box="v" class="selectBallsPage secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel">双色球</span>
+           <button class="play" onclick="play()">玩法</button>
+        </header>
+       <xtag:ScrollPane data-flex="1" data-box="v" name="scrollPane">
+        <div class="content selectBalls" id="shuangSeQiu" data-flex="1" useTransform = false>
+            <div class="time"><span class="periods" name="termCode">20140211期</span>截止日期到<span class="deadline" name="termEndTime">2014-11-28 19:20</span></div>
+            <div class="selectNumbers">
+                <div class="tip">至少选择6个<span class="redBall">红球</span></div>
+                <ul class="redBalls">
+                    <li>01</li>
+                    <li>02</li>
+                    <li>03</li>
+                    <li>04</li>
+                    <li>05</li>
+                    <li>06</li>
+                    <li>07</li>
+                    <li>08</li>
+                    <li>09</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                    <li>17</li>
+                    <li>18</li>
+                    <li>19</li>
+                    <li>20</li>
+                    <li>21</li>
+                    <li>22</li>
+                    <li>23</li>
+                    <li>24</li>
+                    <li>25</li>
+                    <li>26</li>
+                    <li>27</li>
+                    <li>28</li>
+                    <li>29</li>
+                    <li>30</li>
+                    <li>31</li>
+                    <li>32</li>
+                    <li>33</li>
+                </ul>
+            </div>
+            <div class="selectNumbers">
+                <div class="tip">至少选择1个<span class="redBall">蓝球</span></div>
+                <ul class="blueBalls">
+                    <li>01</li>
+                    <li>02</li>
+                    <li>03</li>
+                    <li>04</li>
+                    <li>05</li>
+                    <li>06</li>
+                    <li>07</li>
+                    <li>08</li>
+                    <li>09</li>
+                    <li>10</li>
+                    <li>11</li>
+                    <li>12</li>
+                    <li>13</li>
+                    <li>14</li>
+                    <li>15</li>
+                    <li>16</li>
+                </ul>
+            </div>
+            <div class="clear"></div>
+            <div class="bottomInfo"><span  name="shakePause" class="shake">摇一摇机选！</span><span class="total">共<span name="SSQ_total_zhu">0</span>注<span name="SSQ_total_amount">0</span>元</span></div>
+            <div class="clear"></div>
+            <div class="btns" data-box="h"><button class="blueBtn" name="clear" data-flex="1">清空</button><button class="redBtn" name="sure" data-flex="1">确认</button></div>
+        </div>
+        </xtag:ScrollPane>
+   </div>
+</body>
+</html>

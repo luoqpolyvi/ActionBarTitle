@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>发卡银行</title>
+    <script>
+            var CreditCardManager = xmesh.model["CreditCardManager"];
+            var page = this;
+            var bankSrollPane = page.named("bankSrollPane");
+            var bankList = page.named("bankList");
+            page.bind("pageReady",function(){
+                service.busynessMessage = "网络连接中，请稍后...";
+                CreditCardManager.getBank(function(res){
+                    setBankList(res.data.bankList);
+                },showErrorMessage);
+            })
+
+
+           function setBankList(data){
+               bankSrollPane.hide();
+               bankList.html("");
+               $.each(data,function(property,item){
+                   var template = page.named("template").child("li").clone(true).appendTo(bankList);
+                   template.named("logo").attribute("src",item.bankLogo);
+                   template.named("bankName").html(item.bankName);
+                   template.bind("click",function(){
+                       $.copyObject(xmesh.model["BankList"],item);
+                       xmesh.back();
+                   })
+               })
+              setTimeout(function(){
+               bankSrollPane.css('display','-webkit-box');
+               bankSrollPane.refresh();
+               bankSrollPane.scrollTo(0,0,0);
+              },30);
+           }
+
+    </script>
+</head>
+
+<body>
+<div id="bankListPage" data-box="v" class="secondPage">
+    <header data-box="h">
+        <button class="returnLabel"></button>
+        <span x-page="title" class="returnLabel">信用卡列表</span>
+    </header>
+    <div class="content" id="bankList" data-flex="1" data-box="v">
+        <xtag:ScrollPane data-box="v" data-flex="1" name="bankSrollPane">
+            <ul class="bankUl" name="bankList">
+            </ul>
+        </xtag:ScrollPane>
+    </div>
+    <xtag:template name="template">
+        <li data-box="h"><img src="" name="logo"/><div name="bankName"></div></li>
+    </xtag:template>
+</div>
+</body>
+</html>

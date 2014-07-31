@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>电子券详情</title>
+    <script src="component/qrcode.min.js"></script>
+    <script>
+        var volumeId;
+        var button2 = this.child('#button2');
+        var qrcodeWrapper = this.child('#qrcodeWrapper');
+        qrcodeWrapper.css('display','none');
+        var qrcodeImg = this.child("#qrcodeImg");
+        var giveOthers = this.child('#giveOthers');
+        giveOthers.css('display','none');
+        var VOLUME_TYPE = {
+            "pay" : "充值",
+            "free" : "免费",
+            "market" : "营销活动券",
+            "market_voucher" : "代金券",
+            "market_coupon" : "折扣券"
+        }
+
+        var page = this.bind("hide",function(){
+            //离开页面删掉二维码canvas
+            qrcodeImg.html('');
+        })
+
+        showVolumeInfo(this.param);
+        //优惠券基本信息
+        function showVolumeInfo(param){
+            page.child("#icon").src = param.icon['normal'];
+            page.child("#name").html(param.name); //优惠券名字
+            page.child("#companyName").html(param.companyName);
+            page.child("#endExpiryTime").html(param.endExpiryTime);
+            page.child("#type").html(VOLUME_TYPE[param.type]);
+            page.child("#des").html(param.des);
+            if(param.state=="presenting" || param.state=="expire"){
+                button2.css("display","none");
+            }else{
+                button2.css("display","-webkit-box");
+            }
+            volumeId = param.volumeDetailId;
+        }
+        function hidePresentBox(){
+            giveOthers.hide();
+            page.child('#phone').value = '';
+        }
+        //转赠
+        function presentVolume(){
+            var number = page.child('#phone').value;
+            if(!number || isNaN(number)){
+                return Dialog.toast("请输入转赠人的手机号")
+            }
+            var data = {
+                volume_detail_id : volumeId,
+                phone : number
+            };
+            hidePresentBox();
+            service.busynessMessage = "网络连接中，请稍候...";
+            xmesh.model['ElectricTickets'].presentVolume(data,function(rs){
+                Dialog.alert('赠送中，若超过3天对方未接受，则可取回');
+                xmesh.model['ElectricTickets'].volumeRequest = true;   //列表界面请求数据的标记
+                xmesh.back();
+            },function(e){
+                Dialog.toast(e)
+            });
+        }
+        //使用
+        function useVolume(){
+            if(qrcodeImg.child("canvas")==null){
+                var data = {
+                    volume_detail_id : volumeId
+                };
+                service.busynessMessage = "网络连接中，请稍候...";
+                xmesh.model['ElectricTickets'].useVolume(data,function(rs){
+                    var data = rs.data;
+                    var passId = data.passId;
+                    qrcodeImg.html('');
+                    page.child("#passId").html(passId);
+                    //生成二维码
+                    getqrcode(qrcodeImg,{width:280,height:280,text:passId});
+                    qrcodeWrapper.show();
+                    xmesh.model['ElectricTickets'].volumeRequest = true;   //列表界面请求数据的标记
+                },function(e){
+                    Dialog.toast(e)
+                });
+            } else {
+                qrcodeWrapper.show();
+            }
+
+        }
+    </script>
+</head>
+
+<body>
+   <div id="eTicketDetailPage" data-box="v" class="eTicketDetailPage secondPage">
+       <header data-box="h">
+            <button class="returnLabel"></button>
+            <span x-page="title" class="returnLabel"></span>
+        </header>
+        <div class="content eTicketDetail" id="eTicketDetail" data-box="v" data-flex="1">
+             <div class="eTicket" data-box="v">
+                 <div data-box="h">
+                    <img  id="icon" src=""/>
+                    <div data-box="v" class="info" data-flex="1">
+                        <div class="eTicketName" id="name"></div>
+                        <div class="item" id="companyName"></div>
+                        <div class="item">有效期：<span id="endExpiryTime"></span></div>
+                        <div class="item" id="type"></div>
+                    </div>
+                 </div>
+                 <div data-box="h" class="btns" id="button2">
+                     <button data-flex="1" class="give" onclick="giveOthers.css('display','-webkit-box')">转赠</button><button data-flex="1" class="use" onclick="useVolume()">使用</button>
+                 </div>
+             </div>
+             <div class="detail" data-box="v">
+                 <div>优惠详情</div>
+                 <div class="more" id="des"></div>
+             </div>
+        </div>
+       <div class="mask" id="qrcodeWrapper" data-box="h" style="display: none">
+           <div class="alertBox" data-box="h">
+               <div class="alertCont" data-box="v">
+                   <div class="ewm" id="qrcodeImg"></div>
+                   <div>辅助码</div>
+                   <div id="passId"></div>
+                   <button class="bigBtn" onclick="qrcodeWrapper.hide()">确定</button>
+               </div>
+           </div>
+       </div>
+       <div class="mask" id="giveOthers" data-box="h" style="display: none">
+           <div class="alertBox" data-box="h">
+               <div class="alertCont1" data-box="v">
+                   <input maxlength="11" type="tel" placeholder="请输入转赠对象的手机号码" class="telphone" id="phone"/>
+                   <button class="cancel" onclick="hidePresentBox()">取消</button><button class="sure" onclick="presentVolume()">确定</button>
+               </div>
+           </div>
+       </div>
+   </div>
+</body>
+</html>
